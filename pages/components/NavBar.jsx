@@ -53,23 +53,17 @@ export default function Navbar() {
                 </a>
               ))}
             </div>
-            <div className="hidden sm:flex lg:pr-32 md:pr-20 pr-4">
-                <button
-                  type="button"
-                  className="pr-3 text-textGray dark:text-white hover:text-black dark:hover:text-gray-500 block"
-                  onClick={switchTheme}
-                >
-                  {darkMode? <MoonIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/> : <SunIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/>}
-                </button>
-                <button
-                  type="button"
-                  className="inline min-w-0 items-center px-4 py-2 transition-all duration-500 ease-in-out rounded-md shadow-sm text-sm text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 font-logo"
-                >
-                  Sign In
-                </button>
-            </div>
-            <div className='sm:hidden ml-auto px-4'>
-              <Disclosure.Button onClick={toggleMenu} className='items-center rounded-md'>
+            <div className='ml-auto px-4 flex'>
+              <div className="lg:pr-32 md:pr-20 pr-4">
+                  <button
+                    type="button"
+                    className="text-textGray dark:text-white hover:text-black dark:hover:text-gray-500 block"
+                    onClick={switchTheme}
+                  >
+                    {darkMode? <MoonIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/> : <SunIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/>}
+                  </button>
+              </div>
+              <Disclosure.Button onClick={toggleMenu} className='items-center rounded-md sm:hidden'>
                 <span className="sr-only">Open main menu</span>
                 {open? <XIcon className="text-gray-400 dark:text-white hover:text-gray-300 dark:hover:text-gray-500 block h-6 w-6"/> : <MenuIcon className="text-gray-400 dark:text-white hover:text-gray-300 dark:hover:text-gray-500 block h-6 w-6"/>}
               </Disclosure.Button>
@@ -89,21 +83,6 @@ export default function Navbar() {
                   {item.name}
                 </a>
               ))}
-              <div className="flex justify-between px-3 pt-2">
-                <button
-                  type="button"
-                  className="inline min-w-0 items-center px-4 py-2 transition-all duration-500 ease-in-out rounded-md shadow-sm text-sm text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 font-logo"
-                >
-                  Sign In
-                </button>
-                <button
-                  type="button"
-                  className="pr-3 text-textGray dark:text-white hover:text-black dark:hover:text-gray-500 block"
-                  onClick={switchTheme}
-                >
-                  {darkMode? <MoonIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/> : <SunIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/>}
-                </button>
-              </div>
             </div>
           </Disclosure.Panel>
         </>
