@@ -16,7 +16,8 @@ module.exports = {
             logoGreen: '#53B555',
             pink: '#EF516F',
             black: '#000000',
-            darkHeaderBg: '#1E1E1E'
+            darkHeaderBg: '#1E1E1E',
+            lightGray: '#1a1a1a'
           }
       },
     },
