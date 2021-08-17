@@ -1,12 +1,14 @@
 import { ThemeProvider } from 'next-themes';
-import 'tailwindcss/tailwind.css';
-import NavBar from './components/NavBar.jsx';
+import 'styles/global.scss';
+import NavBar from '../components/NavBar';
 
 function MyApp({ Component, pageProps }) {
 	return (
 		<ThemeProvider attribute='class'>
 			<NavBar />
-			<Component {...pageProps} />
+			<main>
+				<Component {...pageProps} />
+			</main>
 		</ThemeProvider>
 	);
 }

@@ -1,92 +1,68 @@
 import Link from 'next/link';
-import Image from 'next/image';
-import { useState } from 'react';
-import { useTheme } from 'next-themes'
-import {Disclosure} from '@headlessui/react'
-import {MoonIcon, SunIcon, XIcon, MenuIcon} from '@heroicons/react/outline'
+import { useTheme } from 'next-themes';
+import { Menu } from '@headlessui/react';
+import { MoonIcon, SunIcon, XIcon, MenuIcon } from '@heroicons/react/outline';
+import styles from 'styles/navbar.module.scss';
+import classes from 'lib/classes';
+
 const navigation = [
-  { name: 'About', href: '#about' },
-  { name: 'Newsletter', href: '#newsletter' },
-  { name: 'Discord', href: '#discord' },
-]
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+	{ name: 'About', href: '#about' },
+	{ name: 'Newsletter', href: '#newsletter' },
+	{ name: 'Discord', href: '/discord' },
+];
 
 export default function Navbar() {
-  const [darkMode, setDark] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const {theme, setTheme} = useTheme()
+	const { theme, setTheme } = useTheme();
 
-	const toggleMenu = () => {
-    setMenuOpen(!menuOpen)
+	const switchTheme = () => {
+		setTheme(theme === 'dark' ? 'light' : 'dark');
 	};
-  const switchTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-    setDark(!darkMode);
-    console.log(darkMode);
-  }
+
 	return (
-    <Disclosure as="nav" className="bg-gray-300 dark:bg-lightGray">
-      {({ open }) => (
-        <>
-          <header className='relative flex items-center h-16 bg-white dark:bg-darkHeaderBg'>
-            <div className='relative flex items-center justify-between lg:pl-32 md:pl-20'>
-              <Link href='/' passHref> 
-                <div className='flex items-center pl-4'>
-                  <div className='text-3xl lg:block h-8 w-auto font-logo'>Monad</div>
-                  <img src={'/MonadLogo.png'} alt='Monad Logo' className='block h-8 w-auto pl-1'/>
-                </div>
-              </Link>
-            </div>
-            <div className='hidden sm:block m-auto'>
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    `text-textGray dark:text-white transition-all duration-500 ease-in-out focus:shadow-outline hover:underline`,
-                    'px-3 py-2 rounded-md text-lg font-regular font-text'
-                  )}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div>
-            <div className='ml-auto px-4 flex'>
-              <div className="lg:pr-32 md:pr-20 pr-4">
-                  <button
-                    type="button"
-                    className="text-textGray dark:text-white hover:text-black dark:hover:text-gray-500 block"
-                    onClick={switchTheme}
-                  >
-                    {darkMode? <MoonIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/> : <SunIcon className="h-5 w-5 transition-all duration-500 ease-in-out" aria-hidden="true"/>}
-                  </button>
-              </div>
-              <Disclosure.Button onClick={toggleMenu} className='items-center rounded-md sm:hidden'>
-                <span className="sr-only">Open main menu</span>
-                {open? <XIcon className="text-gray-400 dark:text-white hover:text-gray-300 dark:hover:text-gray-500 block h-6 w-6"/> : <MenuIcon className="text-gray-400 dark:text-white hover:text-gray-300 dark:hover:text-gray-500 block h-6 w-6"/>}
-              </Disclosure.Button>
-            </div>
-          </header>
-          <Disclosure.Panel className="sm:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    'bg-gray-300 dark:bg-lightGray text-textGray dark:text-white',
-                    'block px-3 py-2 text-base font-medium'
-                  )}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div>
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
+		<Menu>
+			{({ open }) => (
+				<>
+					<header className={styles.header}>
+						<nav>
+							<Link href='/'>
+								<a className={classes('logo', styles.logo)}>
+									<span>Monad</span>
+									<img src='/MonadLogo.png' alt='Monad Logo' />
+								</a>
+							</Link>
+							<ul className={styles.links}>
+								{navigation.map(({ name, href }) => (
+									<li key={name}>
+										<Link href={href}>{name}</Link>
+									</li>
+								))}
+							</ul>
+							<div className={styles.buttons}>
+								<button className={styles.button} onClick={switchTheme}>
+									{theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+								</button>
+								<Menu.Button
+									className={classes(styles.button, styles.menu_button)}>
+									{open ? <XIcon /> : <MenuIcon />}
+								</Menu.Button>
+							</div>
+						</nav>
+					</header>
+					<Menu.Items className={styles.mobile}>
+						{navigation.map(({ name, href }) => (
+							<Menu.Item key={name}>
+								{({ active }) => (
+									<Link href={href} passHref>
+										<Menu.Button as='a' className={active ? styles.active : ''}>
+											{name}
+										</Menu.Button>
+									</Link>
+								)}
+							</Menu.Item>
+						))}
+					</Menu.Items>
+				</>
+			)}
+		</Menu>
 	);
 }
