@@ -1,8 +1,10 @@
 import { ThemeProvider } from 'next-themes';
-import 'styles/global.scss';
 import NavBar from '../components/NavBar';
+import 'styles/global.scss';
 
-function MyApp({ Component, pageProps }) {
+import type { AppProps } from 'next/app';
+
+function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<ThemeProvider attribute='class'>
 			<NavBar />
