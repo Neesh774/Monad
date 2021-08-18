@@ -27,7 +27,7 @@ export default function Navbar() {
 							<Link href='/'>
 								<a className={classes('logo', styles.logo)}>
 									<span>Monad</span>
-									<img src='/MonadLogo.png' alt='Monad Logo' />
+									<img src='/monad.svg' alt='Monad Logo' />
 								</a>
 							</Link>
 							<ul className={styles.links}>
