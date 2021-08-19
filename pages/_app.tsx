@@ -4,7 +4,7 @@ import 'styles/global.scss';
 
 import type { AppProps } from 'next/app';
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<ThemeProvider attribute='class'>
 			<NavBar />
@@ -14,5 +14,3 @@ function MyApp({ Component, pageProps }: AppProps) {
 		</ThemeProvider>
 	);
 }
-
-export default MyApp;
