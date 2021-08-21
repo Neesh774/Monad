@@ -1,0 +1,11 @@
+section {
+	position: relative;
+	height: calc(100vh - 150px);
+	display: grid;
+	place-content: center;
+	padding-bottom: 150px;
+
+	#content {
+		max-width: 38rem;
+	}
+}
