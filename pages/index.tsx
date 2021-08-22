@@ -7,33 +7,26 @@ export default function Home() {
 			<MetaTags />
 			<section>
 				<div id='content'>
-					<h1>Cool Divider</h1>
-					<p>
-						Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aut atque magnam voluptas
-						facilis nulla modi suscipit at hic nemo est. Fugiat porro repellat eaque tempore ab!
-						Similique quibusdam debitis mollitia.
-					</p>
+					<h1 className="header">Share <span className="snippets">snippets</span> in seconds</h1>
 				</div>
 				<Divider />
 			</section>
-			<section className='foreground'>
+			<section className='foreground right'>
 				<div id='content'>
-					<h1>Cool Divider</h1>
+					<p className="badge green">Built Socially</p>
+					<h1>Share With Everyone</h1>
 					<p>
-						Consequatur necessitatibus tempora nisi fuga, consectetur qui harum, soluta aliquam
-						accusantium delectus veniam nihil amet voluptate repudiandae, explicabo quibusdam ipsum
-						odio dolorem! Dolore reprehenderit esse id aliquam temporibus veritatis quam!
+					It has never been easier to assign tags and share your short code snippets with the dev community. Monad was created with SEO in mind so your snippets can always be found!
 					</p>
 				</div>
 				<Divider foreground={true} />
 			</section>
 			<section>
 				<div id='content'>
-					<h1>Cool Divider</h1>
+					<p className="badge pink">Collaborate With Ease</p>
+					<h1>Work in Private</h1>
 					<p>
-						Iusto illo ipsa et nemo sit, velit corrupti perferendis accusantium voluptate, molestiae
-						eveniet ex accusamus unde, non consequatur ducimus modi nesciunt rerum? Tempora iure
-						quibusdam nemo adipisci. Rerum, ullam eveniet.
+						Easily share snippets with everyone in Monad, or just a couple people you trust. Keep your snippets unlisted, or public to anyone to view.
 					</p>
 				</div>
 				<Divider />

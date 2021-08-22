@@ -4,8 +4,15 @@ section {
 	display: grid;
 	place-content: center;
 	padding-bottom: 150px;
-
 	#content {
 		max-width: 38rem;
 	}
+}
+.header {
+	font-size: 3rem;
+	font-weight: bold;
+}
+
+.snippets {
+	color: #4B82F3;
 }
