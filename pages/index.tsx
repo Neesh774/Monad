@@ -1,7 +1,24 @@
 import MetaTags from 'components/MetaTags';
 import Divider from 'components/Divider';
+import Prism from "prismjs";
+import "prismjs/themes/prism-tomorrow.css";
+import React, { useEffect } from "react";
+
+const snippetCode = `
+const App = props => {
+	return (
+		<div>
+		<h1> Monad </h1>
+		<div>Share snippets in seconds</div>
+		</div>
+	);
+};`;
 
 export default function Home() {
+	useEffect(() => {
+		Prism.highlightAll();
+	  }, []);
+
 	return (
 		<>
 			<MetaTags />
@@ -12,6 +29,9 @@ export default function Home() {
 				<Divider />
 			</section>
 			<section className='foreground right'>
+				<pre>
+					<code className="language-js">{snippetCode}</code>
+				</pre>
 				<div id='content'>
 					<p className="badge green">Built Socially</p>
 					<h1>Share With Everyone</h1>
