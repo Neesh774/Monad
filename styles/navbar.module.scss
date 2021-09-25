@@ -54,8 +54,7 @@
 	}
 
 	&:hover,
-	&:focus,
-	&:active {
+	&:focus {
 		background-color: var(--hover);
 	}
 }

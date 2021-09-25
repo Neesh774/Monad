@@ -1,8 +1,10 @@
+import styles from 'styles/divider.module.scss';
+
 export default function Divider({ foreground = false }: { foreground?: boolean }) {
 	const fill = foreground ? 'var(--background)' : 'var(--foreground)';
 
 	return (
-		<div className='divider'>
+		<div className={styles.divider}>
 			<svg
 				data-name='divider'
 				xmlns='http://www.w3.org/2000/svg'

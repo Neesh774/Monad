@@ -3,3 +3,21 @@
 .foreground {
 	background-color: var(--foreground);
 }
+
+.btn {
+	color: var(--button, --text-primary);
+	border-color: var(--button, --text-primary);
+
+	&:hover {
+		color: var(--button-hover, white);
+		background-color: var(--button, --text-primary);
+	}
+
+	&.primary {
+		--button: red;
+	}
+
+	&.secondary {
+		--button: green;
+	}
+}
