@@ -14,15 +14,12 @@
 	}
 
 	&.primary {
-		--button: red;
+		--button: #53b555;
 	}
 
 	&.secondary {
-		--button: green;
+		--button: #e3415f;
 	}
-}
-.right {
-	text-align: right;
 }
 
 .badge {
@@ -31,10 +28,14 @@
 	font-weight: bold;
 }
 
-.green {
-	color: #53b555;
+.red {
+	color: var(--red);
 }
 
-.pink {
-	color: #e3415f;
+.green {
+	color: var(--green);
+}
+
+.blue {
+	color: var(--blue);
 }
