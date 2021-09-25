@@ -1,11 +1,22 @@
 section {
 	position: relative;
-	height: calc(100vh - 150px);
+	height: calc(100vh);
 	display: grid;
 	place-content: center;
-	padding-bottom: 150px;
-
+	align-items: center;
 	#content {
-		max-width: 38rem;
+		max-width: 30rem;
 	}
+}
+.header {
+	font-size: 3rem;
+	font-weight: bold;
+}
+
+.snippets {
+	color: #4B82F3;
+}
+
+pre {
+	border-radius: 15px;
 }
