@@ -3,7 +3,7 @@ section {
 	height: calc(100vh - 150px);
 	display: grid;
 	place-content: center;
-	padding: 1rem 18%;
+	padding: 1rem 12%;
 	padding-bottom: 150px;
 
 	#content {
@@ -31,6 +31,26 @@ section {
 		justify-content: start;
 	}
 }
+.footer {
+	padding-top: 1rem;
+}
+footer {
+	position: relative;
+	place-content: center;
+	justify-content: center;
+	column-count: 2;
+	padding: 1rem 12%;
+	line-height: 2;
+	div {
+		display: grid;
+		margin: auto;
+	}
+}
+
+.copyright {
+	text-align: center;
+	padding-bottom: 1rem;
+}
 
 .header {
 	font-size: 3rem;
@@ -40,12 +60,22 @@ section {
 
 pre {
 	border-radius: 15px;
+	padding-right: 1rem;
 }
 
 @media screen and (max-width: 768px) {
 	section,
 	.header {
 		text-align: center;
+	}
+	footer {
+		text-align: center;
+		column-count: 1;
+		padding: 0;
+		div {
+			padding-left: 0;
+			padding-bottom: 1rem;
+		}
 	}
 
 	.header {

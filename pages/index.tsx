@@ -6,8 +6,8 @@ const snippetCode = `
 export default function App(props) {
 	return (
 		<div>
-		<h1> Monad </h1>
-		<div>Share snippets in seconds</div>
+			<h1> Monad </h1>
+			<div>Share snippets in seconds</div>
 		</div>
 	);
 };`;
@@ -27,7 +27,7 @@ export default function Home() {
 			<section className='foreground right'>
 				<div id='content' className='inline'>
 					<pre>
-						<Code language='jsx' code={snippetCode} />
+						<Code language='javascript' code={snippetCode} />
 					</pre>
 					<span className='text'>
 						<p className='badge green'>Built Socially</p>
@@ -52,8 +52,24 @@ export default function Home() {
 						</p>
 					</span>
 				</div>
-				<Divider />
 			</section>
+			<div className="footer foreground">
+				<footer>
+					<div>
+						<h3>Monad</h3>
+						<a href="/create">Create a snippet</a>
+						<a href="/legal">Terms and Conditions</a>
+						<a href="/newsletter">Newsletter</a>
+					</div>
+					<div>
+						<h3>Contact Us</h3>
+						<a href="https://discord.gg/b8ugMm7nvc">Discord</a>
+						<a href="">Twitter</a>
+						<a href="mailto:Kanishq0106@gmail.com">Email</a>
+					</div>
+				</footer>
+				<div className="copyright">Made by Monad © 2021	</div>
+			</div>
 		</>
 	);
 }
