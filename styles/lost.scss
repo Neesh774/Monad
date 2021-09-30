@@ -1,0 +1,22 @@
+.pink {
+    color: var(--red);
+    margin-bottom: 2rem;
+    font-size: 5rem;
+}
+h2 {
+    line-height: 2;
+}
+div {
+    text-align: center;
+}
+
+.blue {
+    color: var(--blue);
+    text-decoration: underline;
+}
+
+.parent {
+    justify-content: center;
+    margin: 12rem auto;
+    place-content: center;
+}
