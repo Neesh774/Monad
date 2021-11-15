@@ -1,0 +1,49 @@
+.legal {
+    font-weight: 300;
+    line-height: 1.5;
+    margin: 1rem 9rem 5rem;
+    a {
+        text-decoration: underline;
+    }
+    .header {
+        display: flex;
+        margin: 2rem auto;
+        vertical-align: baseline;
+        max-width: fit-content
+    }
+    .section-header {
+        display: flex;
+        margin: 2rem 0;
+        vertical-align: baseline;
+        max-width: fit-content
+    }
+    h1 {
+        font-size: 2rem;
+        font-weight: 100;
+        svg {
+            margin-left: 0.3rem;
+            vertical-align: baseline;
+        }
+    }
+    .copyright {
+        margin-top: 2rem;
+        font-weight: 600;
+    }
+    ul {
+        margin-left: 2rem;
+        line-height: 2rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .legal {
+        margin: 1rem 2rem 5rem;
+        .header {
+            display: block;
+        }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 100;
+        }
+    }
+}

@@ -1,0 +1,39 @@
+/* utility classes */
+
+.foreground {
+	background-color: var(--foreground);
+}
+.btn {
+	color: var(--button, --text-primary);
+	border-color: var(--button, --text-primary);
+
+	&:hover {
+		color: var(--button-hover, white);
+		background-color: var(--button, --text-primary);
+	}
+
+	&.primary {
+		--button: #53b555;
+	}
+
+	&.secondary {
+		--button: #e3415f;
+	}
+}
+
+.badge {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.red {
+	color: var(--red);
+}
+
+.green {
+	color: var(--green);
+}
+
+.blue {
+	color: var(--blue);
+}

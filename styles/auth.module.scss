@@ -1,0 +1,18 @@
+.dialog_overlay {
+    position: fixed;
+    inset: 0;
+    opacity: 30;
+}
+
+.dialog {
+    align-items: center;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+    inset: 0;
+    overflow-y: auto;
+    p {
+        color: var(--text-primary);
+    }
+}

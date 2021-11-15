@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik');
+@import url('https://fonts.googleapis.com/css2?family=Inter');
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/utilities";
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+html,
+body {
+	font-family: Inter, sans-serif;
+	background: var(--background);
+	scroll-behavior: smooth;
+}
+
+.logo {
+	font-family: Rubik, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: var(--text-primary);
+}
+
+p {
+	color: var(--text-secondary);
+}
+
+a {
+	color: var(--text-secondary);
+	text-decoration: none;
+	outline: none;
+
+	&:hover,
+	&:focus,
+	&:active {
+		color: var(--text-primary);
+	}
+}
+
+:root {
+	--background: #ffffff;
+	--foreground: #eaeaea;
+	--hover: #a8a8a8;
+	--highlight: ;
+	--text-primary: #000000;
+	--text-secondary: #383838;
+
+	--red: #e3415f;
+	--green: #53b555;
+	--darkGreen: #449745;
+	--blue: #4b82f3;
+
+	--bs-primary: #000000;
+	--bs-secondary: #383838;
+}
+
+.dark {
+	--background: #000000;
+	--foreground: #1e1e1e;
+	--hover: #474747;
+	--highlight: ;
+	--text-primary: #ffffff;
+	--text-secondary: #b8b8b8;
+
+	--bs-primary: #ffffff;
+	--bs-secondary: #b8b8b8;
+}
+
+main {
+	min-height: calc(100vh - 3rem);
+	overflow: hidden auto;
+}
