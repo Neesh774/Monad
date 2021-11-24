@@ -119,3 +119,18 @@
 	font-size: 1.6rem;
 	font-weight: 500;
 }
+.theme {
+	display: none;
+}
+
+@media screen and (max-width: 768px) {
+	.mobileFlex {
+		display: flex;
+		.button {
+			margin-right: 20px;
+		}
+		.theme {
+			display: block;
+		}
+	}
+}

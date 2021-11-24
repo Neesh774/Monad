@@ -28,7 +28,7 @@ p {
 	align-items: center;
 }
 
-img {
+img:not(.logo) {
 	margin: auto;
 	width: 70%;
 	height: 70%;
