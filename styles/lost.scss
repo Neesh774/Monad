@@ -1,22 +1,16 @@
-.pink {
+.lost-parent {
+  justify-content: center;
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  place-content: center;
+  text-align: center;
+  .pink {
     color: var(--red);
     margin-bottom: 2rem;
     font-size: 5rem;
-}
-h2 {
+  }
+  h2 {
     line-height: 2;
-}
-
-.home-link {
-    color: var(--blue);
-    text-decoration: underline;
-}
-
-.parent {
-    justify-content: center;
-    margin-top: 2rem;
-    margin-left: auto;
-    margin-right: auto;
-    place-content: center;
-    text-align: center;
+  }
 }

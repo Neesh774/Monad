@@ -35,14 +35,13 @@ p {
 }
 
 a {
-	color: var(--text-secondary);
-	text-decoration: none;
-	outline: none;
+	color: var(--blue);
+	text-decoration: underline;
 
 	&:hover,
 	&:focus,
 	&:active {
-		color: var(--text-primary);
+		color: var(--darkBlue);
 	}
 }
 
@@ -58,6 +57,7 @@ a {
 	--green: #53b555;
 	--darkGreen: #449745;
 	--blue: #4b82f3;
+	--darkBlue: #1e4fff;
 
 	--bs-primary: #000000;
 	--bs-secondary: #383838;
