@@ -31,6 +31,7 @@ export default function NavBar() {
       bg={theme ?? defaultTheme}
       variant={(theme ?? defaultTheme) === "light" ? "light" : "dark"}
       expand="md"
+      className={styles.navbar}
     >
       <Container>
         <Navbar.Brand href="/" className="fs-4">

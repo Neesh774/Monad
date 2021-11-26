@@ -1,8 +1,67 @@
 .home-parent {
 	background-color: var(--foreground);
+	height: 100vh;
+	width: 100%;
 	.createsnippet {
 		border-radius: 30px;
 		background-color: var(--background);
-	}
+		-webkit-box-shadow: 0 0 30px 2px #000;
+		-moz-box-shadow: 0 0 30px 2px #000;
+		box-shadow: 0 0 30px 2px #000;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 70%;
+		height: 80%;
+		padding: 4rem;
 
+		h1 {
+			font-size: 3rem;
+			font-weight: bold;
+			margin-bottom: 6rem;
+		}
+
+		form {
+			justify-content: flex-start;
+		}
+
+		input, textarea {
+			border: 1px solid var(--bs-secondary);
+			border-radius: 10px;
+			width: 200%;
+			padding: 0.5rem;
+			margin-bottom: 1rem;
+			outline: none;
+			resize: none;
+			transition: ease-in-out 0.2s;
+		}
+		input:focus, textarea:focus {
+			border: 1px solid var(--darkBlue);
+		}
+
+		button {
+			margin-left: 2rem;
+			border-radius: 10px;
+			width: 30%;
+			padding: 0.5rem;
+			outline: none;
+			border: none;
+			cursor: pointer;
+			background-color: var(--green);
+			color: #fff;
+		}
+		button:hover {
+			background-color: var(--darkGreen);
+		}
+		.third {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-end;
+		}
+	}
 }
