@@ -20,16 +20,16 @@ import {
 export default function NavBar() {
   const { theme, setTheme } = useTheme();
 
-  let defaultTheme = "light";
 
   const switchTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
   return (
     <Navbar
       collapseOnSelect
-      bg={theme ?? defaultTheme}
-      variant={(theme ?? defaultTheme) === "light" ? "light" : "dark"}
+      bg={theme}
+      variant={theme === "light" ? "light" : "dark"}
       expand="md"
       className={styles.navbar}
     >
