@@ -15,8 +15,20 @@ body {
 	font-family: Inter, sans-serif;
 	background: var(--background);
 	scroll-behavior: smooth;
+	display: flex;
+	flex-direction: column;
 }
 
+html {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+body {
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: column;
+}
 .logo {
 	font-family: Rubik, sans-serif;
 }
@@ -77,4 +89,13 @@ a {
 
 main {
 	overflow: hidden auto;
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+#__next {
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: column;
 }
