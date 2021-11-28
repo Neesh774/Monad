@@ -1,36 +1,22 @@
-import React, { Component, useState } from "react";
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { useTheme } from 'next-themes';
 
-// You can choose to use the component or the hook
-import { ReactCodeJar, useCodeJar } from "react-codejar";
-
-const highlight = (editor) => {
-  let code = editor.textContent;
-  code = code.replace(/\((\w+?)(\b)/g, '(<font color="#8a2be2">$1</font>$2');
-  editor.innerHTML = code;
-};
-
-const ComponentExample = () => {
-  const [code, setCode] = useState('(format t "lisp example")');
-
+export default function CodeEditor() {
+  const { theme } = useTheme();
   return (
-    <ReactCodeJar
-      code={code} // Initial code value
-      onUpdate={setCode} // Update the text
-      highlight={highlight} // Highlight function, receive the editor
-      lineNumbers={true} // Show line numbers
+    <CodeMirror
+      value="console.log('hello world!');"
+      height="200px"
+      extensions={[javascript({ jsx: true })]}
+      theme={theme === 'light' ? 'light' : 'dark'}
+      onChange={(value, viewUpdate) => {
+        console.log(viewUpdate.startState.doc.length);
+        if (viewUpdate.state.doc.length > 1000) {
+          viewUpdate.view.dispatch
+          viewUpdate.state.doc.replace(0, viewUpdate.state.doc.length, viewUpdate.startState.doc);
+        }
+      }}
     />
   );
-};
-
-const HookExample = () => {
-  const [code, setCode] = useState('(format t "lisp example")');
-
-  const editorRef = useCodeJar({
-    code, // Initial code value
-    onUpdate: setCode, // Update the text
-    highlight, // Highlight function, receive the editor
-    lineNumbers: true, // Show line numbers
-  });
-
-  return <div ref={editorRef}></div>;
-};
+}

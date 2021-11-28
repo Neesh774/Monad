@@ -2,9 +2,10 @@ import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
 import Creatable from "react-select/creatable";
 import dynamic from "next/dynamic";
+
 import { useTheme } from "next-themes";
-const CodeEditor = dynamic(import("../components/codeEditor"), { ssr: false });
 import { useEffect } from "react";
+import CodeEditor from "../components/codeEditor";
 
 import MetaTags from "components/MetaTags";
 import Footer from "components/Footer";
@@ -33,11 +34,11 @@ export default function Home(props) {
           </div>
           <form>
             <input placeholder="Title" className="title" required />
-            <CodeEditor/>
+            <CodeEditor />
             <div className="third">
               <Creatable
                 isMulti
-				placeholder="Tags"
+                placeholder="Tags"
                 onChange={onTagChange}
                 options={tags.map((tag) => {
                   return {

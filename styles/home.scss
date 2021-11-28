@@ -1,12 +1,14 @@
 .home-parent {
 	background-color: var(--foreground);
-	height: 90vh;
+	height: 100%;
 	padding: 4rem;
 	width: 100%;
 
-	.editor {
+	.cm-editor {
 		border-radius: 4px;
-		font-size: medium;
+	}
+	.cm-focused {
+		outline: none !important;
 	}
 
 	.createsnippet {
@@ -19,7 +21,8 @@
 		align-items: center;
 		display: flex;
 		flex-direction: column;
-		width: 70%;
+		width: 50%;
+		height: 50vh;
 		padding: 2rem;
 		margin: auto;
 
