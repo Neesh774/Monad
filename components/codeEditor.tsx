@@ -11,10 +11,13 @@ export default function CodeEditor() {
       extensions={[javascript({ jsx: true })]}
       theme={theme === 'light' ? 'light' : 'dark'}
       onChange={(value, viewUpdate) => {
-        console.log(viewUpdate.startState.doc.length);
         if (viewUpdate.state.doc.length > 1000) {
-          viewUpdate.view.dispatch
-          viewUpdate.state.doc.replace(0, viewUpdate.state.doc.length, viewUpdate.startState.doc);
+          const changes = viewUpdate.changes;
+          const antichanges = changes.invert(viewUpdate.state.doc);
+          const transaction = viewUpdate.state.update({
+            changes: antichanges
+          });
+          viewUpdate.view.dispatch(transaction);
         }
       }}
     />

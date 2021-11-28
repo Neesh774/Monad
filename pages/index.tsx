@@ -40,6 +40,7 @@ export default function Home(props) {
                 isMulti
                 placeholder="Tags"
                 onChange={onTagChange}
+                closeMenuOnSelect={false}
                 options={tags.map((tag) => {
                   return {
                     value: tag.id,
