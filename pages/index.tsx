@@ -3,7 +3,7 @@ import Creatable from "react-select/creatable";
 import Select from "react-select";
 import CodeMirror from "@uiw/react-codemirror";
 import { Button } from "react-bootstrap";
-
+import slugify from 'slugify'
 import { useTheme } from "next-themes";
 import { langs } from "../components/langs";
 import React, { useState, useEffect } from "react";
@@ -65,12 +65,20 @@ export default function Home(props) {
       setSubmitLoading(false);
       return;
     }
+    const slug = slugify(title);
+    const { data } = await supabase.from("snippets").select("slug, lang");
+    if(data.find(x => x.slug === slug && x.lang === mode)) {
+      alert("Please select a different title!");
+      setSubmitLoading(false);
+      return;
+    }
     await supabase.from("snippets").insert({
       title: title,
       code: code,
       tag: selectedOption.map((tag) => tag.label),
       votes: 0,
       lang: mode,
+      slug: slug,
     });
     setSubmitLoading(false);
   };
@@ -237,7 +245,6 @@ export default function Home(props) {
                   className="submit"
                   disabled={submitLoading}
                   onClick={submitSnippet}
-                  type="submit"
                 >
                   Post
                 </Button>
