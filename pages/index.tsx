@@ -2,7 +2,7 @@ import { supabase } from "../lib/supabaseClient";
 import Creatable from "react-select/creatable";
 import Select from "react-select";
 import CodeMirror from "@uiw/react-codemirror";
-import { javascript } from "@codemirror/lang-javascript";
+import { Button } from "react-bootstrap";
 
 import { useTheme } from "next-themes";
 import { langs } from "../components/langs";
@@ -11,11 +11,18 @@ import { Extension } from "@codemirror/state";
 import MetaTags from "components/MetaTags";
 
 export default function Home(props) {
+  const maxOptions = 5;
   const tags = props.tags;
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const [mode, setMode] = useState("javascript");
+  const [code, setCode] = useState('console.log("Welcome to Monad!");');
+  const [title, setTitle] = useState("");
+  const [selectedOption, setSelectedOption] = useState([]);
   const [extensions, setExtensions] = useState<Extension[]>();
+  const [submitLoading, setSubmitLoading] = useState(false);
+
   const onTagChange = async (inputValue, actionMeta) => {
+    setSelectedOption(inputValue);
     if (
       actionMeta.action === "create-option" &&
       inputValue[inputValue.length - 1].label !== ""
@@ -24,32 +31,71 @@ export default function Home(props) {
         name: inputValue[inputValue.length - 1].label,
         color: Math.floor(Math.random() * 360),
       });
-      console.log(inputValue);
     }
   };
   function handleLangChange(lang: string) {
-	if (langs[lang]) {
-		setExtensions([langs[lang]()]);
-	  }
-	setMode(lang);
+    if (langs[lang]) {
+      setExtensions([langs[lang]()]);
+    }
+    setMode(lang);
   }
   useEffect(() => {
-    handleLangChange('javascript');
+    handleLangChange("javascript");
   }, []);
+
+  const submitSnippet = async () => {
+    setSubmitLoading(true);
+    if(code.length < 10) {
+      alert("Code is too short!");
+      setSubmitLoading(false);
+      return;
+    }
+    if(title.length < 3) {
+      alert("Title is too short! It must be over 3 characters");
+      setSubmitLoading(false);
+      return;
+    }
+    if(selectedOption.length < 1) {
+      alert("You must select at least one tag!");
+      setSubmitLoading(false);
+      return;
+    }
+    if(code === "console.log(\"Welcome to Monad!\");") {
+      alert("You need an actual snippet!");
+      setSubmitLoading(false);
+      return;
+    }
+    await supabase.from("snippets").insert({
+      title: title,
+      code: code,
+      tag: selectedOption.map((tag) => tag.label),
+      votes: 0,
+      lang: mode,
+    });
+    setSubmitLoading(false);
+  };
+
   return (
     <div className="home-parent">
       <MetaTags />
       <div>
         <div className="createsnippet">
-          <div>
+          <div className="header">
             <h1>
               Create a <span className="blue">Snippet</span>
             </h1>
           </div>
           <form>
-            <input placeholder="Title" className="title" required />
+            <input
+              placeholder="Title"
+              className="title"
+              required
+              onChange={(v) => {
+                setTitle(v.target.value);
+              }}
+            />
             <CodeMirror
-              value="console.log('Hello world!');"
+              value={code}
               height="200px"
               extensions={extensions}
               theme={theme === "light" ? "light" : "dark"}
@@ -61,6 +107,8 @@ export default function Home(props) {
                     changes: antichanges,
                   });
                   viewUpdate.view.dispatch(transaction);
+                } else {
+                  setCode(value);
                 }
               }}
             />
@@ -70,26 +118,46 @@ export default function Home(props) {
                 placeholder="Tags"
                 onChange={onTagChange}
                 closeMenuOnSelect={false}
-                options={tags.map((tag) => {
-                  return {
-                    value: tag.id,
-                    label: tag.name,
-                    color: tag.color,
-                  };
-                })}
+                noOptionsMessage={() => {
+                  return selectedOption.length === maxOptions
+                    ? "You have reached the maximum tag limit"
+                    : "No options available";
+                }}
+                options={
+                  selectedOption.length === maxOptions
+                    ? []
+                    : tags.map((tag) => {
+                        return {
+                          value: tag.id,
+                          label: tag.name,
+                          color: tag.color,
+                        };
+                      })
+                }
                 className="tags"
                 menuPlacement="auto"
                 isValidNewOption={(inputValue) => {
-                  if (inputValue.length > 15 || inputValue.length < 1) {
+                  if (
+                    inputValue.length > 15 ||
+                    inputValue.length < 1 ||
+                    selectedOption.length === maxOptions
+                  ) {
                     return false;
                   }
                   return true;
                 }}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary: "var(--darkBlue)",
+                  },
+                })}
                 styles={{
                   container: (base) => {
                     return {
                       ...base,
-                      minWidth: "200px",
+                      minWidth: "150px",
                     };
                   },
                   multiValue: (base, { data }) => {
@@ -128,9 +196,11 @@ export default function Home(props) {
                 }}
               />
               <Select
-                isSearchable={false}
                 placeholder="Language"
-				onChange={(option) => {handleLangChange(option.value)}}
+                className="lang-select"
+                onChange={(option) => {
+                  handleLangChange(option.value);
+                }}
                 options={Object.keys(langs).map((lang) => ({
                   value: lang,
                   label: lang,
@@ -139,17 +209,38 @@ export default function Home(props) {
                   container: (base) => {
                     return {
                       ...base,
-                      marginLeft: "1.5rem",
                       minWidth: "130px",
-					  height: "40px",
+                      height: "40px",
+                    };
+                  },
+                  control: (base) => {
+                    return {
+                      ...base,
+                      transition: "ease-in-out 0.2s",
+                      borderWidth: "1px",
+                      ":focus": {
+                        borderColor: "var(--darkBlue)",
+                      },
                     };
                   },
                 }}
+                theme={(theme) => ({
+                  ...theme,
+                  colors: {
+                    ...theme.colors,
+                    primary: "var(--darkBlue)",
+                  },
+                })}
               />
               <div>
-                <button className="submit" type="submit">
-                  Submit
-                </button>
+                <Button
+                  className="submit"
+                  disabled={submitLoading}
+                  onClick={submitSnippet}
+                  type="submit"
+                >
+                  Post
+                </Button>
               </div>
             </div>
           </form>

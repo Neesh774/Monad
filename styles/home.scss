@@ -24,15 +24,18 @@
 		align-items: center;
 		display: flex;
 		flex-direction: column;
-		width: 70%;
-		height: 60vh;
+		width: 75%;
+		height: 60%;
 		padding: 2rem;
 		margin: auto;
 
-		h1 {
-			font-size: 2.6rem;
-			font-weight: bold;
-			margin-bottom: 3rem;
+		.header {
+			display: flex;
+			h1 {
+				font-size: 2.6rem;
+				font-weight: bold;
+				margin-bottom: 3rem;
+			}
 		}
 
 		form {
@@ -40,7 +43,7 @@
 			width: 100%;
 		}
 
-		input {
+		.title {
 			border: 1px solid var(--bs-secondary);
 			border-radius: 4px;
 			padding: 0.5rem;
@@ -50,30 +53,35 @@
 			resize: none;
 			transition: ease-in-out 0.2s;
 		}
-		input:focus{
+		.title:focus{
 			border: 1px solid var(--darkBlue);
 		}
 
-		button {
-			margin-left: 1.5rem;
-			border-radius: 4px;
-			width: 100px;
-			padding: 0.5rem;
-			outline: none;
-			border: none;
-			cursor: pointer;
-			background-color: var(--green);
-			color: #fff;
-		}
-		button:hover {
-			background-color: var(--darkGreen);
-		}
 		.third {
 			display: flex;
 			flex-direction: row;
 			justify-content: flex-end;
-			margin-top: 2rem;
+			margin-top: 1rem;
 			align-items: center;
+
+			.submit {
+				margin-left: 1.5rem;
+				border-radius: 4px;
+				width: 100px;
+				padding: 0.5rem;
+				outline: none;
+				border: none;
+				cursor: pointer;
+				background-color: var(--green);
+				color: #fff;
+			}
+			.submit:hover {
+				background-color: var(--darkGreen);
+			}
+
+			.lang-select {
+				margin-left: 1.5rem;
+			}
 		}
 
 	}
@@ -91,8 +99,22 @@
 			h1 {
 				font-size: 2rem;
 			}
-			input {
+			.title {
 				width: 100%;
+			}
+			.third {
+				flex-direction: column;
+				width: initial;
+
+				.submit {
+					margin-left: 0;
+					margin-top: 1rem;
+				}
+
+				.lang-select {
+					margin-left: 0;
+					margin-top: 1rem;
+				}
 			}
 		}
 	}
