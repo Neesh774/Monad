@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import {
@@ -7,34 +8,21 @@ import {
   MenuIcon,
   SearchIcon,
 } from "@heroicons/react/outline";
+import a from "next/link";
 import styles from "styles/navbar.module.scss";
-import {
-  Navbar,
-  Container,
-  Nav,
-  Form,
-  FormControl,
-  Button,
-} from "react-bootstrap";
 
 export default function NavBar() {
   const { theme, setTheme } = useTheme();
-
+  const [active, setActive] = useState(false);
 
   const switchTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
-    <Navbar
-      collapseOnSelect
-      bg={theme}
-      variant={theme === "light" ? "light" : "dark"}
-      expand="md"
-      className={styles.navbar}
-    >
-      <Container>
-        <Navbar.Brand href="/" className="fs-4">
+    <nav className={`navbar ${theme === "dark"? 'is-dark' : 'is-light'}`} role="navigation" aria-label="main navigation">
+      <div className="navbar-brand">
+        <a href="/" className="navbar-item">
           Monad{" "}
           <img
             src="/monad.svg"
@@ -43,36 +31,29 @@ export default function NavBar() {
             width="60"
             height="60"
           />
-        </Navbar.Brand>
-        <div className={styles.mobileFlex}>
-          <button onClick={switchTheme} className={`${styles.button} ${styles.mobiletheme}`}>
+        </a>
+        <button onClick={switchTheme} className={`${styles.button}  ${styles.theme} navbar-item`}>
             {theme === "dark" ? (
               <MoonIcon width="25" height="25" />
             ) : (
               <SunIcon width="25" height="25" />
             )}
           </button>
-          <Navbar.Toggle aria-controls="navbarScroll" />
+        <button onClick={() => {setActive(!active)}} role="button" className={`navbar-burger ${active? 'is-active' : ''}`} aria-label="menu" aria-expanded="false" data-target="monadNavBar">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div className={`navbar-menu ${active? 'is-active' : ''}`} id="monadNavBar">
+        <div className="navbar-start">
+          <a href="/create" className="navbar-item">Create</a>
+          <a href="/discover" className="navbar-item">Discover</a>
+          <input placeholder="Search for a snippet..." />
         </div>
-        <Navbar.Collapse id="navbarScroll" className={styles.collapse}>
-          <Nav
-            className="me-auto my-2 my-lg-0"
-            style={{ maxHeight: "100px" }}
-            navbarScroll
-          >
-            <Nav.Link href="/create">Create</Nav.Link>
-            <Nav.Link href="/discover">Discover</Nav.Link>
-          </Nav>
-          <input placeholder="Search for a snippet..." className={styles.searchbar} />
-        </Navbar.Collapse>
-		<button onClick={switchTheme} className={`${styles.button}  ${styles.theme}`}>
-            {theme === "dark" ? (
-              <MoonIcon width="25" height="25" />
-            ) : (
-              <SunIcon width="25" height="25" />
-            )}
-          </button>
-      </Container>
-    </Navbar>
+        <div className="navbar-end">
+        </div>
+      </div>
+    </nav>
   );
 }

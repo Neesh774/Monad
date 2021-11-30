@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { Image } from 'react-bootstrap';
 
 export default function Lost() {
 	return (
@@ -12,7 +11,7 @@ export default function Lost() {
                         <a className="home-link">Here&apos;s the way home</a>
                     </Link>
                 </h2>
-                <Image fluid src={'/404.svg'} alt="404" />
+                <img src={'/404.svg'} alt="404" />
             </div>
         </div>
 	);

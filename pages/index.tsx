@@ -2,7 +2,6 @@ import { supabase } from "../lib/supabaseClient";
 import Creatable from "react-select/creatable";
 import Select from "react-select";
 import CodeMirror from "@uiw/react-codemirror";
-import { Button } from "react-bootstrap";
 import slugify from 'slugify'
 import { useTheme } from "next-themes";
 import { langs } from "../components/langs";
@@ -241,13 +240,12 @@ export default function Home(props) {
                 })}
               />
               <div>
-                <Button
-                  className="submit"
-                  disabled={submitLoading}
+                <button
+                  className={`button ${submitLoading? 'is-loading' : ''}`}
                   onClick={submitSnippet}
                 >
                   Post
-                </Button>
+                </button>
               </div>
             </div>
           </form>
