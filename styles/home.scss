@@ -2,7 +2,6 @@
 	background-color: var(--foreground);
 	height: 100%;
 	padding: 4rem;
-	width: 100%;
 	flex: 1 0 auto;
 	display: flex;
 	flex-direction: column;
@@ -43,9 +42,10 @@
 			width: 100%;
 		}
 
-		.title {
+		.snippet-title {
 			border: 1px solid var(--bs-secondary);
 			border-radius: 4px;
+			font-size: 1.6rem;
 			padding: 0.5rem;
 			width: 300px;
 			margin-bottom: 1rem;
@@ -53,7 +53,7 @@
 			resize: none;
 			transition: ease-in-out 0.2s;
 		}
-		.title:focus{
+		.snippet-title:focus{
 			border: 1px solid var(--darkBlue);
 		}
 
@@ -64,7 +64,7 @@
 			margin-top: 1rem;
 			align-items: center;
 
-			.submit {
+			.submit-snippet {
 				margin-left: 1.5rem;
 				border-radius: 4px;
 				width: 100px;
@@ -75,7 +75,7 @@
 				background-color: var(--green);
 				color: #fff;
 			}
-			.submit:hover {
+			.submit-snippet:hover {
 				background-color: var(--darkGreen);
 			}
 
@@ -96,17 +96,20 @@
 			border-radius: 0;
 			height: 100vh;
 			justify-content: initial;
-			h1 {
-				font-size: 2rem;
+			padding: 0.4rem;
+
+			.snippet-title {
+				width: 90%;
+				font-size: 1.1rem;
 			}
-			.title {
-				width: 100%;
+			.snippet-code {
+				width: 90%;
 			}
 			.third {
 				flex-direction: column;
 				width: initial;
 
-				.submit {
+				.submit-snippet {
 					margin-left: 0;
 					margin-top: 1rem;
 				}

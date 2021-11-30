@@ -2,13 +2,13 @@ import { supabase } from "../lib/supabaseClient";
 import Creatable from "react-select/creatable";
 import Select from "react-select";
 import CodeMirror from "@uiw/react-codemirror";
-import slugify from 'slugify'
+import slugify from "slugify";
 import { useTheme } from "next-themes";
 import { langs } from "../components/langs";
 import React, { useState, useEffect } from "react";
 import { Extension } from "@codemirror/state";
 import MetaTags from "components/MetaTags";
-
+import { toaster, Button } from "evergreen-ui";
 export default function Home(props) {
   const maxOptions = 5;
   const tags = props.tags;
@@ -44,29 +44,30 @@ export default function Home(props) {
 
   const submitSnippet = async () => {
     setSubmitLoading(true);
-    if(code.length < 10) {
+    if (code.length < 10) {
       alert("Code is too short!");
       setSubmitLoading(false);
       return;
-    }
-    if(title.length < 3) {
+    } else if (title.length < 3) {
       alert("Title is too short! It must be over 3 characters");
       setSubmitLoading(false);
       return;
-    }
-    if(selectedOption.length < 1) {
+    } else if (title.length > 30) {
+      alert("Title is too long! It must be under 30 characters");
+      setSubmitLoading(false);
+      return;
+    } else if (selectedOption.length < 1) {
       alert("You must select at least one tag!");
       setSubmitLoading(false);
       return;
-    }
-    if(code === "console.log(\"Welcome to Monad!\");") {
+    } else if (code === 'console.log("Welcome to Monad!");') {
       alert("You need an actual snippet!");
       setSubmitLoading(false);
       return;
     }
     const slug = slugify(title);
     const { data } = await supabase.from("snippets").select("slug, lang");
-    if(data.find(x => x.slug === slug && x.lang === mode)) {
+    if (data.find((x) => x.slug === slug && x.lang === mode)) {
       alert("Please select a different title!");
       setSubmitLoading(false);
       return;
@@ -80,6 +81,7 @@ export default function Home(props) {
       slug: slug,
     });
     setSubmitLoading(false);
+    toaster.success("Snippet submitted!");
   };
 
   return (
@@ -95,7 +97,7 @@ export default function Home(props) {
           <form>
             <input
               placeholder="Title"
-              className="title"
+              className="snippet-title"
               required
               onChange={(v) => {
                 setTitle(v.target.value);
@@ -104,6 +106,7 @@ export default function Home(props) {
             <CodeMirror
               value={code}
               height="200px"
+              className="snippet-code"
               extensions={extensions}
               theme={theme === "light" ? "light" : "dark"}
               onChange={(value, viewUpdate) => {
@@ -239,14 +242,9 @@ export default function Home(props) {
                   },
                 })}
               />
-              <div>
-                <button
-                  className={`button ${submitLoading? 'is-loading' : ''}`}
-                  onClick={submitSnippet}
-                >
-                  Post
-                </button>
-              </div>
+              <Button className="submit-snippet" onClick={submitSnippet} isLoading={submitLoading} height='40px'>
+                {submitLoading? "Posting..." : "Post"}
+              </Button>
             </div>
           </form>
         </div>

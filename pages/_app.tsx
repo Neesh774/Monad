@@ -5,8 +5,7 @@ import 'styles/main.scss';
 import 'styles/home.scss';
 import 'styles/lost.scss';
 import 'styles/legal.scss';
-import 'bulma/css/bulma.min.css';
-
+import { ToastContainer } from 'react-toast';
 import type { AppProps } from 'next/app';
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -16,6 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
 			<main>
 				<Component {...pageProps} />
 			</main>
+			<ToastContainer />
 		</ThemeProvider>
 	);
 }

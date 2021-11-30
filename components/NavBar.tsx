@@ -1,59 +1,77 @@
-/* eslint-disable @next/next/no-html-link-for-pages */
+import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useState } from "react";
-import {
-  MoonIcon,
-  SunIcon,
-  XIcon,
-  MenuIcon,
-  SearchIcon,
-} from "@heroicons/react/outline";
-import a from "next/link";
+import { Menu, Popover, Pane, IconButton, TextInput } from "evergreen-ui";
+import { MoonIcon, SunIcon, XIcon, MenuIcon } from "@heroicons/react/outline";
 import styles from "styles/navbar.module.scss";
+import classes from "lib/classes";
+import { useState } from "react";
 
-export default function NavBar() {
+const navigation = [
+  { name: "Create", href: "/" },
+  { name: "Discover", href: "/discover" },
+];
+
+export default function Navbar() {
   const { theme, setTheme } = useTheme();
-  const [active, setActive] = useState(false);
-
   const switchTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
-    <nav className={`navbar ${theme === "dark"? 'is-dark' : 'is-light'}`} role="navigation" aria-label="main navigation">
-      <div className="navbar-brand">
-        <a href="/" className="navbar-item">
-          Monad{" "}
-          <img
-            src="/monad.svg"
-            className="logo"
-            alt="Monad"
-            width="60"
-            height="60"
-          />
-        </a>
-        <button onClick={switchTheme} className={`${styles.button}  ${styles.theme} navbar-item`}>
-            {theme === "dark" ? (
-              <MoonIcon width="25" height="25" />
-            ) : (
-              <SunIcon width="25" height="25" />
-            )}
-          </button>
-        <button onClick={() => {setActive(!active)}} role="button" className={`navbar-burger ${active? 'is-active' : ''}`} aria-label="menu" aria-expanded="false" data-target="monadNavBar">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </button>
-      </div>
-      <div className={`navbar-menu ${active? 'is-active' : ''}`} id="monadNavBar">
-        <div className="navbar-start">
-          <a href="/create" className="navbar-item">Create</a>
-          <a href="/discover" className="navbar-item">Discover</a>
-          <input placeholder="Search for a snippet..." />
-        </div>
-        <div className="navbar-end">
-        </div>
-      </div>
-    </nav>
+    <header className={styles.header}>
+    	<nav>
+			<Link href="/" passHref>
+				<a className={classes("logo", styles.logo, styles.a)}>
+					<span>Monad</span>
+					<img src="/monad.svg" alt="Monad Logo" />
+				</a>
+			</Link>
+			<ul className={styles.links}>
+				{navigation.map(({ name, href }) => (
+					<li key={name}>
+						<Link href={href}>{name}</Link>
+					</li>
+				))}
+				<TextInput placeholder="Search for a snippet..." />
+			</ul>
+			<div className={styles.buttons}>
+				<IconButton
+					className={styles.button}
+					onClick={switchTheme}
+					appearance="minimal"
+				>
+					{theme === "dark" ? <SunIcon /> : <MoonIcon />}
+				</IconButton>
+				<Popover
+					minWidth="30%"
+					content={
+					<Pane
+						paddingX={20}
+						paddingY={10}
+						display="flex"
+						alignItems="center"
+						justifyContent="center"
+						flexDirection="column"
+					>
+						<Menu>
+						{navigation.map(({ name, href }) => (
+							<Menu.Item key={name}>{name}</Menu.Item>
+						))}
+						<Menu.Divider />
+						<TextInput
+							marginTop={10}
+							placeholder="Search for a snippet..."
+						/>
+						</Menu>
+					</Pane>
+					}
+				>
+					<button className={classes(styles.button, styles.menu_button)}>
+					<MenuIcon />
+					</button>
+				</Popover>
+			</div>
+    	</nav>
+    </header>
   );
 }
