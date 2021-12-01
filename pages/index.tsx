@@ -19,7 +19,6 @@ export default function Home(props) {
   const [selectedOption, setSelectedOption] = useState([]);
   const [extensions, setExtensions] = useState<Extension[]>();
   const [submitLoading, setSubmitLoading] = useState(false);
-
   const onTagChange = async (inputValue, actionMeta) => {
     setSelectedOption(inputValue);
     if (
@@ -41,6 +40,7 @@ export default function Home(props) {
   useEffect(() => {
     handleLangChange("javascript");
   }, []);
+  if(!tags) { return null; }
 
   const submitSnippet = async () => {
     setSubmitLoading(true);
@@ -83,8 +83,7 @@ export default function Home(props) {
     setSubmitLoading(false);
     toaster.success("Snippet submitted!");
   };
-
-  return (
+  return ( 
     <div className="home-parent">
       <MetaTags />
       <div>
@@ -161,6 +160,8 @@ export default function Home(props) {
                   colors: {
                     ...theme.colors,
                     primary: "var(--darkBlue)",
+                    neutral0: "var(--foreground)",
+                    neutral70: "var(--text-primary)"
                   },
                 })}
                 styles={{
@@ -169,6 +170,12 @@ export default function Home(props) {
                       ...base,
                       minWidth: "150px",
                     };
+                  },
+                  control: (base) => {
+                    return {
+                      ...base,
+                      backgroundColor: theme === 'light' ? 'var(--background)' : 'var(--foreground)',
+                    }
                   },
                   multiValue: (base, { data }) => {
                     return {
@@ -180,7 +187,9 @@ export default function Home(props) {
                     return {
                       ...base,
                       backgroundColor: `hsl(${data.color}, 100%, 81%)`,
-                      color: `hsl(${data.color}, 100%, 30%)`,
+                      color: `hsl(${data.color}, 100%, 20%)`,
+                      borderTopRightRadius: "0",
+                      borderBottomRightRadius: "0",
                     };
                   },
                   multiValueRemove: (base, { data }) => {
@@ -188,8 +197,10 @@ export default function Home(props) {
                       ...base,
                       backgroundColor: `hsl(${data.color}, 100%, 81%)`,
                       color: `hsl(${data.color}, 100%, 30%)`,
+                      borderTopLeftRadius: "0",
+                      borderBottomLeftRadius: "0",
                       ":hover": {
-                        backgroundColor: `hsl(${data.color}, 100%, 40%)`,
+                        backgroundColor: `hsl(${data.color}, 100%, ${theme === 'dark' ? '60' : '40'}%)`,
                         color: "white",
                       },
                     };
@@ -197,9 +208,9 @@ export default function Home(props) {
                   option: (base, { data }) => {
                     return {
                       ...base,
-                      color: `hsl(${data.color}, 100%, 30%)`,
+                      color: `hsl(${data.color}, 100%, ${theme === 'dark' ? '50' : '30'}%)`,
                       ":hover": {
-                        backgroundColor: `hsl(${data.color}, 50%, 80%)`,
+                        backgroundColor: `hsla(${data.color}, 50%, 80%, ${theme === 'dark' ? '0.35' : '0.6'})`,
                       },
                     };
                   },
@@ -226,12 +237,8 @@ export default function Home(props) {
                   control: (base) => {
                     return {
                       ...base,
-                      transition: "ease-in-out 0.2s",
-                      borderWidth: "1px",
-                      ":focus": {
-                        borderColor: "var(--darkBlue)",
-                      },
-                    };
+                      backgroundColor: theme === 'light' ? 'var(--background)' : 'var(--foreground)',
+                    }
                   },
                 }}
                 theme={(theme) => ({
@@ -239,6 +246,10 @@ export default function Home(props) {
                   colors: {
                     ...theme.colors,
                     primary: "var(--darkBlue)",
+                    neutral0: "var(--foreground)",
+                    primary25: "var(--hover)",
+                    neutral70: "var(--text-primary)",
+                    neutral80: "var(--text-primary)"
                   },
                 })}
               />

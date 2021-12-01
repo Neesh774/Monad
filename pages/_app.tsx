@@ -5,6 +5,7 @@ import 'styles/main.scss';
 import 'styles/home.scss';
 import 'styles/lost.scss';
 import 'styles/legal.scss';
+import 'styles/navbar.scss';
 import { ToastContainer } from 'react-toast';
 import type { AppProps } from 'next/app';
 
