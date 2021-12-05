@@ -30,7 +30,6 @@ interface lang {
   extension: any;
   file: string;
   name: string;
-  color?: number;
 }
 
 export const langs: lang[] = [
@@ -38,7 +37,6 @@ export const langs: lang[] = [
     extension: javascript,
     file: "js",
     name: "Javascript",
-    color: 54,
   },
   {
     extension: () => javascript({ jsx: true }),
@@ -50,37 +48,31 @@ export const langs: lang[] = [
     extension: () => javascript({ typescript: true }),
     file: "ts",
     name: "Typescript",
-    color: 54,
   },
   {
     extension: () => javascript({ typescript: true, jsx: true }),
     file: "tsx",
     name: "React Typescript",
-    color: 54,
   },
   {
     extension: json,
     file: "json",
     name: "JSON",
-    color: 256,
   },
   {
     extension: html,
     file: "html",
     name: "HTML",
-    color: 12,
   },
   {
     extension: css,
     file: "css",
     name: "CSS",
-    color: 218,
   },
   {
     extension: python,
     file: "py",
     name: "Python",
-    color: 206,
   },
   {
     extension: markdown,
@@ -91,49 +83,41 @@ export const langs: lang[] = [
     extension: xml,
     file: "xml",
     name: "XML",
-    color: 21,
   },
   {
     extension: sql,
     file: "sql",
     name: "SQL",
-    color: 70,
   },
   {
     extension: java,
     file: "java",
     name: "Java",
-    color: 359,
   },
   {
     extension: rust,
     file: "rs",
     name: "Rust",
-    color: 9,
   },
   {
     extension: cpp,
     file: "cpp",
     name: "C++",
-    color: 211,
   },
   {
     extension: php,
     file: "php",
     name: "PHP",
-    color: 236,
   },
   {
     extension: StreamLanguage.define(go),
     file: "go",
     name: "Go",
-    color: 183
   },
   {
     extension: StreamLanguage.define(ruby),
     file: "rb",
     name: "Ruby",
-    color: 7
   },
   {
     extension: StreamLanguage.define(shell),
@@ -144,19 +128,16 @@ export const langs: lang[] = [
     extension: StreamLanguage.define(lua),
     file: "lua",
     name: "Lua",
-    color: 240,
   },
   {
     extension: StreamLanguage.define(swift),
     file: "swift",
     name: "Swift",
-    color: 13
   },
   {
     extension: StreamLanguage.define(tcl),
     file: "tcl",
     name: "Tcl",
-    color: 220
   },
   {
     extension: StreamLanguage.define(yaml),
@@ -167,7 +148,6 @@ export const langs: lang[] = [
     extension: StreamLanguage.define(vb),
     file: "vb",
     name: "Visual Basic",
-    color: 207
   },
   {
     extension: StreamLanguage.define(stylus),
@@ -178,36 +158,206 @@ export const langs: lang[] = [
     extension: StreamLanguage.define(erlang),
     file: "erl",
     name: "Erlang",
-    color: 343
   },
   {
     extension: StreamLanguage.define(nginx),
     file: "nginx",
     name: "Nginx",
-    color: 143
   },
   {
     extension: StreamLanguage.define(perl),
     file: "pl",
     name: "Perl",
-    color: 202
   },
   {
     extension: StreamLanguage.define(pascal),
     file: "pas",
     name: "Pascal",
-    color: 215
   },
   {
     extension: StreamLanguage.define(liveScript),
     file: "ls",
     name: "LiveScript",
-    color: 202
   },
   {
     extension: StreamLanguage.define(scheme),
     file: "scm",
     name: "Scheme",
-    color: 240
   },
+];
+
+interface tag {
+  name: string|string[];
+  color: number;
+}
+
+export const tags: tag[] = [
+  {
+    name: ["React", "ReactJS", "React-JS"],
+    color: 189,
+  },
+  {
+    name: ["Redux", "ReduxJS", "Redux-JS"],
+    color: 263,
+  },
+  {
+    name: ["Radix", "RadixUI", "Radix-UI"],
+    color: 286,
+  },
+  {
+    name: ["Node", "NodeJS", "Node-JS"],
+    color: 87,
+  },
+  {
+    name: ["Mongo", "MongoDB", "Mongo-DB"],
+    color: 121,
+  },
+  {
+    name: ["Mongoose", "MongooseJS", "Mongoose-JS"],
+    color: 0,
+  },
+  {
+    name: ["GraphQL", "Graph-QL"],
+    color: 320,
+  },
+  {
+    name: "Apollo",
+    color: 249,
+  },
+  {
+    name: ["Gatsby", "GatsbyJS", "Gatsby-JS"],
+    color: 270,
+  },
+  {
+    name: ["React-Native", "React Native"],
+    color: 193,
+  },
+  {
+    name: "Webpack",
+    color: 201,
+  },
+  {
+    name: "Babel",
+    color: 49,
+  },
+  {
+    name: "NPM",
+    color: 5,
+  },
+  {
+    name: "Yarn",
+    color: 199,
+  },
+  {
+    name: "Git",
+    color: 9,
+  },
+  {
+    name: ["javascript", "js", "jsx"],
+    color: 54,
+  },
+  {
+    name: ["typescript", "ts", "tsx"],
+    color: 211,
+  },
+  {
+    name: "HTML",
+    color: 12,
+  },
+  {
+    name: "CSS",
+    color: 218,
+  },
+  {
+    name: ["Python", "Python3", "Python3.6", "Python3.7", "Python3.8", "PY"],
+    color: 206,
+  },
+  {
+    name: ["Markdown", "MD"],
+    color: 21,
+  },
+  {
+    name: "XML",
+    color: 21,
+  },
+  {
+    name: "SQL",
+    color: 70,
+  },
+  {
+    name: "Java",
+    color: 359,
+  },
+  {
+    name: "Rust",
+    color: 9,
+  },
+  {
+    name: ["C++", "cpp"],
+    color: 211,
+  },
+  {
+    name: "PHP",
+    color: 236,
+  },
+  {
+    name: "Go",
+    color: 183,
+  },
+  {
+    name: "Ruby",
+    color: 7,
+  },
+  {
+    name: "Shell",
+    color: 14,
+  },
+  {
+    name: "Lua",
+    color: 240,
+  },
+  {
+    name: "Swift",
+    color: 13,
+  },
+  {
+    name: "Tcl",
+    color: 220,
+  },
+  {
+    name: "YAML",
+    color: 320,
+  },
+  {
+    name: ["Visual Basic", "visual-basic", "vb"],
+    color: 207,
+  },
+  {
+    name: "Stylus",
+    color: 207,
+  },
+  {
+    name: "Erlang",
+    color: 343,
+  },
+  {
+    name: "Nginx",
+    color: 143,
+  },
+  {
+    name: "Perl",
+    color: 202,
+  },
+  {
+    name: "Pascal",
+    color: 215,
+  },
+  {
+    name: "LiveScript",
+    color: 202,
+  },
+  {
+    name: ["Disc", "Discord", "DiscordJS", "Discord-JS", "Discord-PY", "Eris", "DJS", "DPY"],
+    color: 235
+  }
 ];

@@ -4,7 +4,7 @@ import Select from "react-select";
 import CodeMirror from "@uiw/react-codemirror";
 import slugify from "slugify";
 import { useTheme } from "next-themes";
-import { langs } from "../components/langs";
+import { langs, tags } from "../components/langs";
 import React, { useState, useEffect } from "react";
 import { Extension } from "@codemirror/state";
 import MetaTags from "components/MetaTags";
@@ -30,9 +30,8 @@ function findDuplicates(arr: string[]) {
   return new Set(arr).size !== arr.length;
 }
 
-export default function Home(props) {
+export default function Home() {
   const { theme } = useTheme();
-  const tags = props.tags;
   const [mode, setMode] = useState<string>();
   const [selectedLang, setSelectedLang] = useState<lang>();
   const [code, setCode] = useState<string>('console.log("Welcome to Monad!");');
@@ -149,11 +148,14 @@ export default function Home(props) {
                     placeholder: "Add tags",
                   }}
                   tagProps={(value) => {
-                    const langObj = langs.find(
-                      (l) =>
-                        l.name.toLowerCase() === value.toLowerCase() ||
-                        l.file.toLowerCase() === value.toLowerCase()
-                    );
+                    const langObj = tags.find((t) => {
+                      if (typeof t.name === "string") {
+                        return t.name.toLowerCase() === value.toLowerCase();
+                      }
+                      return t.name.find((n) => {
+                        return n.toLowerCase() === value.toLowerCase();
+                      });
+                    });
                     return {
                       color: langObj
                         ? `hsl(${langObj.color}, 100%, 81%)`
@@ -164,25 +166,22 @@ export default function Home(props) {
                   onChange={(values) => {
                     if (values.length > maxOptions) {
                       toaster.warning("You can only select up to 5 tags!", {
-                        id: "tag-error"
+                        id: "tag-error",
                       });
                       return;
-                    }
-                    else if (values.some((x) => x.length > 20)) {
+                    } else if (values.some((x) => x.length > 20)) {
                       toaster.warning("Tags must be under 20 characters!", {
-                        id: "tag-error"
+                        id: "tag-error",
                       });
                       return;
-                    }
-                    else if (values.some((x) => x.length < 2)) {
+                    } else if (values.some((x) => x.length < 2)) {
                       toaster.warning("Tags must be over 1 character!", {
-                        id: "tag-error"
+                        id: "tag-error",
                       });
                       return;
-                    }
-                    else if (findDuplicates(values)) {
+                    } else if (findDuplicates(values)) {
                       toaster.warning("Tags must be unique!", {
-                        id: "tag-error"
+                        id: "tag-error",
                       });
                       return;
                     }
@@ -205,7 +204,9 @@ export default function Home(props) {
                   filterPlaceholder="Search..."
                 >
                   <Button type="button" paddingX={30} iconBefore={CodeIcon}>
-                    {selectedLang ? `${selectedLang.name}(.${selectedLang.file})` : "Select Language"}
+                    {selectedLang
+                      ? `${selectedLang.name}(.${selectedLang.file})`
+                      : "Select Language"}
                   </Button>
                 </SelectMenu>
               </div>
@@ -226,11 +227,4 @@ export default function Home(props) {
       </div>
     </div>
   );
-}
-
-export async function getStaticProps(context) {
-  const tags = await (await supabase.from("tags").select("*")).data;
-  return {
-    props: { tags },
-  };
 }
