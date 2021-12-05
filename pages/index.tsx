@@ -8,82 +8,102 @@ import { langs } from "../components/langs";
 import React, { useState, useEffect } from "react";
 import { Extension } from "@codemirror/state";
 import MetaTags from "components/MetaTags";
-import { toaster, Button } from "evergreen-ui";
+import { toaster, Button, TagInput, SelectMenu, CodeIcon } from "evergreen-ui";
+
+const maxOptions = 5;
+interface snippet {
+  title: string;
+  code: string;
+  tags: string[];
+  votes: 0;
+  lang: string;
+  slug: string;
+}
+interface lang {
+  extension: any;
+  file: string;
+  name: string;
+  color?: number;
+}
+
+function findDuplicates(arr: string[]) {
+  return new Set(arr).size !== arr.length;
+}
+
 export default function Home(props) {
-  const maxOptions = 5;
-  const tags = props.tags;
   const { theme } = useTheme();
-  const [mode, setMode] = useState("javascript");
-  const [code, setCode] = useState('console.log("Welcome to Monad!");');
-  const [title, setTitle] = useState("");
-  const [selectedOption, setSelectedOption] = useState([]);
+  const tags = props.tags;
+  const [mode, setMode] = useState<string>();
+  const [selectedLang, setSelectedLang] = useState<lang>();
+  const [code, setCode] = useState<string>('console.log("Welcome to Monad!");');
+  const [title, setTitle] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string[]>([]);
   const [extensions, setExtensions] = useState<Extension[]>();
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const onTagChange = async (inputValue, actionMeta) => {
-    setSelectedOption(inputValue);
-    if (
-      actionMeta.action === "create-option" &&
-      inputValue[inputValue.length - 1].label !== ""
-    ) {
-      await supabase.from("tags").insert({
-        name: inputValue[inputValue.length - 1].label,
-        color: Math.floor(Math.random() * 360),
-      });
-    }
-  };
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+
   function handleLangChange(lang: string) {
-    if (langs[lang]) {
-      setExtensions([langs[lang]()]);
+    if (langs.find((l) => l.name === lang)) {
+      setExtensions([
+        typeof langs.find((l) => l.name === lang).extension === "function"
+          ? langs.find((l) => l.name === lang).extension()
+          : langs.find((l) => l.name === lang).extension,
+      ]);
     }
     setMode(lang);
+    setSelectedLang(langs.find((l) => l.name === lang));
   }
   useEffect(() => {
-    handleLangChange("javascript");
+    setExtensions(langs.find((l) => l.name === "Javascript").extension());
+    setMode("javascript");
   }, []);
-  if(!tags) { return null; }
 
   const submitSnippet = async () => {
     setSubmitLoading(true);
+    // checks
     if (code.length < 10) {
-      alert("Code is too short!");
+      toaster.danger("Code is too short!");
       setSubmitLoading(false);
       return;
     } else if (title.length < 3) {
-      alert("Title is too short! It must be over 3 characters");
+      toaster.danger("Title is too short!");
       setSubmitLoading(false);
       return;
     } else if (title.length > 30) {
-      alert("Title is too long! It must be under 30 characters");
+      toaster.danger("Title is too long!");
       setSubmitLoading(false);
       return;
     } else if (selectedOption.length < 1) {
-      alert("You must select at least one tag!");
+      toaster.danger("Please select at least one tag!");
       setSubmitLoading(false);
       return;
     } else if (code === 'console.log("Welcome to Monad!");') {
-      alert("You need an actual snippet!");
+      toaster.danger("Please write some code!");
       setSubmitLoading(false);
       return;
     }
+    // creating the slug for the future snippet page, if there's an already existing snippet with that slug, it'll request a new title
     const slug = slugify(title);
-    const { data } = await supabase.from("snippets").select("slug, lang");
-    if (data.find((x) => x.slug === slug && x.lang === mode)) {
+    const { data } = await supabase.from("snippets").select("slug");
+    if (data.find((x) => x.slug === slug)) {
       alert("Please select a different title!");
       setSubmitLoading(false);
       return;
     }
-    await supabase.from("snippets").insert({
-      title: title,
-      code: code,
-      tag: selectedOption.map((tag) => tag.label),
+
+    // create new snippet and upload to database
+    const newSnippet: snippet = {
+      title,
+      code,
+      tags: selectedOption,
       votes: 0,
       lang: mode,
-      slug: slug,
-    });
+      slug,
+    };
+    await supabase.from("snippets").insert(newSnippet);
     setSubmitLoading(false);
     toaster.success("Snippet submitted!");
   };
-  return ( 
+  return (
     <div className="home-parent">
       <MetaTags />
       <div>
@@ -109,6 +129,7 @@ export default function Home(props) {
               extensions={extensions}
               theme={theme === "light" ? "light" : "dark"}
               onChange={(value, viewUpdate) => {
+                // if the input is over 1000 characters, revert the changes without modifying the content
                 if (viewUpdate.state.doc.length > 1000) {
                   const changes = viewUpdate.changes;
                   const antichanges = changes.invert(viewUpdate.state.doc);
@@ -122,139 +143,82 @@ export default function Home(props) {
               }}
             />
             <div className="third">
-              <Creatable
-                isMulti
-                placeholder="Tags"
-                onChange={onTagChange}
-                closeMenuOnSelect={false}
-                noOptionsMessage={() => {
-                  return selectedOption.length === maxOptions
-                    ? "You have reached the maximum tag limit"
-                    : "No options available";
-                }}
-                options={
-                  selectedOption.length === maxOptions
-                    ? []
-                    : tags.map((tag) => {
-                        return {
-                          value: tag.id,
-                          label: tag.name,
-                          color: tag.color,
-                        };
-                      })
-                }
-                className="tags"
-                menuPlacement="auto"
-                isValidNewOption={(inputValue) => {
-                  if (
-                    inputValue.length > 15 ||
-                    inputValue.length < 1 ||
-                    selectedOption.length === maxOptions
-                  ) {
-                    return false;
-                  }
-                  return true;
-                }}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary: "var(--darkBlue)",
-                    neutral0: "var(--foreground)",
-                    neutral70: "var(--text-primary)"
-                  },
-                })}
-                styles={{
-                  container: (base) => {
+              <div className="selects">
+                <TagInput
+                  inputProps={{
+                    placeholder: "Add tags",
+                  }}
+                  tagProps={(value) => {
+                    const langObj = langs.find(
+                      (l) =>
+                        l.name.toLowerCase() === value.toLowerCase() ||
+                        l.file.toLowerCase() === value.toLowerCase()
+                    );
                     return {
-                      ...base,
-                      minWidth: "150px",
+                      color: langObj
+                        ? `hsl(${langObj.color}, 100%, 81%)`
+                        : "neutral",
                     };
-                  },
-                  control: (base) => {
-                    return {
-                      ...base,
-                      backgroundColor: theme === 'light' ? 'var(--background)' : 'var(--foreground)',
+                  }}
+                  values={selectedOption}
+                  onChange={(values) => {
+                    if (values.length > maxOptions) {
+                      toaster.warning("You can only select up to 5 tags!", {
+                        id: "tag-error"
+                      });
+                      return;
                     }
-                  },
-                  multiValue: (base, { data }) => {
-                    return {
-                      ...base,
-                      backgroundColor: `hsl(${data.color}, 100%, 50%)`,
-                    };
-                  },
-                  multiValueLabel: (base, { data }) => {
-                    return {
-                      ...base,
-                      backgroundColor: `hsl(${data.color}, 100%, 81%)`,
-                      color: `hsl(${data.color}, 100%, 20%)`,
-                      borderTopRightRadius: "0",
-                      borderBottomRightRadius: "0",
-                    };
-                  },
-                  multiValueRemove: (base, { data }) => {
-                    return {
-                      ...base,
-                      backgroundColor: `hsl(${data.color}, 100%, 81%)`,
-                      color: `hsl(${data.color}, 100%, 30%)`,
-                      borderTopLeftRadius: "0",
-                      borderBottomLeftRadius: "0",
-                      ":hover": {
-                        backgroundColor: `hsl(${data.color}, 100%, ${theme === 'dark' ? '60' : '40'}%)`,
-                        color: "white",
-                      },
-                    };
-                  },
-                  option: (base, { data }) => {
-                    return {
-                      ...base,
-                      color: `hsl(${data.color}, 100%, ${theme === 'dark' ? '50' : '30'}%)`,
-                      ":hover": {
-                        backgroundColor: `hsla(${data.color}, 50%, 80%, ${theme === 'dark' ? '0.35' : '0.6'})`,
-                      },
-                    };
-                  },
-                }}
-              />
-              <Select
-                placeholder="Language"
-                className="lang-select"
-                onChange={(option) => {
-                  handleLangChange(option.value);
-                }}
-                options={Object.keys(langs).map((lang) => ({
-                  value: lang,
-                  label: lang,
-                }))}
-                styles={{
-                  container: (base) => {
-                    return {
-                      ...base,
-                      minWidth: "130px",
-                      height: "40px",
-                    };
-                  },
-                  control: (base) => {
-                    return {
-                      ...base,
-                      backgroundColor: theme === 'light' ? 'var(--background)' : 'var(--foreground)',
+                    else if (values.some((x) => x.length > 20)) {
+                      toaster.warning("Tags must be under 20 characters!", {
+                        id: "tag-error"
+                      });
+                      return;
                     }
-                  },
-                }}
-                theme={(theme) => ({
-                  ...theme,
-                  colors: {
-                    ...theme.colors,
-                    primary: "var(--darkBlue)",
-                    neutral0: "var(--foreground)",
-                    primary25: "var(--hover)",
-                    neutral70: "var(--text-primary)",
-                    neutral80: "var(--text-primary)"
-                  },
-                })}
-              />
-              <Button className="submit-snippet" onClick={submitSnippet} isLoading={submitLoading} height='40px'>
-                {submitLoading? "Posting..." : "Post"}
+                    else if (values.some((x) => x.length < 2)) {
+                      toaster.warning("Tags must be over 1 character!", {
+                        id: "tag-error"
+                      });
+                      return;
+                    }
+                    else if (findDuplicates(values)) {
+                      toaster.warning("Tags must be unique!", {
+                        id: "tag-error"
+                      });
+                      return;
+                    }
+                    setSelectedOption(values);
+                  }}
+                  width="100%"
+                />
+                <SelectMenu
+                  options={langs.map((l) => {
+                    return {
+                      label: l.name,
+                      value: l.name,
+                    };
+                  })}
+                  selected={selectedLang ? selectedLang.name : ""}
+                  onSelect={(option) => {
+                    handleLangChange(option.label);
+                  }}
+                  hasTitle={false}
+                  filterPlaceholder="Search..."
+                >
+                  <Button type="button" paddingX={30} iconBefore={CodeIcon}>
+                    {selectedLang ? `${selectedLang.name}(.${selectedLang.file})` : "Select Language"}
+                  </Button>
+                </SelectMenu>
+              </div>
+              <Button
+                className="submit-snippet"
+                onClick={submitSnippet}
+                isLoading={submitLoading}
+                paddingX={40}
+                fontSize={15}
+                type="button"
+                intent="success"
+              >
+                {submitLoading ? "Posting..." : "Post"}
               </Button>
             </div>
           </form>

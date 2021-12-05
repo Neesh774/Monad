@@ -4,7 +4,9 @@
   background: var(--background);
   box-shadow: 2px 1px 6px #000;
   z-index: 10;
+}
 
+.nav-header, .nav-menu {
   nav {
     display: flex;
     justify-content: space-between;
@@ -14,7 +16,8 @@
   }
 
   .button {
-    background: var(--background);
+    outline: none;
+    border: none;
     div svg {
       width: 1.2rem;
       height: 1.2rem;
@@ -73,7 +76,8 @@
     font-size: 1.1rem;
     border-color: var(--text-primary);
     color: var(--text-secondary);
-    background-color: var(--foreground);
+    background-color: var(--background);
+
 
     svg {
       width: 1.2rem;
@@ -81,16 +85,28 @@
       fill: var(--text-primary);
     }
   }
+  .searchbar.dark {
+    background-color: var(--hover);
+  }
 
   .searchbar::placeholder {
     color: var(--text-primary);
+  }
+  .searchbar.dark::placeholder {
+    color: initial;
   }
   .active {
     color: var(--text-primary);
     background: var(--hover);
   }
+}
 
-  @media screen and (max-width: 1023px) {
+@media screen and (max-width: 1023px) {
+  .nav-header {
+    box-shadow: 1px 1px 5px #000;
+  }
+
+  .nav-header {
     .logo span,
     .links {
       display: none;
@@ -102,6 +118,14 @@
 
     .mobile {
       display: flex;
+    }
+  }
+
+  .nav-menu {
+    .links {
+      display: flex;
+      flex-direction: column;
+      margin-top: 1rem;
     }
   }
 }

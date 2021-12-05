@@ -1,22 +1,24 @@
-import { ThemeProvider } from 'next-themes';
-import NavBar from 'components/NavBar';
-import 'styles/global.scss';
-import 'styles/main.scss';
-import 'styles/home.scss';
-import 'styles/lost.scss';
-import 'styles/legal.scss';
-import 'styles/navbar.scss';
-import { ToastContainer } from 'react-toast';
-import type { AppProps } from 'next/app';
+import { ThemeProvider } from "next-themes";
+import NavBar from "components/NavBar";
+import "styles/global.scss";
+import "styles/main.scss";
+import "styles/home.scss";
+import "styles/lost.scss";
+import "styles/legal.scss";
+import "styles/navbar.scss";
+import "styles/langstyles.scss";
+import type { AppProps } from "next/app";
+import { useLoaded } from "lib/useLoaded";
+import { Spinner, Pane } from "evergreen-ui";
 
 export default function App({ Component, pageProps }: AppProps) {
-	return (
-		<ThemeProvider attribute='class'>
-			<NavBar />
-			<main>
-				<Component {...pageProps} />
-			</main>
-			<ToastContainer />
-		</ThemeProvider>
-	);
+  const loaded = useLoaded();
+  return (
+    <ThemeProvider attribute="class">
+      <NavBar />
+      <Pane className="main">
+	  	<Component {...pageProps} />
+      </Pane>
+    </ThemeProvider>
+  );
 }

@@ -82,8 +82,8 @@ a {
 
 
 	--red: #ff6581;
-	--green: #79f07b;
-	--darkGreen: #49be4b;
+	--green: #43a730;
+	--darkGreen: #157c17;
 	--blue: #73a2ff;
 	--darkBlue: #5278ff;
 
@@ -91,11 +91,13 @@ a {
 	--bs-secondary: #b8b8b8;
 }
 
-main {
+.main {
 	overflow: hidden auto;
 	flex: 1 0 auto;
 	display: flex;
 	flex-direction: column;
+
+	
 }
 
 #__next {
