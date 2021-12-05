@@ -42,7 +42,6 @@ export const langs: lang[] = [
     extension: () => javascript({ jsx: true }),
     file: "jsx",
     name: "React Javascript",
-    color: 54,
   },
   {
     extension: () => javascript({ typescript: true }),
