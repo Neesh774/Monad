@@ -52,6 +52,10 @@
     list-style: none;
     font-size: 1.2rem;
     align-items: center;
+
+    svg {
+      fill: var(--text-primary);
+    }
   }
 
   .buttons {
@@ -72,29 +76,23 @@
     color: var(--text-primary);
     transition: ease-in-out 0.3s;
   }
+  .link:hover {
+    color: var(--blue);
+  }
   .searchbar {
     font-size: 1.1rem;
     border-color: var(--text-primary);
     color: var(--text-secondary);
     background-color: var(--background);
-
-
-    svg {
-      width: 1.2rem;
-      height: 1.2rem;
-      fill: var(--text-primary);
-    }
   }
   .searchbar.dark {
     background-color: var(--hover);
   }
 
   .searchbar::placeholder {
-    color: var(--text-primary);
+    color: var(--text-placeholder);
   }
-  .searchbar.dark::placeholder {
-    color: initial;
-  }
+
   .active {
     color: var(--text-primary);
     background: var(--hover);

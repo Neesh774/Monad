@@ -79,9 +79,7 @@ export default function Navbar() {
               <SearchInput
                   className="searchbar"
                   placeholder="Search for a snippet..."
-                  backgroundColor={
-                    theme === "dark" ? "var(--hover)" : "var(--background)"
-                  }
+                  backgroundColor='var(--input)'
                 />
               <ul className="links">
                 {navigation.map(({ name, href }) => (

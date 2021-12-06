@@ -1,0 +1,38 @@
+.snippet-page {
+    display: flex;
+    flex-direction: column;
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        margin: 2rem 5rem 0.6rem;
+        row-gap: 0.3rem;
+        h1 {
+            font-size: 3rem;
+        }
+        i {
+            font-size: 1.1rem;
+            color: #999;
+        }
+    }
+    .content {
+        margin: 1.5rem 5rem;
+
+        .actions {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+
+            button {
+                background-color: none; 
+                transition: ease-in-out 0.2s;
+            }
+            button:hover {
+                background-color: var(--hover);
+            }
+        }
+    }
+}

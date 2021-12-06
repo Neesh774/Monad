@@ -1,14 +1,13 @@
 import { supabase } from "../lib/supabaseClient";
-import Creatable from "react-select/creatable";
-import Select from "react-select";
 import CodeMirror from "@uiw/react-codemirror";
 import slugify from "slugify";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/dist/client/router";
 import { langs, tags } from "../components/langs";
 import React, { useState, useEffect } from "react";
 import { Extension } from "@codemirror/state";
 import MetaTags from "components/MetaTags";
-import { toaster, Button, TagInput, SelectMenu, CodeIcon } from "evergreen-ui";
+import { toaster, Button, TextInput, TagInput, SelectMenu, CodeIcon } from "evergreen-ui";
 
 const maxOptions = 5;
 interface snippet {
@@ -39,6 +38,7 @@ export default function Home() {
   const [selectedOption, setSelectedOption] = useState<string[]>([]);
   const [extensions, setExtensions] = useState<Extension[]>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   function handleLangChange(lang: string) {
     if (langs.find((l) => l.name === lang)) {
@@ -80,6 +80,7 @@ export default function Home() {
       setSubmitLoading(false);
       return;
     }
+
     // creating the slug for the future snippet page, if there's an already existing snippet with that slug, it'll request a new title
     const slug = slugify(title);
     const { data } = await supabase.from("snippets").select("slug");
@@ -98,9 +99,15 @@ export default function Home() {
       lang: mode,
       slug,
     };
-    await supabase.from("snippets").insert(newSnippet);
+    const created = await supabase.from("snippets").insert(newSnippet);
+    if (created.error) {
+      toaster.danger("Something went wrong! Please try again later.");
+      setSubmitLoading(false);
+      return;
+    }
     setSubmitLoading(false);
     toaster.success("Snippet submitted!");
+    router.push(`/snippets/${slug}`);
   };
   return (
     <div className="home-parent">
@@ -113,10 +120,14 @@ export default function Home() {
             </h1>
           </div>
           <form>
-            <input
+            <TextInput
               placeholder="Title"
               className="snippet-title"
               required
+              backgroundColor="var(--input)"
+              color="var(--text-primary)"
+              alt="Set the title of your snippet"
+              height={40}
               onChange={(v) => {
                 setTitle(v.target.value);
               }}
@@ -146,6 +157,7 @@ export default function Home() {
                 <TagInput
                   inputProps={{
                     placeholder: "Add tags",
+                    color: "var(--text-primary)",
                   }}
                   tagProps={(value) => {
                     const langObj = tags.find((t) => {
@@ -159,10 +171,14 @@ export default function Home() {
                     return {
                       color: langObj
                         ? `hsl(${langObj.color}, 100%, 81%)`
+                        : theme === "dark"
+                        ? "#5b5b5b"
                         : "neutral",
                     };
                   }}
                   values={selectedOption}
+                  backgroundColor="var(--input)"
+                  className="tag-input"
                   onChange={(values) => {
                     if (values.length > maxOptions) {
                       toaster.warning("You can only select up to 5 tags!", {
@@ -196,6 +212,7 @@ export default function Home() {
                       value: l.name,
                     };
                   })}
+                  closeOnSelect={true}
                   selected={selectedLang ? selectedLang.name : ""}
                   onSelect={(option) => {
                     handleLangChange(option.label);
@@ -203,7 +220,15 @@ export default function Home() {
                   hasTitle={false}
                   filterPlaceholder="Search..."
                 >
-                  <Button type="button" paddingX={30} iconBefore={CodeIcon}>
+                  <Button
+                    type="button"
+                    className="lang-select"
+                    width={220}
+                    iconBefore={CodeIcon}
+                    resize="none"
+                    backgroundColor="var(--input)"
+                    color="var(--text-primary)"
+                  >
                     {selectedLang
                       ? `${selectedLang.name}(.${selectedLang.file})`
                       : "Select Language"}
