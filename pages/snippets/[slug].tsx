@@ -4,7 +4,22 @@ import CodeMirror from "@uiw/react-codemirror";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { IconButton, ExportIcon, ShareIcon, toaster } from "evergreen-ui";
+import {
+  IconButton,
+  ShareIcon,
+  TickIcon,
+  toaster,
+  Pane,
+  Tooltip,
+  DuplicateIcon,
+  ArrowUpIcon,
+  Avatar,
+  ArrowDownIcon,
+  Button,
+  Badge,
+} from "evergreen-ui";
+import ReactTimeAgo from "react-time-ago";
+import Footer from "../../components/Footer";
 
 interface snippet {
   title: string;
@@ -16,8 +31,24 @@ interface snippet {
 }
 
 export default function Snippet(props) {
-  const { code, created_at: created, lang, tag, title } = props.snippet;
+  const {
+    code,
+    created_at: created,
+    lang,
+    votes: snippetVotes,
+    tags: snippetTags,
+    title,
+    creator_id: userID,
+    creator_avatar: userAvatar,
+    creator_name: userName,
+    anonymous,
+  } = props.snippet;
   const { theme } = useTheme();
+  const [copy, setCopy] = useState("Copy");
+  const [votes, setVotes] = useState(snippetVotes);
+  const [upvoted, setUpvoted] = useState(false);
+  const [downvoted, setDownvoted] = useState(false);
+  const [loggedIn] = useState(supabase.auth.user());
   const router = useRouter();
 
   const date = new Date(created);
@@ -25,46 +56,213 @@ export default function Snippet(props) {
   const langObj = langs.find(
     (l) => l.name.toLowerCase() === lang.toLowerCase()
   );
-  console.log(langObj);
+
   const langExtension =
     typeof langObj.extension === "function"
       ? langObj.extension()
       : langObj.extension;
 
   const share = () => {
-    // get current page url
     if (typeof window !== "undefined") {
       navigator.clipboard.writeText(`${window.location.href}`);
       toaster.success("Copied URL to clipboard!");
     }
   };
+  const copyCode = () => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(code);
+      setCopy("Copied");
+      setTimeout(() => {
+        setCopy("Copy");
+      }, 3000);
+    }
+  };
+
+  const upvote = async () => {
+    if (!loggedIn) {
+      toaster.danger("You must be logged in to vote!");
+      return;
+    }
+    let newVotes = votes;
+    if (upvoted) {
+      setUpvoted(false);
+      setVotes(votes - 1);
+      newVotes = votes - 1;
+    } else {
+      setUpvoted(true);
+      if (downvoted) {
+        setVotes(votes + 2);
+        newVotes = votes + 2;
+      } else {
+        setVotes(votes + 1);
+        newVotes = votes + 1;
+      }
+      setDownvoted(false);
+    }
+    const { error } = await supabase
+      .from("snippets")
+      .update({ votes: newVotes })
+      .eq("slug", props.snippet.slug);
+    if (error) {
+      toaster.danger("Something went wrong with that! Please try again later.");
+      return;
+    }
+  };
+  const downvote = async () => {
+    if (!loggedIn) {
+      toaster.danger("You must be logged in to vote!");
+      return;
+    }
+    let newVotes = votes;
+    if (downvoted) {
+      setDownvoted(false);
+      setVotes(votes + 1);
+      newVotes = votes + 1;
+    } else {
+      setDownvoted(true);
+      if (upvoted) {
+        setVotes(votes - 2);
+        newVotes = votes - 2;
+      } else {
+        setVotes(votes - 1);
+        newVotes = votes - 1;
+      }
+      setUpvoted(false);
+    }
+    const { error } = await supabase
+      .from("snippets")
+      .update({ votes: newVotes })
+      .eq("slug", props.snippet.slug);
+    if (error) {
+      toaster.danger("Something went wrong with that! Please try again later.");
+      return;
+    }
+  };
 
   return (
     <div className="snippet-page">
-      <div className="header">
+      <Pane className="header" display="flex" flexDirection="column">
         <h1>{title}</h1>
-        <i>Created on {dateString}</i>
-      </div>
-      <hr />
+        <span>
+          <i>
+            Created <ReactTimeAgo date={date} locale="en-US" />
+          </i>
+        </span>
+        <Pane
+          display="flex"
+          alignItems="center"
+          alignContent="center"
+          gap="0.4rem"
+          marginTop="0.4rem"
+        >
+          {!anonymous ? (
+            <Avatar name={userName} src={userAvatar} size={32} />
+          ) : (
+            <Avatar src="/Nomad.svg" name="Anonymous" size={32} />
+          )}
+          {!anonymous ? userName : "Anonymous"}
+        </Pane>
+      </Pane>
       <div className="content">
-        <CodeMirror
-          value={code}
-          extensions={[langExtension]}
-          editable={false}
-          theme={theme === "light" ? "light" : "dark"}
-          minHeight="200px"
-          color="blue"
-        />
-        <div className="actions">
-          <IconButton
-            icon={ShareIcon}
-            onClick={() => share()}
-            appearance="minimal"
-            width={40}
-            height={40}
+        <Pane
+          borderWidth="2px"
+          backgroundColor={theme === "dark" ? "#282c34" : "#fafafa"}
+          paddingX="2rem"
+          paddingY="1rem"
+          borderRadius="10px"
+        >
+          <Pane marginBottom="0.5rem" justifyContent="space-between" width="100%" display="flex">
+            <Pane height="2rem">
+              {snippetTags.map((tag) => {
+                const tagObj = tags.find((t) => {
+                  if (typeof t.name === "string") {
+                    return t.name.toLowerCase() === tag.toLowerCase();
+                  }
+                  return t.name.find((n) => {
+                    return n.toLowerCase() === tag.toLowerCase();
+                  });
+                });
+                return (
+                  <Badge
+                    key={tag}
+                    marginRight="5px"
+                    textTransform="lowercase"
+                    fontSize="1rem"
+                    height="1.5rem"
+                    paddingY="0.2rem"
+                    color={
+                      tagObj
+                        ? `hsl(${tagObj.color}, 100%, 81%)`
+                        : theme === "dark"
+                        ? "#5b5b5b"
+                        : "neutral"
+                    }
+                    fontWeight="normal"
+                  >
+                    <span>{tag}</span>
+                  </Badge>
+                );
+              })}
+            </Pane>
+            <Pane display="flex" gap="1rem" alignContent="center">
+              <Pane display="flex" alignItems="center">{langObj.name}</Pane>
+              <Button
+                onClick={copyCode}
+                iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
+                backgroundColor="var(--input)"
+                color="var(--text-primary)"
+                className="copy-button"
+              >
+                {copy}
+              </Button>
+            </Pane>
+          </Pane>
+          <CodeMirror
+            value={code}
+            extensions={[langExtension]}
+            editable={false}
+            theme={theme === "light" ? "light" : "dark"}
+            color="blue"
+            maxHeight="23rem"
           />
-        </div>
+        </Pane>
+        <Pane className="actions" gap="0.4rem">
+          <Pane
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            gap="0.4rem"
+          >
+            <Tooltip content="Downvote">
+              <IconButton
+                icon={ArrowDownIcon}
+                appearance="minimal"
+                onClick={downvote}
+                className={`${downvoted ? "downvoted" : ""} downvote`}
+              />
+            </Tooltip>
+            {votes}
+            <Tooltip content="Upvote">
+              <IconButton
+                icon={ArrowUpIcon}
+                appearance="minimal"
+                onClick={upvote}
+                className={`${upvoted ? "upvoted" : ""} upvote`}
+              />
+            </Tooltip>
+          </Pane>
+          <Tooltip content="Share Snippet">
+            <IconButton
+              icon={ShareIcon}
+              onClick={() => share()}
+              appearance="minimal"
+              width={40}
+              height={40}
+            />
+          </Tooltip>
+        </Pane>
       </div>
+      <Footer />
     </div>
   );
 }

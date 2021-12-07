@@ -50,7 +50,6 @@
     display: flex;
     gap: 1rem;
     list-style: none;
-    font-size: 1.2rem;
     align-items: center;
 
     svg {
@@ -68,7 +67,7 @@
   }
 
   .link {
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: center;
     padding: 0.5rem;
     border-radius: 0.4rem;
@@ -80,7 +79,7 @@
     color: var(--blue);
   }
   .searchbar {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     border-color: var(--text-primary);
     color: var(--text-secondary);
     background-color: var(--background);
@@ -96,6 +95,17 @@
   .active {
     color: var(--text-primary);
     background: var(--hover);
+  }
+  
+  .sign-in {
+    background-color: var(--green) !important;
+    border: none !important;
+    color: #fff !important;
+  }
+  
+  .sign-in:hover, .sign-in:active {
+    background-color: var(--darkGreen) !important;
+    border: none !important;
   }
 }
 
@@ -126,4 +136,9 @@
       margin-top: 1rem;
     }
   }
+}
+
+.sign-in-button:hover, .sign-in-button:active, .sign-in-button:focus {
+  background-color: var(--darkGreen) !important;
+  border: none !important;
 }

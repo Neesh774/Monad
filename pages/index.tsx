@@ -17,6 +17,10 @@ interface snippet {
   votes: 0;
   lang: string;
   slug: string;
+  creator_id: string;
+  creator_avatar: string;
+  creator_name: string;
+  anonymous: boolean;
 }
 interface lang {
   extension: any;
@@ -98,6 +102,10 @@ export default function Home() {
       votes: 0,
       lang: mode,
       slug,
+      creator_id: supabase.auth.user() ? supabase.auth.user().id : "",
+      creator_avatar: supabase.auth.user() ? supabase.auth.user().user_metadata.avatar_url : "",
+      creator_name: supabase.auth.user() ? supabase.auth.user().user_metadata.user_name : "",
+      anonymous: supabase.auth.user() ? false : true,
     };
     const created = await supabase.from("snippets").insert(newSnippet);
     if (created.error) {
@@ -108,6 +116,7 @@ export default function Home() {
     setSubmitLoading(false);
     toaster.success("Snippet submitted!");
     router.push(`/snippets/${slug}`);
+    console.log(supabase.auth.user());
   };
   return (
     <div className="home-parent">
@@ -160,7 +169,7 @@ export default function Home() {
                     color: "var(--text-primary)",
                   }}
                   tagProps={(value) => {
-                    const langObj = tags.find((t) => {
+                    const tagObj = tags.find((t) => {
                       if (typeof t.name === "string") {
                         return t.name.toLowerCase() === value.toLowerCase();
                       }
@@ -169,8 +178,8 @@ export default function Home() {
                       });
                     });
                     return {
-                      color: langObj
-                        ? `hsl(${langObj.color}, 100%, 81%)`
+                      color: tagObj
+                        ? `hsl(${tagObj.color}, 100%, 81%)`
                         : theme === "dark"
                         ? "#5b5b5b"
                         : "neutral",
