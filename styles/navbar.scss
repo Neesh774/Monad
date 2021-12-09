@@ -6,7 +6,8 @@
   z-index: 10;
 }
 
-.nav-header, .nav-menu {
+.nav-header,
+.nav-menu {
   nav {
     display: flex;
     justify-content: space-between;
@@ -96,14 +97,15 @@
     color: var(--text-primary);
     background: var(--hover);
   }
-  
+
   .sign-in {
     background-color: var(--green) !important;
     border: none !important;
     color: #fff !important;
   }
-  
-  .sign-in:hover, .sign-in:active {
+
+  .sign-in:hover,
+  .sign-in:active {
     background-color: var(--darkGreen) !important;
     border: none !important;
   }
@@ -138,7 +140,25 @@
   }
 }
 
-.sign-in-button:hover, .sign-in-button:active, .sign-in-button:focus {
+.sign-in-button:hover,
+.sign-in-button:active,
+.sign-in-button:focus {
   background-color: var(--darkGreen) !important;
   border: none !important;
+}
+
+.user-avatar,
+.user-avatar:hover,
+.user-avatar:active,
+.user-avatar:focus {
+  border: none !important;
+}
+
+.nav-account-menu {
+  span {
+    color: var(--text-primary) !important;
+  }
+  svg {
+    fill: var(--text-primary) !important;
+  }
 }

@@ -166,7 +166,7 @@ export default function Snippet(props) {
       <div className="content">
         <Pane
           borderWidth="2px"
-          backgroundColor={theme === "dark" ? "#282c34" : "#fafafa"}
+          backgroundColor={theme === "dark" ? "var(--foreground)" : "#fafafa"}
           paddingX="2rem"
           paddingY="1rem"
           borderRadius="10px"
@@ -191,11 +191,11 @@ export default function Snippet(props) {
                     height="1.5rem"
                     paddingY="0.2rem"
                     color={
-                      tagObj
+                      (tagObj
                         ? `hsl(${tagObj.color}, 100%, 81%)`
                         : theme === "dark"
-                        ? "#5b5b5b"
-                        : "neutral"
+                        ? "#3b3b3b"
+                        : "neutral") as any
                     }
                     fontWeight="normal"
                   >

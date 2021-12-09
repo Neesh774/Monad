@@ -4,7 +4,7 @@ import {
   SideSheet,
   Pane,
   IconButton,
-  Button,
+  Autocomplete,
   SearchInput,
   MoonIcon,
   FlashIcon,
@@ -12,10 +12,11 @@ import {
   Position,
 } from "evergreen-ui";
 import classes from "lib/classes";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLoaded } from "lib/useLoaded";
 import { supabase } from "../lib/supabaseClient";
 import GithubButton from "./GithubButton";
+import { useRouter } from "next/router";
 
 const navigation = [
   { name: "Create", href: "/" },
@@ -25,11 +26,17 @@ const navigation = [
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [signUp, setSignUp] = useState(false);
-
+  const [snippets, setSnippets] = useState([]);
+  const router = useRouter();
   const loaded = useLoaded();
 
-  const user = supabase.auth.user();
+  useEffect(() => {
+    async function fetchData() {
+      const { data } = await supabase.from("snippets").select("*");
+      setSnippets(data);
+    }
+    fetchData();
+  }, [])
 
   const switchTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -58,10 +65,31 @@ export default function Navbar() {
               </a>
             </li>
           ))}
-          <SearchInput
-            className={classes("searchbar", theme)}
-            placeholder="Search for a snippet..."
-          />
+          <Autocomplete
+            onChange={(changedItem) => {
+              const titles = snippets.map((snippet) => snippet.title);
+              const snippetIndex = titles.indexOf(changedItem);
+              if (changedItem) {
+                if(titles.includes(changedItem)){
+                  router.push(`/snippets/${snippets[snippetIndex].slug}`);
+                }
+              }
+            }}
+            items={snippets.map((snippet) => snippet.title)}
+            allowOtherValues={true}
+          >
+            {(props) => {
+              const { getInputProps, getRef, inputValue } = props;
+              return (
+                <SearchInput
+                  placeholder="Search for a snippet..."
+                  value={inputValue}
+                  ref={getRef}
+                  {...getInputProps()}
+                />
+              );
+            }}
+          </Autocomplete>
         </ul>
         <Pane className="buttons">
           <IconButton

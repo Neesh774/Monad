@@ -154,6 +154,7 @@
 }
 
 .dark div[role="dialog"] {
+  background-color: var(--foreground);
 
   & > div > div > div > div {
     background-color: #4b4b4b;
@@ -167,6 +168,9 @@
     }
     input::placeholder {
       color: var(--text-placeholder);
+    }
+    hr {
+      border-color: var(--text-placeholder);
     }
   }
   div[data-isselectable="true"], div[data-isselectable="false"] {
