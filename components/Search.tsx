@@ -13,22 +13,27 @@ export default function SearchDialog({ snippets }: { snippets: Snippet[] }) {
   const snippetTags = snippets.reduce((acc, curr) => acc.concat(curr.tags), []);
 
   const fuzzyFilter = (input) => {
-    const snippetResults = fuzzaldrin.filter(
-      snippets.map((snippet) => snippet.title),
-      input
-    );
-    const snippetsWithTitles = snippets.filter((snippet) =>{
-      return snippetResults.includes(snippet.title);
-    });
-
-    const tagResults : string[] = fuzzaldrin.filter(snippetTags, input);
-    const snippetsWithTags = snippets.filter((snippet) => {
-      return tagResults.some((tag) => snippet.tags.includes(tag));
+    const words = input.split(" ");
+    const results = [];
+    words.forEach((word) => {
+      const snippetResults = fuzzaldrin.filter(
+        snippets.map((snippet) => snippet.title),
+        word
+      );
+      const snippetsWithTitles = snippets.filter((snippet) =>{
+        return snippetResults.includes(snippet.title);
+      });
+  
+      const tagResults : string[] = fuzzaldrin.filter(snippetTags, word);
+      const snippetsWithTags = snippets.filter((snippet) => {
+        return tagResults.some((tag) => snippet.tags.includes(tag));
+      })
+  
+      const duplicates = snippetsWithTitles.concat(snippetsWithTags);
+      const uniqueSnippets = Array.from(new Set(duplicates));
+      results.push(...uniqueSnippets);
     })
-
-    const duplicates = snippetsWithTitles.concat(snippetsWithTags);
-    const uniqueSnippets = Array.from(new Set(duplicates));
-    return uniqueSnippets;
+    return Array.from(new Set(results));;
   };
 
   return (
