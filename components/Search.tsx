@@ -46,6 +46,7 @@ export default function SearchDialog({ snippets }: { snippets: Snippet[] }) {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
             marginBottom={16}
+            autoFocus={true}
           />
           <Pane>
             {search.length === 0 ? (
