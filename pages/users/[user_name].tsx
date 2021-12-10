@@ -1,25 +1,6 @@
 import { supabase } from "lib/supabaseClient";
 import MetaTags from "../../components/MetaTags";
-
-interface user {
-  id: number;
-  created_at: string;
-  avatar: string;
-  snippets: snippet[];
-  activity: activity[];
-}
-interface snippet {
-  id: number;
-  created_at: string;
-  title: string;
-  code: string;
-  lang: string;
-  tags: string[];
-}
-interface activity {
-  snippet_id: number;
-  activity: number;
-}
+import { User, Snippet, Activity} from "lib/types";
 
 export default function User(props) {
 console.log(props);
@@ -38,7 +19,7 @@ export async function getServerProps(context) {
     .eq("username", slug)
     .limit(1);
   if (!data) return { props: { statusCode: 404 } };
-  const user: user = data[0];
+  const user: User = data[0];
   return {
     props: {
       user,

@@ -20,17 +20,9 @@ import {
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
+import { Snippet } from "lib/types";
 
-interface snippet {
-  title: string;
-  code: string;
-  tag: string[];
-  votes: 0;
-  lang: string;
-  slug: string;
-}
-
-export default function Snippet(props) {
+export default function SnippetPage(props) {
   const {
     code,
     created_at: created,
@@ -171,7 +163,12 @@ export default function Snippet(props) {
           paddingY="1rem"
           borderRadius="10px"
         >
-          <Pane marginBottom="0.5rem" justifyContent="space-between" width="100%" display="flex">
+          <Pane
+            marginBottom="0.5rem"
+            justifyContent="space-between"
+            width="100%"
+            display="flex"
+          >
             <Pane height="2rem">
               {snippetTags.map((tag) => {
                 const tagObj = tags.find((t) => {
@@ -205,7 +202,9 @@ export default function Snippet(props) {
               })}
             </Pane>
             <Pane display="flex" gap="1rem" alignContent="center">
-              <Pane display="flex" alignItems="center">{langObj.name}</Pane>
+              <Pane display="flex" alignItems="center">
+                {langObj.name}
+              </Pane>
               <Button
                 onClick={copyCode}
                 iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
@@ -274,7 +273,7 @@ export async function getStaticProps(context) {
     .select("*")
     .eq("slug", slug)
     .limit(1);
-  const snippet: snippet = data[0];
+  const snippet: Snippet = data[0];
   return {
     props: {
       snippet,

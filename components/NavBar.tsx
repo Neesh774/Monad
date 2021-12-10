@@ -4,7 +4,6 @@ import {
   SideSheet,
   Pane,
   IconButton,
-  Autocomplete,
   SearchInput,
   MoonIcon,
   FlashIcon,
@@ -16,7 +15,7 @@ import { useState, useEffect } from "react";
 import { useLoaded } from "lib/useLoaded";
 import { supabase } from "../lib/supabaseClient";
 import GithubButton from "./GithubButton";
-import { useRouter } from "next/router";
+import Search from "./Search";
 
 const navigation = [
   { name: "Create", href: "/" },
@@ -27,7 +26,6 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [snippets, setSnippets] = useState([]);
-  const router = useRouter();
   const loaded = useLoaded();
 
   useEffect(() => {
@@ -65,31 +63,7 @@ export default function Navbar() {
               </a>
             </li>
           ))}
-          <Autocomplete
-            onChange={(changedItem) => {
-              const titles = snippets.map((snippet) => snippet.title);
-              const snippetIndex = titles.indexOf(changedItem);
-              if (changedItem) {
-                if(titles.includes(changedItem)){
-                  router.push(`/snippets/${snippets[snippetIndex].slug}`);
-                }
-              }
-            }}
-            items={snippets.map((snippet) => snippet.title)}
-            allowOtherValues={true}
-          >
-            {(props) => {
-              const { getInputProps, getRef, inputValue } = props;
-              return (
-                <SearchInput
-                  placeholder="Search for a snippet..."
-                  value={inputValue}
-                  ref={getRef}
-                  {...getInputProps()}
-                />
-              );
-            }}
-          </Autocomplete>
+          <Search snippets={snippets} />
         </ul>
         <Pane className="buttons">
           <IconButton

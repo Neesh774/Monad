@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -29,6 +29,7 @@
     "@uiw/react-codemirror": "^4.2.4",
     "codemirror": "^5.64.0",
     "evergreen-ui": "^6.6.3",
+    "fuzzaldrin-plus": "^0.6.0",
     "next": "11.1.0",
     "next-remove-imports": "^1.0.6",
     "next-themes": "^0.0.15",

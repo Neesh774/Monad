@@ -108,3 +108,17 @@ a {
 	display: flex;
 	flex-direction: column;
 }
+
+.display-snippet-link {
+	text-decoration: none;
+
+	.display-snippet {
+		transition: ease-in-out 0.3s;
+		box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.1);
+
+		&:hover {
+			box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
+			border-color: var(--blue) !important;
+		}
+	}
+}

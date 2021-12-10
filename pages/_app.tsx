@@ -12,9 +12,11 @@ import type { AppProps } from "next/app";
 import { Spinner, Pane } from "evergreen-ui";
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
+import es from "javascript-time-ago/locale/es.json";
 
 export default function App({ Component, pageProps }: AppProps) {
   TimeAgo.addDefaultLocale(en);
+  TimeAgo.addLocale(es);
   return (
     <ThemeProvider attribute="class">
       <NavBar />
