@@ -26,13 +26,9 @@ import { perl } from "@codemirror/legacy-modes/mode/perl";
 import { pascal } from "@codemirror/legacy-modes/mode/pascal";
 import { liveScript } from "@codemirror/legacy-modes/mode/livescript";
 import { scheme } from "@codemirror/legacy-modes/mode/scheme";
-interface lang {
-  extension: any;
-  file: string;
-  name: string;
-}
+import { Lang, Tag } from "../lib/types";
 
-export const langs: lang[] = [
+export const langs: Lang[] = [
   {
     extension: javascript,
     file: "js",
@@ -185,12 +181,7 @@ export const langs: lang[] = [
   },
 ];
 
-interface tag {
-  name: string|string[];
-  color: number;
-}
-
-export const tags: tag[] = [
+export const tags: Tag[] = [
   {
     name: ["React", "ReactJS", "React-JS"],
     color: 189,

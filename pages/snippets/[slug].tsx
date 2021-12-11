@@ -17,6 +17,9 @@ import {
   ArrowDownIcon,
   Button,
   Badge,
+  LockIcon,
+  UnlockIcon,
+  Icon,
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
@@ -34,6 +37,7 @@ export default function SnippetPage(props) {
     creator_avatar: userAvatar,
     creator_name: userName,
     anonymous,
+    listed,
   } = props.snippet;
   const { theme } = useTheme();
   const [copy, setCopy] = useState("Copy");
@@ -132,137 +136,142 @@ export default function SnippetPage(props) {
   };
 
   return (
-    <div className="snippet-page">
-      <Pane className="header" display="flex" flexDirection="column">
-        <h1>{title}</h1>
-        <span>
-          <i>
-            Created <ReactTimeAgo date={date} locale="en-US" />
-          </i>
-        </span>
-        <Pane
-          display="flex"
-          alignItems="center"
-          alignContent="center"
-          gap="0.4rem"
-          marginTop="0.4rem"
-        >
-          {!anonymous ? (
-            <Avatar name={userName} src={userAvatar} size={32} />
-          ) : (
-            <Avatar src="/Nomad.svg" name="Anonymous" size={32} />
-          )}
-          {!anonymous ? userName : "Anonymous"}
-        </Pane>
-      </Pane>
-      <div className="content">
-        <Pane
-          borderWidth="2px"
-          backgroundColor={theme === "dark" ? "var(--foreground)" : "#fafafa"}
-          paddingX="2rem"
-          paddingY="1rem"
-          borderRadius="10px"
-        >
-          <Pane
-            marginBottom="0.5rem"
-            justifyContent="space-between"
-            width="100%"
-            display="flex"
-          >
-            <Pane height="2rem">
-              {snippetTags.map((tag) => {
-                const tagObj = tags.find((t) => {
-                  if (typeof t.name === "string") {
-                    return t.name.toLowerCase() === tag.toLowerCase();
-                  }
-                  return t.name.find((n) => {
-                    return n.toLowerCase() === tag.toLowerCase();
-                  });
-                });
-                return (
-                  <Badge
-                    key={tag}
-                    marginRight="5px"
-                    textTransform="lowercase"
-                    fontSize="1rem"
-                    height="1.5rem"
-                    paddingY="0.2rem"
-                    color={
-                      (tagObj
-                        ? `hsl(${tagObj.color}, 100%, 81%)`
-                        : theme === "dark"
-                        ? "#3b3b3b"
-                        : "neutral") as any
-                    }
-                    fontWeight="normal"
-                  >
-                    <span>{tag}</span>
-                  </Badge>
-                );
-              })}
-            </Pane>
-            <Pane display="flex" gap="1rem" alignContent="center">
-              <Pane display="flex" alignItems="center">
-                {langObj.name}
-              </Pane>
-              <Button
-                onClick={copyCode}
-                iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
-                backgroundColor="var(--input)"
-                color="var(--text-primary)"
-                className="copy-button"
-              >
-                {copy}
-              </Button>
-            </Pane>
-          </Pane>
-          <CodeMirror
-            value={code}
-            extensions={[langExtension]}
-            editable={false}
-            theme={theme === "light" ? "light" : "dark"}
-            color="blue"
-            maxHeight="23rem"
-          />
-        </Pane>
-        <Pane className="actions" gap="0.4rem">
+    <>
+      <div className="snippet-page">
+        <Pane className="header" display="flex" flexDirection="column">
+          <h1>{title}</h1>
+          <span>
+            <i>
+              Created <ReactTimeAgo date={date} locale="en-US" />
+            </i>
+          </span>
           <Pane
             display="flex"
-            flexDirection="row"
             alignItems="center"
+            alignContent="center"
             gap="0.4rem"
+            marginTop="0.4rem"
           >
-            <Tooltip content="Downvote">
+            {!anonymous ? (
+              <Avatar name={userName} src={userAvatar} size={32} />
+            ) : (
+              <Avatar src="/Nomad.svg" name="Anonymous" size={32} />
+            )}
+            {!anonymous ? userName : "Anonymous"}
+          </Pane>
+        </Pane>
+        <div className="content">
+          <Pane
+            borderWidth="2px"
+            backgroundColor={theme === "dark" ? "var(--foreground)" : "#fafafa"}
+            paddingX="2rem"
+            paddingY="1rem"
+            borderRadius="10px"
+          >
+            <Pane
+              marginBottom="0.5rem"
+              justifyContent="space-between"
+              width="100%"
+              display="flex"
+            >
+              <Pane height="2rem">
+                {snippetTags.map((tag) => {
+                  const tagObj = tags.find((t) => {
+                    if (typeof t.name === "string") {
+                      return t.name.toLowerCase() === tag.toLowerCase();
+                    }
+                    return t.name.find((n) => {
+                      return n.toLowerCase() === tag.toLowerCase();
+                    });
+                  });
+                  return (
+                    <Badge
+                      key={tag}
+                      marginRight="5px"
+                      textTransform="lowercase"
+                      fontSize="1rem"
+                      height="1.5rem"
+                      paddingY="0.2rem"
+                      color={
+                        (tagObj
+                          ? `hsl(${tagObj.color}, 100%, 81%)`
+                          : theme === "dark"
+                          ? "#3b3b3b"
+                          : "neutral") as any
+                      }
+                      fontWeight="normal"
+                    >
+                      <span>{tag}</span>
+                    </Badge>
+                  );
+                })}
+              </Pane>
+              <Pane display="flex" gap="1rem" alignContent="center">
+                <Pane display="flex" alignItems="center" gap="1rem">
+                  <Tooltip content={!listed ? "Unlisted" : "Listed"}>
+                    <Icon icon={!listed ? LockIcon : UnlockIcon} />
+                  </Tooltip>
+                  {langObj.name}
+                </Pane>
+                <Button
+                  onClick={copyCode}
+                  iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
+                  backgroundColor="var(--input)"
+                  color="var(--text-primary)"
+                  className="copy-button"
+                >
+                  {copy}
+                </Button>
+              </Pane>
+            </Pane>
+            <CodeMirror
+              value={code}
+              extensions={[langExtension]}
+              editable={false}
+              theme={theme === "light" ? "light" : "dark"}
+              color="blue"
+              maxHeight="23rem"
+            />
+          </Pane>
+          <Pane className="actions" gap="0.4rem">
+            <Pane
+              display="flex"
+              flexDirection="row"
+              alignItems="center"
+              gap="0.4rem"
+            >
+              <Tooltip content="Downvote">
+                <IconButton
+                  icon={ArrowDownIcon}
+                  appearance="minimal"
+                  onClick={downvote}
+                  className={`${downvoted ? "downvoted" : ""} downvote`}
+                />
+              </Tooltip>
+              {votes}
+              <Tooltip content="Upvote">
+                <IconButton
+                  icon={ArrowUpIcon}
+                  appearance="minimal"
+                  onClick={upvote}
+                  className={`${upvoted ? "upvoted" : ""} upvote`}
+                />
+              </Tooltip>
+            </Pane>
+            <Tooltip content="Share Snippet">
               <IconButton
-                icon={ArrowDownIcon}
+                icon={ShareIcon}
+                onClick={() => share()}
                 appearance="minimal"
-                onClick={downvote}
-                className={`${downvoted ? "downvoted" : ""} downvote`}
-              />
-            </Tooltip>
-            {votes}
-            <Tooltip content="Upvote">
-              <IconButton
-                icon={ArrowUpIcon}
-                appearance="minimal"
-                onClick={upvote}
-                className={`${upvoted ? "upvoted" : ""} upvote`}
+                width={40}
+                height={40}
               />
             </Tooltip>
           </Pane>
-          <Tooltip content="Share Snippet">
-            <IconButton
-              icon={ShareIcon}
-              onClick={() => share()}
-              appearance="minimal"
-              width={40}
-              height={40}
-            />
-          </Tooltip>
-        </Pane>
+        </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }
 

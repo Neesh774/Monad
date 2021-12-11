@@ -75,6 +75,7 @@
         flex-direction: row;
         justify-content: space-between;
         gap: 1rem;
+        align-items: center;
 
         .tag-input input::placeholder {
           color: var(--text-placeholder);
@@ -85,6 +86,14 @@
         .lang-select:hover,
         .lang-select:active {
           background-color: var(--hover) !important;
+        }
+      }
+
+      .listed {
+        align-items: center;
+
+        div:checked {
+          background-color: var(--green);
         }
       }
 

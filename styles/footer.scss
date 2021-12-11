@@ -1,23 +1,26 @@
 .footer {
 	padding-top: 1rem;
+    padding-bottom: 0.5rem;
     background-color: var(--foreground);
-    
+    height: 20vh;
     footer {
         position: relative;
         place-content: center;
         justify-content: center;
         column-count: 2;
         padding: 1rem 12%;
-        line-height: 2;
+        line-height: 1.5;
         div {
             display: grid;
-            margin: auto;
+            margin: 0;
+
+            div {
+                display: flex;
+            }
         }
     }
     
     .copyright {
         text-align: center;
-        padding-bottom: 1rem;
     }
-    
 }

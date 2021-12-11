@@ -7,28 +7,23 @@ import { langs, tags } from "../components/langs";
 import React, { useState, useEffect } from "react";
 import { Extension } from "@codemirror/state";
 import MetaTags from "components/MetaTags";
-import { toaster, Button, TextInput, TagInput, SelectMenu, CodeIcon } from "evergreen-ui";
+import { Snippet, Lang } from "lib/types";
+import {
+  toaster,
+  Button,
+  TextInput,
+  TagInput,
+  SelectMenu,
+  CodeIcon,
+  Switch,
+  Tooltip,
+  Pane,
+  LockIcon,
+  UnlockIcon,
+  Icon
+} from "evergreen-ui";
 
 const maxOptions = 5;
-interface snippet {
-  title: string;
-  code: string;
-  tags: string[];
-  votes: 0;
-  lang: string;
-  slug: string;
-  creator_id: string;
-  creator_avatar: string;
-  creator_name: string;
-  anonymous: boolean;
-}
-interface lang {
-  extension: any;
-  file: string;
-  name: string;
-  color?: number;
-}
-
 function findDuplicates(arr: string[]) {
   return new Set(arr).size !== arr.length;
 }
@@ -36,12 +31,13 @@ function findDuplicates(arr: string[]) {
 export default function Home() {
   const { theme } = useTheme();
   const [mode, setMode] = useState<string>();
-  const [selectedLang, setSelectedLang] = useState<lang>();
+  const [selectedLang, setSelectedLang] = useState<Lang>();
   const [code, setCode] = useState<string>('console.log("Welcome to Monad!");');
   const [title, setTitle] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<string[]>([]);
   const [extensions, setExtensions] = useState<Extension[]>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [listed, setListed] = useState<boolean>(true);
   const router = useRouter();
 
   function handleLangChange(lang: string) {
@@ -95,7 +91,7 @@ export default function Home() {
     }
 
     // create new snippet and upload to database
-    const newSnippet: snippet = {
+    const newSnippet: Snippet = {
       title,
       code,
       tags: selectedOption,
@@ -103,9 +99,14 @@ export default function Home() {
       lang: mode,
       slug,
       creator_id: supabase.auth.user() ? supabase.auth.user().id : "",
-      creator_avatar: supabase.auth.user() ? supabase.auth.user().user_metadata.avatar_url : "",
-      creator_name: supabase.auth.user() ? supabase.auth.user().user_metadata.user_name : "",
+      creator_avatar: supabase.auth.user()
+        ? supabase.auth.user().user_metadata.avatar_url
+        : "",
+      creator_name: supabase.auth.user()
+        ? supabase.auth.user().user_metadata.user_name
+        : "",
       anonymous: supabase.auth.user() ? false : true,
+      listed: listed,
     };
     const created = await supabase.from("snippets").insert(newSnippet);
     if (created.error) {
@@ -114,9 +115,13 @@ export default function Home() {
       return;
     }
     setSubmitLoading(false);
-    toaster.success("Snippet submitted!");
     router.push(`/snippets/${slug}`);
-    console.log(supabase.auth.user());
+    if(!listed) {
+      toaster.success("Your private snippet was submitted! You can now share the link and it won't show up on our discover page.")
+    }
+    else {
+      toaster.success("Snippet submitted!");
+    }
   };
   return (
     <div className="home-parent">
@@ -243,6 +248,25 @@ export default function Home() {
                       : "Select Language"}
                   </Button>
                 </SelectMenu>
+                <Pane display="flex" paddingY="auto" alignItems="center" gap="0.4em">
+                  <Icon icon={listed ? UnlockIcon : LockIcon} size={24}/>
+                  <Tooltip
+                    content={`${
+                      !listed ? "List" : "Unlist"
+                    } your snippet`}
+                  >
+                    <Switch
+                    className="listed"
+                      display="flex"
+                      checked={listed}
+                      height={24}
+                      onChange={(e) => {
+                        setListed(e.target.checked);
+                      }}
+                      hasCheckIcon
+                    />
+                  </Tooltip>
+                </Pane>
               </div>
               <Button
                 className="submit-snippet"

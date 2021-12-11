@@ -6,18 +6,18 @@ export default function Footer() {
       <footer>
         <div>
           <h3>Monad</h3>
-          <Link href="/create">Create A Snippet</Link>
-          <Link href="/terms">Terms and Conditions</Link>
-          <Link href="/privacy">Privacy Policy</Link>
+          <div><Link href="/">Create A Snippet</Link></div>
+          <div><Link href="/terms">Terms and Conditions</Link></div>
+          <div><Link href="/privacy">Privacy Policy</Link></div>
         </div>
         <div>
           <h3>Contact Us</h3>
-          <a href="https://discord.gg/b8ugMm7nvc">Discord</a>
-          <a href="https://twitter.com/TeamMonad">Twitter</a>
-          <a href="mailto:Kanishq0106@gmail.com">Email</a>
+          <div><a href="https://discord.gg/b8ugMm7nvc">Discord</a></div>
+          <div><a href="https://twitter.com/IliosLabs">Twitter</a></div>
+          <div><a href="mailto:Kanishq0106@gmail.com">Email</a></div>
         </div>
       </footer>
-      <div className="copyright">Made by Monad © 2021 </div>
+      <div className="copyright">Made by Ilios Labs with &#9829; © 2021 </div>
     </div>
   );
 }
