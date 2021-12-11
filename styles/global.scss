@@ -36,11 +36,11 @@ h3,
 h4,
 h5,
 h6 {
-	color: var(--text-primary);
+	color: var(--text-primary) !important;
 }
 
 p {
-	color: var(--text-secondary);
+	color: var(--text-secondary) !important;
 }
 
 a {
@@ -76,7 +76,7 @@ a {
 
 .dark {
 	--background: #000000;
-	--foreground: #1e1e1e;
+	--foreground: #111111;
 	--hover: #474747;
 	--highlight: ;
 	--text-primary: #ffffff;
@@ -110,15 +110,30 @@ a {
 }
 
 .display-snippet-link {
-	text-decoration: none;
+	text-decoration: none !important;
+	color: initial !important;
+	border: none !important;
+	&:hover {
+		color: iniital;
+	}
 
 	.display-snippet {
 		transition: ease-in-out 0.3s;
 		box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.1);
+		background-color: var(--background);
 
 		&:hover {
 			box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
-			border-color: var(--blue) !important;
+		}
+	}
+
+	.display-snippet-dark {
+		transition: ease-in-out 0.1s;
+		background-color: var(--background) !important;
+		border: 2px #1a1a1a solid !important;
+
+		&:hover {
+			border: 2px var(--text-primary) solid !important;
 		}
 	}
 }

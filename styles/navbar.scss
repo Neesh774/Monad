@@ -162,3 +162,16 @@
     fill: var(--text-primary) !important;
   }
 }
+
+.navbar-search {
+  svg {
+    fill: var(--text-primary) !important;
+  }
+  background-color: var(--input) !important;
+}
+
+.search-dialog {
+  h4 {
+    color: var(--text-primary) !important;
+  }
+}

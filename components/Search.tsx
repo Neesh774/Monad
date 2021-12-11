@@ -58,6 +58,7 @@ export default function SearchDialog({ snippets }: { snippets: Snippet[] }) {
                 e.target.value = e.target.value.slice(0, 100);
               }
             }}
+            className="navbar-search"
           />
           <Pane>
             {search.length === 0 ? (
@@ -80,6 +81,7 @@ export default function SearchDialog({ snippets }: { snippets: Snippet[] }) {
       <SearchInput
         placeholder="Search for a snippet..."
         onFocus={() => setIsShown(true)}
+        className="navbar-search"
       />
     </>
   );

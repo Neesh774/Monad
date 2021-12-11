@@ -15,7 +15,7 @@ export default function DisplaySnippet({ snippet }: { snippet: Snippet }) {
         flexDirection="column"
         marginBottom="0.4rem"
         borderRadius={10}
-        className="display-snippet"
+        className={`display-snippet${theme === "dark" ? "-dark" : ""}`}
       >
         <h3>{snippet.title}</h3>
         <Pane marginTop="0.5rem">

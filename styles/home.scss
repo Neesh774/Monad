@@ -50,7 +50,6 @@
       font-size: 1.3rem;
       padding: 0.5rem;
       width: 300px;
-      margin-bottom: 1rem;
       outline: none;
       resize: none;
       transition: ease-in-out 0.2s;
@@ -166,8 +165,6 @@
   background-color: var(--foreground);
 
   & > div > div > div > div {
-    background-color: #4b4b4b;
-    border-color: var(--text-placeholder);
 
     svg {
       fill: var(--text-primary);

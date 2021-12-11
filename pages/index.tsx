@@ -15,12 +15,11 @@ import {
   TagInput,
   SelectMenu,
   CodeIcon,
-  Switch,
   Tooltip,
   Pane,
   LockIcon,
   UnlockIcon,
-  Icon
+  IconButton,
 } from "evergreen-ui";
 
 const maxOptions = 5;
@@ -116,10 +115,11 @@ export default function Home() {
     }
     setSubmitLoading(false);
     router.push(`/snippets/${slug}`);
-    if(!listed) {
-      toaster.success("Your private snippet was submitted! You can now share the link and it won't show up on our discover page.")
-    }
-    else {
+    if (!listed) {
+      toaster.success(
+        "Your private snippet was submitted! You can now share the link and it won't show up on our discover page."
+      );
+    } else {
       toaster.success("Snippet submitted!");
     }
   };
@@ -134,18 +134,29 @@ export default function Home() {
             </h1>
           </div>
           <form>
-            <TextInput
-              placeholder="Title"
-              className="snippet-title"
-              required
-              backgroundColor="var(--input)"
-              color="var(--text-primary)"
-              alt="Set the title of your snippet"
-              height={40}
-              onChange={(v) => {
-                setTitle(v.target.value);
-              }}
-            />
+            <Pane
+              display="flex"
+              paddingY="auto"
+              alignItems="center"
+              gap="0.4em"
+              marginBottom="0.5rem"
+            >
+              <TextInput
+                placeholder="Title"
+                className="snippet-title"
+                required
+                backgroundColor="var(--input)"
+                color="var(--text-primary)"
+                alt="Set the title of your snippet"
+                height={40}
+                onChange={(v) => {
+                  setTitle(v.target.value);
+                }}
+              />
+              <Tooltip content={`${listed ? "Listed" : "Unlisted"}`}>
+                <IconButton height={40} type="button" appearance="minimal" icon={listed ? UnlockIcon : LockIcon} onClick={() => {setListed(!listed)}} />
+              </Tooltip>
+            </Pane>
             <CodeMirror
               value={code}
               height="200px"
@@ -248,25 +259,6 @@ export default function Home() {
                       : "Select Language"}
                   </Button>
                 </SelectMenu>
-                <Pane display="flex" paddingY="auto" alignItems="center" gap="0.4em">
-                  <Icon icon={listed ? UnlockIcon : LockIcon} size={24}/>
-                  <Tooltip
-                    content={`${
-                      !listed ? "List" : "Unlist"
-                    } your snippet`}
-                  >
-                    <Switch
-                    className="listed"
-                      display="flex"
-                      checked={listed}
-                      height={24}
-                      onChange={(e) => {
-                        setListed(e.target.checked);
-                      }}
-                      hasCheckIcon
-                    />
-                  </Tooltip>
-                </Pane>
               </div>
               <Button
                 className="submit-snippet"
