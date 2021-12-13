@@ -48,7 +48,6 @@ export default function SnippetPage(props) {
   const router = useRouter();
 
   const date = new Date(created);
-  const dateString = date.toLocaleDateString();
   const langObj = langs.find(
     (l) => l.name.toLowerCase() === lang.toLowerCase()
   );

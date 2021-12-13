@@ -33,21 +33,25 @@ export const langs: Lang[] = [
     extension: javascript,
     file: "js",
     name: "Javascript",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'
   },
   {
     extension: () => javascript({ jsx: true }),
     file: "jsx",
     name: "React Javascript",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'
   },
   {
     extension: () => javascript({ typescript: true }),
     file: "ts",
     name: "Typescript",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg'
   },
   {
     extension: () => javascript({ typescript: true, jsx: true }),
     file: "tsx",
     name: "React Typescript",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg'
   },
   {
     extension: json,
@@ -58,21 +62,25 @@ export const langs: Lang[] = [
     extension: html,
     file: "html",
     name: "HTML",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg'
   },
   {
     extension: css,
     file: "css",
     name: "CSS",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg'
   },
   {
     extension: python,
     file: "py",
     name: "Python",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'
   },
   {
     extension: markdown,
     file: "md",
     name: "Markdown",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/markdown/markdown-original.svg'
   },
   {
     extension: xml,
@@ -83,56 +91,55 @@ export const langs: Lang[] = [
     extension: sql,
     file: "sql",
     name: "SQL",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
   },
   {
     extension: java,
     file: "java",
     name: "Java",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg'
   },
   {
     extension: rust,
     file: "rs",
     name: "Rust",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-plain.svg'
   },
   {
     extension: cpp,
     file: "cpp",
     name: "C++",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg'
   },
   {
     extension: php,
     file: "php",
     name: "PHP",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg'
   },
   {
     extension: StreamLanguage.define(go),
     file: "go",
     name: "Go",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original-wordmark.svg'
   },
   {
     extension: StreamLanguage.define(ruby),
     file: "rb",
     name: "Ruby",
-  },
-  {
-    extension: StreamLanguage.define(shell),
-    file: "sh",
-    name: "Shell",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-plain.svg'
   },
   {
     extension: StreamLanguage.define(lua),
     file: "lua",
     name: "Lua",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-original.svg'
   },
   {
     extension: StreamLanguage.define(swift),
     file: "swift",
     name: "Swift",
-  },
-  {
-    extension: StreamLanguage.define(tcl),
-    file: "tcl",
-    name: "Tcl",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg'
   },
   {
     extension: StreamLanguage.define(yaml),
@@ -148,31 +155,24 @@ export const langs: Lang[] = [
     extension: StreamLanguage.define(stylus),
     file: "styl",
     name: "Stylus",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/stylus/stylus-original.svg'
   },
   {
     extension: StreamLanguage.define(erlang),
     file: "erl",
     name: "Erlang",
-  },
-  {
-    extension: StreamLanguage.define(nginx),
-    file: "nginx",
-    name: "Nginx",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/erlang/erlang-original.svg'
   },
   {
     extension: StreamLanguage.define(perl),
     file: "pl",
     name: "Perl",
+    image: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/perl/perl-original.svg'
   },
   {
     extension: StreamLanguage.define(pascal),
     file: "pas",
     name: "Pascal",
-  },
-  {
-    extension: StreamLanguage.define(liveScript),
-    file: "ls",
-    name: "LiveScript",
   },
   {
     extension: StreamLanguage.define(scheme),

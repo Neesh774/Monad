@@ -79,11 +79,16 @@ export default function Home() {
       setSubmitLoading(false);
       return;
     }
+    else if (!selectedLang){
+      toaster.danger("Please select a language!");
+      setSubmitLoading(false);
+      return;
+    }
 
     // creating the slug for the future snippet page, if there's an already existing snippet with that slug, it'll request a new title
     const slug = slugify(title);
-    const { data } = await supabase.from("snippets").select("slug");
-    if (data.find((x) => x.slug === slug)) {
+    const { data: slugs } = await supabase.from("snippets").select("slug");
+    if (slugs.find((x) => x.slug === slug)) {
       alert("Please select a different title!");
       setSubmitLoading(false);
       return;
@@ -107,11 +112,26 @@ export default function Home() {
       anonymous: supabase.auth.user() ? false : true,
       listed: listed,
     };
-    const created = await supabase.from("snippets").insert(newSnippet);
-    if (created.error) {
+    const { data : created, error } = await supabase.from("snippets").insert(newSnippet);
+    if (error) {
       toaster.danger("Something went wrong! Please try again later.");
       setSubmitLoading(false);
       return;
+    }
+    else {
+      selectedOption.forEach(async (tag) => {
+        console.log(tag);
+        const { data: existingArr, error } = await supabase.from("tags").select("*").eq("tag_name", tag).limit(1) as any;
+        const existing = existingArr[0];
+        console.log("error", error);
+        console.log("existing", existing);
+        const { error: tagError} = await supabase.from("tags").upsert({
+          tag_name: tag,
+          snippets: existing ? existing.snippets.concat(created) : created,
+          num_used: existing ? existing.num_used + 1 : 1,
+        });
+        console.log("tagError", tagError);
+      })
     }
     setSubmitLoading(false);
     router.push(`/snippets/${slug}`);
@@ -140,6 +160,7 @@ export default function Home() {
               alignItems="center"
               gap="0.4em"
               marginBottom="0.5rem"
+              className="title-input"
             >
               <TextInput
                 placeholder="Title"

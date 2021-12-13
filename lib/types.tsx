@@ -1,5 +1,7 @@
 export type Snippet = {
   title: string;
+  id?: string;
+  created_at?: Date;
   code: string;
   tags: string[];
   votes: number;
@@ -23,12 +25,14 @@ export type User = {
   avatar: string;
   snippets: Snippet[];
   activity: Activity[];
+  tags: string[];
 }
 
 export type Lang = {
   extension: any;
   file: string;
   name: string;
+  image?: string;
 }
 
 export type Tag = {

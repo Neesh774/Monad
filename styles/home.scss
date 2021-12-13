@@ -135,6 +135,7 @@
         width: 90%;
         margin: 0 auto;
       }
+  
       .snippet-title {
         font-size: 1.1rem;
         width: inherit;
@@ -183,10 +184,6 @@
     background-color: var(--input);
     border-color: var(--text-placeholder);
 
-    span > div {
-      color: var(--text-primary);
-    }
-
     &:hover {
       background-color: var(--hover) !important;
     }
@@ -197,3 +194,4 @@
     }
   }
 }
+

@@ -8,8 +8,9 @@ import "styles/legal.scss";
 import "styles/navbar.scss";
 import "styles/langstyles.scss";
 import "styles/snippet.scss";
+import "styles/discover.scss";
 import type { AppProps } from "next/app";
-import { Spinner, Pane } from "evergreen-ui";
+import { Pane } from "evergreen-ui";
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 import es from "javascript-time-ago/locale/es.json";
