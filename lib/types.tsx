@@ -28,6 +28,7 @@ export type User = {
   snippets: Snippet[];
   activity: Activity[];
   tags: string[];
+  bio: string;
 }
 
 export type Lang = {

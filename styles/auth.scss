@@ -22,6 +22,10 @@
     left: 50%;
 }
 
+.sign-in-button:hover, .sign-in-button:focus {
+    background-color: var(--green);
+}
+
 @media screen and (max-width: 768px) {
     .sign-in-parent {
         background-color: var(--background);

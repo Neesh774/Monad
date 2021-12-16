@@ -113,7 +113,6 @@ export default function Discover() {
             <Pane marginTop="1rem" display="flex" flexDirection="column">
               <Pane className="filtered-snippets" width="100%" display="flex" flexDirection="column" gap="1rem">
                 {filtered.slice(page, page + 5).map((snippet, index) => {
-                  console.log(index);
                   return <DisplaySnippet key={snippet.id} snippet={snippet} />;
                 })}
               </Pane>

@@ -3,9 +3,10 @@ import { Pane, Button, TextInputField, toaster } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ResetPassword from "components/resetPassword";
+import { useLoggedIn } from "lib/useLoggedIn";
 
 export default function SignIn() {
-  const [loggedIn, setLoggedIn] = useState(supabase.auth.user());
+  const [loggedIn, setLoggedIn] = useLoggedIn();
   const [isShown, setIsShown] = useState(false);
   const [logInLoading, setLogInLoading] = useState(false);
   const [showReset, setShowReset] = useState(false);
@@ -26,12 +27,6 @@ export default function SignIn() {
     }
     setLoggedIn(user);
   };
-
-  useEffect(() => {
-    if(supabase.auth.user()) {
-        router.push('/');
-    }
-  })
 
   return (
     <>

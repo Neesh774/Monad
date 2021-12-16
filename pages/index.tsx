@@ -7,7 +7,7 @@ import { langs, tags } from "../components/langs";
 import React, { useState, useEffect } from "react";
 import { Extension } from "@codemirror/state";
 import MetaTags from "components/MetaTags";
-import { Snippet, Lang } from "lib/types";
+import { Snippet, Lang, User } from "lib/types";
 import {
   toaster,
   Button,
@@ -21,6 +21,7 @@ import {
   UnlockIcon,
   IconButton,
 } from "evergreen-ui";
+import { useLoggedIn } from "lib/useLoggedIn";
 
 const maxOptions = 5;
 function findDuplicates(arr: string[]) {
@@ -37,6 +38,7 @@ export default function Home() {
   const [extensions, setExtensions] = useState<Extension[]>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [listed, setListed] = useState<boolean>(true);
+  const [loggedIn, setLoggedIn] = useLoggedIn();
   const router = useRouter();
 
   function handleLangChange(lang: string) {
@@ -79,8 +81,7 @@ export default function Home() {
       toaster.danger("Please write some code!");
       setSubmitLoading(false);
       return;
-    }
-    else if (!selectedLang){
+    } else if (!selectedLang) {
       toaster.danger("Please select a language!");
       setSubmitLoading(false);
       return;
@@ -103,36 +104,51 @@ export default function Home() {
       votes: 0,
       lang: mode,
       slug,
-      creator_id: supabase.auth.user() ? supabase.auth.user().id : "",
-      creator_avatar: supabase.auth.user()
-        ? supabase.auth.user().user_metadata.avatar_url
-        : "",
-      creator_name: supabase.auth.user()
-        ? supabase.auth.user().user_metadata.user_name
-        : "",
-      anonymous: supabase.auth.user() ? false : true,
+      creator_id: loggedIn ? loggedIn.id : '',
+      creator_avatar: loggedIn ? loggedIn.avatar : '',
+      creator_name: loggedIn ? loggedIn.username : '',
+      anonymous: loggedIn ? false : true,
       listed: listed,
     };
-    const { data : created, error } = await supabase.from("snippets").insert(newSnippet);
+    const { data: created, error } = await supabase
+      .from("snippets")
+      .insert(newSnippet).single();
     if (error) {
       toaster.danger("Something went wrong! Please try again later.");
       setSubmitLoading(false);
       return;
-    }
-    else {
+    } else {
       selectedOption.forEach(async (tag) => {
-        console.log(tag);
-        const { data: existingArr, error } = await supabase.from("tags").select("*").eq("tag_name", tag).limit(1) as any;
+        const { data: existingArr, error } = (await supabase
+          .from("tags")
+          .select("*")
+          .eq("tag_name", tag)
+          .limit(1)) as any;
         const existing = existingArr[0];
-        console.log("error", error);
-        console.log("existing", existing);
-        const { error: tagError} = await supabase.from("tags").upsert({
+        const { error: tagError } = await supabase.from("tags").upsert({
           tag_name: tag,
           snippets: existing ? existing.snippets.concat(created) : created,
           num_used: existing ? existing.num_used + 1 : 1,
         });
-        console.log("tagError", tagError);
-      })
+      });
+
+      if (supabase.auth.user()) {
+        const { data }: { data: User } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", supabase.auth.user().id)
+          .single();
+        const newSnippets = data.snippets.concat([created]);
+        const { error } = await supabase
+          .from("profiles")
+          .update({ snippets: newSnippets })
+          .eq("id", supabase.auth.user().id);
+        if (error) {
+          toaster.danger("Something went wrong! Please try again later.");
+          setSubmitLoading(false);
+          return;
+        }
+      }
     }
     setSubmitLoading(false);
     router.push(`/snippets/${slug}`);
@@ -176,7 +192,15 @@ export default function Home() {
                 }}
               />
               <Tooltip content={`${listed ? "Listed" : "Unlisted"}`}>
-                <IconButton height={40} type="button" appearance="minimal" icon={listed ? UnlockIcon : LockIcon} onClick={() => {setListed(!listed)}} />
+                <IconButton
+                  height={40}
+                  type="button"
+                  appearance="minimal"
+                  icon={listed ? UnlockIcon : LockIcon}
+                  onClick={() => {
+                    setListed(!listed);
+                  }}
+                />
               </Tooltip>
             </Pane>
             <CodeMirror

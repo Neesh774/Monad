@@ -25,8 +25,10 @@ import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
 import { Snippet, Activity, User } from "lib/types";
 import MetaTags from "components/MetaTags";
+import { useLoggedIn } from "lib/useLoggedIn";
 
-export default function SnippetPage(props) {
+export default function SnippetPage(props : any) {
+  const snippetProp : Snippet = props.snippet;
   const {
     code,
     created_at: created,
@@ -39,13 +41,13 @@ export default function SnippetPage(props) {
     creator_name: userName,
     anonymous,
     listed,
-  } = props.snippet;
+  } = snippetProp;
   const { theme } = useTheme();
   const [copy, setCopy] = useState("Copy");
   const [votes, setVotes] = useState(snippetVotes);
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
-  const [loggedIn, setLoggedIn] = useState<User>();
+  const [loggedIn, setLoggedIn] = useLoggedIn();
   const router = useRouter();
 
   const date = new Date(created);
@@ -308,7 +310,6 @@ export async function getStaticProps(context) {
     .limit(1);
 
   let loggedIn;
-  console.log(supabase.auth.user());
   if(supabase.auth.user()) {
     let { data: loggedIn } = await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id);
   }

@@ -31,6 +31,14 @@ export default function SignIn() {
           toaster.danger("Email already exists");
           setLogInLoading(false);
           return;
+        } else if (username.length < 3) {
+          toaster.danger("Username must be at least 3 characters");
+          setLogInLoading(false);
+          return;
+        } else if (username.length > 20) {
+          toaster.danger("Username must be less than 20 characters");
+          setLogInLoading(false);
+          return;
         }
         const { user, error } = await supabase.auth.signUp({
           email,
@@ -50,6 +58,7 @@ export default function SignIn() {
               snippets: [],
               activity: [],
               tags: [],
+              bio: "Nice to meet you, I'm new here!",
             };
             const {
               data: profile,

@@ -20,11 +20,11 @@ import {
 } from "evergreen-ui";
 import classes from "lib/classes";
 import { useState, useEffect } from "react";
-import { useLoaded } from "lib/useLoaded";
 import { supabase } from "../lib/supabaseClient";
 import { User } from "lib/types";
 import Search from "./Search";
 import router from "next/router";
+import { useLoggedIn } from "lib/useLoggedIn";
 
 const navigation = [
   { name: "Create", href: "/" },
@@ -33,34 +33,18 @@ const navigation = [
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
-  const [loggedIn, setLoggedIn] = useState<User>();
+  const [loggedIn, setLoggedIn] = useLoggedIn();
   const [menuOpen, setMenuOpen] = useState(false);
   const [snippets, setSnippets] = useState([]);
-  const loaded = useLoaded();
 
   useEffect(() => {
     async function fetchData() {
       const { data } = await supabase.from("snippets").select("*");
       setSnippets(data);
-
-      if(supabase.auth.user()) {
-        const { data: userObj }= await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id).single();
-        setLoggedIn(userObj);
-      }
     }
 
     fetchData();
   }, []);
-
-  supabase.auth.onAuthStateChange(async (event) => {
-    if (event === "SIGNED_IN") {
-      const { data: userObj }= await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id).single();
-      setLoggedIn(userObj);
-    }
-    else if(event === "SIGNED_OUT") {
-      setLoggedIn(null);
-    }
-  });
 
   const switchTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
@@ -75,7 +59,6 @@ export default function Navbar() {
     router.push(router.asPath);
   };
 
-  if (!loaded) return null;
   return (
     <Pane
       className="nav-header"
