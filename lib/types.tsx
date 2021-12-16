@@ -20,9 +20,11 @@ export type Activity = {
 }
 
 export type User = {
-  id: number;
-  created_at: string;
-  avatar: string;
+  id: string; 
+  email: string;
+  username: string;
+  created_at?: string;
+  avatar?: string;
   snippets: Snippet[];
   activity: Activity[];
   tags: string[];

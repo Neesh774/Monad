@@ -9,13 +9,22 @@ import {
   FlashIcon,
   MenuIcon,
   Position,
+  Button,
+  Menu,
+  Avatar,
+  Popover,
+  UserIcon,
+  toaster,
+  CogIcon,
+  LogOutIcon,
 } from "evergreen-ui";
 import classes from "lib/classes";
 import { useState, useEffect } from "react";
 import { useLoaded } from "lib/useLoaded";
 import { supabase } from "../lib/supabaseClient";
-import GithubButton from "./GithubButton";
+import { User } from "lib/types";
 import Search from "./Search";
+import router from "next/router";
 
 const navigation = [
   { name: "Create", href: "/" },
@@ -24,6 +33,7 @@ const navigation = [
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const [loggedIn, setLoggedIn] = useState<User>();
   const [menuOpen, setMenuOpen] = useState(false);
   const [snippets, setSnippets] = useState([]);
   const loaded = useLoaded();
@@ -32,12 +42,37 @@ export default function Navbar() {
     async function fetchData() {
       const { data } = await supabase.from("snippets").select("*");
       setSnippets(data);
+
+      if(supabase.auth.user()) {
+        const { data: userObj }= await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id).single();
+        setLoggedIn(userObj);
+      }
     }
+
     fetchData();
-  }, [])
+  }, []);
+
+  supabase.auth.onAuthStateChange(async (event) => {
+    if (event === "SIGNED_IN") {
+      const { data: userObj }= await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id).single();
+      setLoggedIn(userObj);
+    }
+    else if(event === "SIGNED_OUT") {
+      setLoggedIn(null);
+    }
+  });
 
   const switchTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const logOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toaster.danger("There was an error signing out. Please try again later.");
+      return;
+    }
+    router.push(router.asPath);
   };
 
   if (!loaded) return null;
@@ -112,7 +147,67 @@ export default function Navbar() {
             onClick={() => setMenuOpen(!menuOpen)}
             appearance="minimal"
           />
-          <GithubButton />
+          {!loggedIn ? (
+            <Button
+              className="sign-in"
+              appearance="default"
+              fontSize="0.9rem"
+              backgroundColor="var(--green)"
+              color="white"
+              border="none"
+              onClick={() => {
+                router.push("/login");
+              }}
+            >
+              Sign In
+            </Button>
+          ) : (
+            <Popover
+              position={Position.BOTTOM_RIGHT}
+              content={
+                <Pane
+                  backgroundColor="var(--input)"
+                  className="nav-account-menu"
+                >
+                  <Menu>
+                    <Menu.Group>
+                      <Menu.Item
+                        icon={UserIcon}
+                        onClick={() => {
+                          router.push(`/users/${loggedIn.username}`);
+                        }}
+                      >
+                        Account
+                      </Menu.Item>
+                      <Menu.Item icon={CogIcon}>Settings</Menu.Item>
+                    </Menu.Group>
+                    <hr />
+                    <Menu.Item
+                      onClick={logOut}
+                      icon={LogOutIcon}
+                      intent="danger"
+                    >
+                      Log Out
+                    </Menu.Item>
+                  </Menu>
+                </Pane>
+              }
+            >
+              <Button
+                paddingX={0}
+                borderRadius={50}
+                border="none"
+                className="user-avatar"
+              >
+                <Avatar
+                  src={loggedIn.avatar}
+                  name={loggedIn.username}
+                  size={32}
+                  border="none"
+                />
+              </Button>
+            </Popover>
+          )}
         </Pane>
       </nav>
     </Pane>

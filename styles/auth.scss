@@ -1,0 +1,44 @@
+.sign-in-parent {
+    background-color: var(--foreground);
+    height: 93vh;
+
+    .header {
+        margin-bottom: 2rem;
+    }
+
+    .sign-in-footer {
+        justify-content: right;
+    }
+}
+.sign-in-island {
+    margin: auto;
+    background-color: var(--background);
+    width: 40%;
+    padding: 2rem;
+    border-radius: 10px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+@media screen and (max-width: 768px) {
+    .sign-in-parent {
+        background-color: var(--background);
+
+        .header {
+            margin-top: 2rem;
+        }
+    }
+    .sign-in-island {
+        width: 100%;
+        background-color: initial;
+        margin: 0;
+        position: initial;
+        top: 0;
+        left: 0;
+        padding: 0.5rem;
+        border-radius: initial;
+        transform: initial;
+    }
+}

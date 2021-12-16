@@ -2,7 +2,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { langs, tags } from "../../components/langs";
 import CodeMirror from "@uiw/react-codemirror";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import {
   IconButton,
@@ -23,7 +23,8 @@ import {
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
-import { Snippet } from "lib/types";
+import { Snippet, Activity, User } from "lib/types";
+import MetaTags from "components/MetaTags";
 
 export default function SnippetPage(props) {
   const {
@@ -44,7 +45,7 @@ export default function SnippetPage(props) {
   const [votes, setVotes] = useState(snippetVotes);
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
-  const [loggedIn] = useState(supabase.auth.user());
+  const [loggedIn, setLoggedIn] = useState<User>();
   const router = useRouter();
 
   const date = new Date(created);
@@ -80,11 +81,22 @@ export default function SnippetPage(props) {
     }
     let newVotes = votes;
     if (upvoted) {
+      // removing vote
       setUpvoted(false);
       setVotes(votes - 1);
       newVotes = votes - 1;
     } else {
+      // adding vote
       setUpvoted(true);
+      const upvote: Activity = {
+        snippet_id: props.snippet.id,
+        activity: 1,
+      };
+      const { error } = await supabase.from("profiles").update({ activity: [...loggedIn.activity, upvote] }).eq("id", loggedIn.id);
+      if (error) {
+        toaster.danger("Something went wrong!");
+        return;
+      }
       if (downvoted) {
         setVotes(votes + 2);
         newVotes = votes + 2;
@@ -115,6 +127,15 @@ export default function SnippetPage(props) {
       newVotes = votes + 1;
     } else {
       setDownvoted(true);
+      const downvote: Activity = {
+        snippet_id: props.snippet.id,
+        activity: -1,
+      };
+      const { error } = await supabase.from("profiles").update({ activity: [...loggedIn.activity, upvote] }).eq("id", loggedIn.id);
+      if (error) {
+        toaster.danger("Something went wrong!");
+        return;
+      }
       if (upvoted) {
         setVotes(votes - 2);
         newVotes = votes - 2;
@@ -136,6 +157,10 @@ export default function SnippetPage(props) {
 
   return (
     <>
+      <MetaTags
+        title={`${title} | Monad`}
+        description={`${title} on Monad | ${lang} | ${votes} votes`}
+      />
       <div className="snippet-page">
         <Pane className="header" display="flex" flexDirection="column">
           <h1>{title}</h1>
@@ -281,10 +306,18 @@ export async function getStaticProps(context) {
     .select("*")
     .eq("slug", slug)
     .limit(1);
+
+  let loggedIn;
+  console.log(supabase.auth.user());
+  if(supabase.auth.user()) {
+    let { data: loggedIn } = await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id);
+  }
+
   const snippet: Snippet = data[0];
   return {
     props: {
       snippet,
+      user: loggedIn ? loggedIn[0] : null,
     },
   };
 }

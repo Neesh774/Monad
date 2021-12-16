@@ -50,6 +50,7 @@ export default function Home() {
     setMode(lang);
     setSelectedLang(langs.find((l) => l.name === lang));
   }
+
   useEffect(() => {
     setExtensions(langs.find((l) => l.name === "Javascript").extension());
     setMode("javascript");
