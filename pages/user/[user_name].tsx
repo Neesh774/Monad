@@ -46,46 +46,48 @@ export default function UserPage({ user }: { user: User }) {
               {new Date(user.created_at).toLocaleDateString()}
             </time>
           </i>
-          <Pane width='50%' display="flex" flexDirection="column" gap="0.5rem">
-            <div><h3>Bio</h3>
-            <p>{user.bio || "Nothing to see here ^-^"}</p></div>
+          <Pane width="50%" display="flex" flexDirection="column" gap="0.5rem">
             <div>
-            <h3>Tags</h3>
-            <Pane marginTop="0.5rem">
-              {user.tags.length < 1
-                ? "Nothing to see here ^-^"
-                : user.tags.map((tag) => {
-                    const tagObj = tags.find((t) => {
-                      if (typeof t.name === "string") {
-                        return t.name.toLowerCase() === tag.toLowerCase();
-                      }
-                      return t.name.find((n) => {
-                        return n.toLowerCase() === tag.toLowerCase();
-                      });
-                    });
-                    return (
-                      <Badge
-                        key={tag}
-                        marginLeft="5px"
-                        textTransform={tagObj ? "none" : "capitalize"}
-                        fontSize="1rem"
-                        height="1.5rem"
-                        paddingY="0.2rem"
-                        marginY="3px"
-                        color={
-                          (tagObj
-                            ? `hsl(${tagObj.color}, 100%, 81%)`
-                            : theme === "dark"
-                            ? "#3b3b3b"
-                            : "neutral") as any
+              <h3>Bio</h3>
+              <p>{user.bio || "Nothing to see here ^-^"}</p>
+            </div>
+            <div>
+              <h3>Tags</h3>
+              <Pane marginTop="0.5rem">
+                {user.tags.length < 1
+                  ? "Nothing to see here ^-^"
+                  : user.tags.map((tag) => {
+                      const tagObj = tags.find((t) => {
+                        if (typeof t.name === "string") {
+                          return t.name.toLowerCase() === tag.toLowerCase();
                         }
-                        fontWeight="normal"
-                      >
-                        <span>{tag}</span>
-                      </Badge>
-                    );
-                  })}
-            </Pane>
+                        return t.name.find((n) => {
+                          return n.toLowerCase() === tag.toLowerCase();
+                        });
+                      });
+                      return (
+                        <Badge
+                          key={tag}
+                          marginLeft="5px"
+                          textTransform={tagObj ? "none" : "capitalize"}
+                          fontSize="1rem"
+                          height="1.5rem"
+                          paddingY="0.2rem"
+                          marginY="3px"
+                          color={
+                            (tagObj
+                              ? `hsl(${tagObj.color}, 100%, 81%)`
+                              : theme === "dark"
+                              ? "#3b3b3b"
+                              : "neutral") as any
+                          }
+                          fontWeight="normal"
+                        >
+                          <span>{tag}</span>
+                        </Badge>
+                      );
+                    })}
+              </Pane>
             </div>
           </Pane>
         </Pane>
@@ -118,7 +120,7 @@ export default function UserPage({ user }: { user: User }) {
               </Tab>
             </Tablist>
           </Pane>
-          <Pane flex="1" marginTop={20}>
+          <Pane flex="1" marginTop={20} paddingRight="8px" className="snippet-display">
             <Pane
               key={0}
               id="panel-0"
@@ -150,7 +152,9 @@ export default function UserPage({ user }: { user: User }) {
               display={1 === selectedIndex ? "block" : "none"}
             >
               {user.activity.length > 0 ? (
-                <Pane></Pane>
+                user.activity.map((activity) => {
+                  return <DisplaySnippet key={activity.snippet.id} snippet={activity.snippet} upvoted={activity.upvoted} downvoted = {activity.downvoted} />;
+                })
               ) : (
                 <EmptyState
                   background={theme === "light" ? "light" : "dark"}

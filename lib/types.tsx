@@ -15,7 +15,7 @@ export type Snippet = {
 }
 
 export type Activity = {
-  snippet_id: number;
+  snippet: Snippet;
   upvoted: boolean;
   downvoted: boolean;
 }

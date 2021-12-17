@@ -68,7 +68,7 @@ export default function Navbar() {
     >
       <nav>
         <Link href="/" passHref>
-          <a className={classes("logo", "logo", "link")}>
+          <a className={classes("logo", "link")}>
             <span>Monad</span>
             <img src="/monad.svg" alt="Monad Logo" />
           </a>

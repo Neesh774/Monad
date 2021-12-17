@@ -9,4 +9,28 @@
 .user-page {
     height: 87vh;
     margin-top: 3rem;
+    overflow-y: hidden;
+
+    ::-webkit-scrollbar {
+        width: 0.5rem;
+    }
+    ::-webkit-scrollbar-track {
+        background: var(--background);
+    }
+    ::-webkit-scrollbar-thumb {
+        background: var(--scroll);
+        border-radius: 30px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--hover);
+    }
+
+}
+
+.snippet-display {
+    overflow-y: scroll;
+    max-height: 35rem;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
 }

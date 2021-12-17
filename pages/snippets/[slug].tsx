@@ -49,13 +49,13 @@ export default function SnippetPage(props : any) {
   const loggedIn = useLoggedIn();
   const userId = useRef<String>();
   const userActivity = useRef<Activity[]>();
-  const snippetId = useRef<number>(snippetProp.id);
+  const snippet = useRef<Snippet>(snippetProp);
 
   useEffect(() => {
     if(loggedIn) {
       userId.current = loggedIn.id;
       userActivity.current = loggedIn.activity;
-      const activity = loggedIn.activity.find((activity) => activity.snippet_id === snippetProp.id);
+      const activity = loggedIn.activity.find((activity) => activity.snippet.id === snippetProp.id);
       if(activity) {
         setUpvoted(activity.upvoted);
         setDownvoted(activity.downvoted);
@@ -65,7 +65,7 @@ export default function SnippetPage(props : any) {
 
   useEffect(() => {
     if(userActivity.current) {
-      updateVotes(upvoted, downvoted, snippetId.current.valueOf(), userId.current.valueOf(), userActivity.current.valueOf() as Activity[]);
+      updateVotes(upvoted, downvoted, snippet.current.valueOf() as Snippet, userId.current.valueOf(), userActivity.current.valueOf() as Activity[]);
     }
   }, [upvoted, downvoted]);
 
@@ -339,14 +339,14 @@ export async function getStaticPaths() {
   };
 }
 
-async function updateVotes(upvote: boolean, downvote: boolean, snippet_id: number, userId: string, activity: Activity[]) {
+async function updateVotes(upvote: boolean, downvote: boolean, snippet: Snippet, userId: string, activity: Activity[]) {
   console.log(upvote, downvote);
   const vote: Activity = {
-    snippet_id: snippet_id,
+    snippet: snippet,
     upvoted: upvote,
     downvoted: downvote
   };
-  const newVotes = activity.filter((a) => a.snippet_id !== snippet_id);
+  const newVotes = activity.filter((a) => a.snippet.id !== snippet.id);
   if(downvote || upvote) {
     newVotes.push(vote);
   }

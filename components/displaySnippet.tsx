@@ -1,11 +1,19 @@
-import { Pane, Badge, Avatar, Tooltip } from "evergreen-ui";
+import { Pane, Badge, Avatar, Tooltip, Pill } from "evergreen-ui";
 import { langs, tags } from "./langs";
 import { useTheme } from "next-themes";
 import { Snippet } from "lib/types";
 import { useRouter } from "next/router";
 import ReactTimeAgo from "react-time-ago";
 
-export default function DisplaySnippet({ snippet }: { snippet: Snippet }) {
+export default function DisplaySnippet({
+  snippet,
+  upvoted,
+  downvoted,
+}: {
+  snippet: Snippet;
+  upvoted?: boolean;
+  downvoted?: boolean;
+}) {
   const { theme } = useTheme();
   const router = useRouter();
   const langObj = langs.find((lang) => lang.name === snippet.lang);
@@ -19,7 +27,7 @@ export default function DisplaySnippet({ snippet }: { snippet: Snippet }) {
         className={`display-snippet${theme === "dark" ? "-dark" : ""}`}
         alignItems="center"
         justifyContent="space-between"
-        padding={16}
+        padding="16px"
       >
         <Pane display="flex" flexDirection="column" gap={4}>
           <Pane display="flex" alignItems="center" gap={6}>
@@ -97,8 +105,22 @@ export default function DisplaySnippet({ snippet }: { snippet: Snippet }) {
             })}
           </Pane>
         </Pane>
-        <Pane fontSize="2.5rem" display="flex" color={snippet.votes >= 0 ? "var(--blue)" : "var(--red)"} verticalAlign="middle" marginX="1.5rem">
-          <span>{snippet.votes}</span>
+        <Pane
+          fontSize="2.5rem"
+          display="flex"
+          color={snippet.votes >= 0 ? "var(--blue)" : "var(--red)"}
+          verticalAlign="middle"
+          marginX="1.5rem"
+        >
+          {(upvoted || downvoted) && (
+            <Pane alignItems="center" display="flex" gap="1rem">
+              <Pill width="30px" color={upvoted ? "blue" : "red"}>
+                {upvoted ? "+" : "-"}
+              </Pill>
+              <span>{snippet.votes}</span>
+            </Pane>
+          )}
+          {!upvoted && !downvoted && snippet.votes}
         </Pane>
       </Pane>
     </a>
