@@ -19,8 +19,9 @@ export default function DisplaySnippet({ snippet }: { snippet: Snippet }) {
         className={`display-snippet${theme === "dark" ? "-dark" : ""}`}
         alignItems="center"
         justifyContent="space-between"
+        padding={16}
       >
-        <Pane padding={16} display="flex" flexDirection="column" gap={4}>
+        <Pane display="flex" flexDirection="column" gap={4}>
           <Pane display="flex" alignItems="center" gap={6}>
             <h3>{snippet.title}</h3>
             {langObj.image ? (

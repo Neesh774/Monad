@@ -118,7 +118,7 @@ export default function UserPage({ user }: { user: User }) {
               </Tab>
             </Tablist>
           </Pane>
-          <Pane padding="16" flex="1" marginTop={30}>
+          <Pane flex="1" marginTop={20}>
             <Pane
               key={0}
               id="panel-0"

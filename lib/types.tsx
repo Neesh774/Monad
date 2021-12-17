@@ -1,6 +1,6 @@
 export type Snippet = {
   title: string;
-  id?: string;
+  id?: number;
   created_at?: Date;
   code: string;
   tags: string[];
@@ -16,7 +16,8 @@ export type Snippet = {
 
 export type Activity = {
   snippet_id: number;
-  activity: number;
+  upvoted: boolean;
+  downvoted: boolean;
 }
 
 export type User = {

@@ -6,7 +6,7 @@ import ResetPassword from "components/resetPassword";
 import { useLoggedIn } from "lib/useLoggedIn";
 
 export default function SignIn() {
-  const [loggedIn, setLoggedIn] = useLoggedIn();
+  const loggedIn = useLoggedIn();
   const [isShown, setIsShown] = useState(false);
   const [logInLoading, setLogInLoading] = useState(false);
   const [showReset, setShowReset] = useState(false);
@@ -25,7 +25,6 @@ export default function SignIn() {
       toaster.danger(error.message);
       return;
     }
-    setLoggedIn(user);
   };
 
   return (

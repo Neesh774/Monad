@@ -2,7 +2,7 @@ import { supabase } from "../../lib/supabaseClient";
 import { langs, tags } from "../../components/langs";
 import CodeMirror from "@uiw/react-codemirror";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import {
   IconButton,
@@ -36,7 +36,6 @@ export default function SnippetPage(props : any) {
     votes: snippetVotes,
     tags: snippetTags,
     title,
-    creator_id: userID,
     creator_avatar: userAvatar,
     creator_name: userName,
     anonymous,
@@ -47,8 +46,28 @@ export default function SnippetPage(props : any) {
   const [votes, setVotes] = useState(snippetVotes);
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
-  const [loggedIn, setLoggedIn] = useLoggedIn();
-  const router = useRouter();
+  const loggedIn = useLoggedIn();
+  const userId = useRef<String>();
+  const userActivity = useRef<Activity[]>();
+  const snippetId = useRef<number>(snippetProp.id);
+
+  useEffect(() => {
+    if(loggedIn) {
+      userId.current = loggedIn.id;
+      userActivity.current = loggedIn.activity;
+      const activity = loggedIn.activity.find((activity) => activity.snippet_id === snippetProp.id);
+      if(activity) {
+        setUpvoted(activity.upvoted);
+        setDownvoted(activity.downvoted);
+      }
+    }
+  }, [loggedIn, snippetProp])
+
+  useEffect(() => {
+    if(userActivity.current) {
+      updateVotes(upvoted, downvoted, snippetId.current.valueOf(), userId.current.valueOf(), userActivity.current.valueOf() as Activity[]);
+    }
+  }, [upvoted, downvoted]);
 
   const date = new Date(created);
   const langObj = langs.find(
@@ -90,15 +109,6 @@ export default function SnippetPage(props : any) {
     } else {
       // adding vote
       setUpvoted(true);
-      const upvote: Activity = {
-        snippet_id: props.snippet.id,
-        activity: 1,
-      };
-      const { error } = await supabase.from("profiles").update({ activity: [...loggedIn.activity, upvote] }).eq("id", loggedIn.id);
-      if (error) {
-        toaster.danger("Something went wrong!");
-        return;
-      }
       if (downvoted) {
         setVotes(votes + 2);
         newVotes = votes + 2;
@@ -128,16 +138,8 @@ export default function SnippetPage(props : any) {
       setVotes(votes + 1);
       newVotes = votes + 1;
     } else {
+      setUpvoted(false);
       setDownvoted(true);
-      const downvote: Activity = {
-        snippet_id: props.snippet.id,
-        activity: -1,
-      };
-      const { error } = await supabase.from("profiles").update({ activity: [...loggedIn.activity, upvote] }).eq("id", loggedIn.id);
-      if (error) {
-        toaster.danger("Something went wrong!");
-        return;
-      }
       if (upvoted) {
         setVotes(votes - 2);
         newVotes = votes - 2;
@@ -145,7 +147,6 @@ export default function SnippetPage(props : any) {
         setVotes(votes - 1);
         newVotes = votes - 1;
       }
-      setUpvoted(false);
     }
     const { error } = await supabase
       .from("snippets")
@@ -336,4 +337,22 @@ export async function getStaticPaths() {
     paths: paths,
     fallback: false,
   };
+}
+
+async function updateVotes(upvote: boolean, downvote: boolean, snippet_id: number, userId: string, activity: Activity[]) {
+  console.log(upvote, downvote);
+  const vote: Activity = {
+    snippet_id: snippet_id,
+    upvoted: upvote,
+    downvoted: downvote
+  };
+  const newVotes = activity.filter((a) => a.snippet_id !== snippet_id);
+  if(downvote || upvote) {
+    newVotes.push(vote);
+  }
+  const { error } = await supabase.from("profiles").update({ activity: newVotes }).eq("id", userId);
+  if (error) {
+    toaster.danger("Something went wrong!");
+    return;
+  }
 }

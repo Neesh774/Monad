@@ -33,7 +33,7 @@ const navigation = [
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
-  const [loggedIn, setLoggedIn] = useLoggedIn();
+  const loggedIn = useLoggedIn();
   const [menuOpen, setMenuOpen] = useState(false);
   const [snippets, setSnippets] = useState([]);
 

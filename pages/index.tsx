@@ -38,7 +38,7 @@ export default function Home() {
   const [extensions, setExtensions] = useState<Extension[]>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [listed, setListed] = useState<boolean>(true);
-  const [loggedIn, setLoggedIn] = useLoggedIn();
+  const loggedIn = useLoggedIn();
   const router = useRouter();
 
   function handleLangChange(lang: string) {
@@ -105,8 +105,8 @@ export default function Home() {
       lang: mode,
       slug,
       creator_id: loggedIn ? loggedIn.id : '',
-      creator_avatar: loggedIn ? loggedIn.avatar : '',
-      creator_name: loggedIn ? loggedIn.username : '',
+      creator_avatar: loggedIn ? loggedIn.avatar : null,
+      creator_name: loggedIn ? loggedIn.username : 'Anonymous',
       anonymous: loggedIn ? false : true,
       listed: listed,
     };
