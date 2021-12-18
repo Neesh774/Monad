@@ -114,7 +114,7 @@ export default function DisplaySnippet({
         >
           {(upvoted || downvoted) && (
             <Pane alignItems="center" display="flex" gap="1rem">
-              <Pill width="30px" color={upvoted ? "blue" : "red"}>
+              <Pill width="30px" color={upvoted ? "blue" : "red"} fontSize='1.5rem' height="1.3rem">
                 {upvoted ? "+" : "-"}
               </Pill>
               <span>{snippet.votes}</span>

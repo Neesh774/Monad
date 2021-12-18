@@ -157,18 +157,21 @@ export default function Navbar() {
                       <Menu.Item
                         icon={UserIcon}
                         onClick={() => {
-                          router.push(`/users/${loggedIn.username}`);
+                          router.push(`/user/${loggedIn.username}`);
                         }}
                       >
                         Account
                       </Menu.Item>
-                      <Menu.Item icon={CogIcon}>Settings</Menu.Item>
+                      <Menu.Item icon={CogIcon} onClick={() => {
+                          router.push('/user/settings');
+                        }}>Settings</Menu.Item>
                     </Menu.Group>
                     <hr />
                     <Menu.Item
                       onClick={logOut}
                       icon={LogOutIcon}
                       intent="danger"
+                      
                     >
                       Log Out
                     </Menu.Item>

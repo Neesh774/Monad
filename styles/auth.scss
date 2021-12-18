@@ -22,8 +22,14 @@
     left: 50%;
 }
 
+.sign-in-button {
+    transition: 0.3s ease-in-out !important;
+}
 .sign-in-button:hover, .sign-in-button:focus {
     background-color: var(--green);
+}
+.sign-in-button:disabled {
+    background-color: var(--disabled) !important;
 }
 
 @media screen and (max-width: 768px) {
