@@ -7,7 +7,6 @@ import { useLoggedIn } from "lib/useLoggedIn";
 
 export default function SignIn() {
   const loggedIn = useLoggedIn();
-  const [isShown, setIsShown] = useState(false);
   const [logInLoading, setLogInLoading] = useState(false);
   const [showReset, setShowReset] = useState(false);
 
@@ -16,7 +15,14 @@ export default function SignIn() {
 
   const router = useRouter();
 
+  useEffect(() => {
+    if(loggedIn) {
+      router.push('/');
+    }
+  }, [loggedIn, router]);
+
   const handleLogin = async (email) => {
+    setLogInLoading(true);
     const { user, error } = await supabase.auth.signIn({
       email,
       password,
@@ -25,6 +31,7 @@ export default function SignIn() {
       toaster.danger(error.message);
       return;
     }
+    setLogInLoading(false);
   };
 
   return (
@@ -36,11 +43,12 @@ export default function SignIn() {
             placeholder="MonadUser@gmail.com"
             label="Email"
             className="email"
+            type="email"
             onChange={(e) => setEmail(e.target.value)}
           />
           <TextInputField
             placeholder="Password..."
-            type={`password`}
+            type='password'
             label="Password"
             onChange={(e) => {
               setPassword(e.target.value);
@@ -76,6 +84,7 @@ export default function SignIn() {
               }}
               backgroundColor="var(--green)"
               border="none"
+              isLoading={logInLoading}
             >
               Sign In
             </Button>

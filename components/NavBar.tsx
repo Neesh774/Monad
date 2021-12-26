@@ -21,7 +21,6 @@ import {
 import classes from "lib/classes";
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
-import { User } from "lib/types";
 import Search from "./Search";
 import router from "next/router";
 import { useLoggedIn } from "lib/useLoggedIn";
@@ -169,9 +168,10 @@ export default function Navbar() {
                     <hr />
                     <Menu.Item
                       onClick={logOut}
-                      icon={LogOutIcon}
+                      icon={<LogOutIcon color="danger" className="log-out"/>}
                       intent="danger"
-                      
+                      color="#d14343"
+                      className="nav-log-out"
                     >
                       Log Out
                     </Menu.Item>

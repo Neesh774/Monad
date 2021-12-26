@@ -2,8 +2,11 @@ import { Pane, Badge, Avatar, Tooltip, Pill } from "evergreen-ui";
 import { langs, tags } from "./langs";
 import { useTheme } from "next-themes";
 import { Snippet } from "lib/types";
-import { useRouter } from "next/router";
+import { supabase } from "lib/supabaseClient";
+import { downloadImage } from "lib/downloadImage";
+import { getAnonymous } from "lib/getAnonymousAvatar";
 import ReactTimeAgo from "react-time-ago";
+import { useEffect, useState } from "react";
 
 export default function DisplaySnippet({
   snippet,
@@ -15,8 +18,36 @@ export default function DisplaySnippet({
   downvoted?: boolean;
 }) {
   const { theme } = useTheme();
-  const router = useRouter();
+  const [creatorAvatar, setCreatorAvatar] = useState<string>();
+  const [creatorName, setCreatorName] = useState<string>();
+  const [loading, setLoading] = useState(true);
   const langObj = langs.find((lang) => lang.name === snippet.lang);
+  useEffect(() => {
+    async function getUser() {
+      if (snippet.creator_id) {
+        const avatar = downloadImage(snippet.creator_id);
+        setCreatorAvatar(avatar);
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", snippet.creator_id)
+          .single();
+        if (error) {
+          setCreatorName("Anonymous");
+        } else {
+          setCreatorName(data.username);
+        }
+      } else {
+        setCreatorName("Anonymous");
+        const anonymousAvatar = getAnonymous();
+        setCreatorAvatar(anonymousAvatar);
+      }
+      setLoading(false);
+    }
+    getUser();
+  });
+  if (loading) return null;
   return (
     <a href={`/snippets/${snippet.slug}`} className="display-snippet-link">
       <Pane
@@ -52,16 +83,9 @@ export default function DisplaySnippet({
               alignContent="center"
               gap="0.4rem"
             >
-              {!snippet.anonymous ? (
-                <Avatar
-                  name={snippet.creator_name}
-                  src={snippet.creator_avatar}
-                  size={24}
-                />
-              ) : (
-                <Avatar src="/Nomad.svg" name="Anonymous" size={32} />
-              )}
-              {!snippet.anonymous ? snippet.creator_name : "Anonymous"}
+              <Avatar name={creatorName} src={creatorAvatar} size={24} />
+
+              {!snippet.anonymous ? creatorName : "Anonymous"}
             </Pane>
             &bull;{" "}
             <i className="display-date">
@@ -113,11 +137,16 @@ export default function DisplaySnippet({
           marginX="1.5rem"
         >
           {(upvoted || downvoted) && (
-            <Pane alignItems="center" display="flex" gap="1rem">
-              <Pill width="30px" color={upvoted ? "blue" : "red"} fontSize='1.5rem' height="1.3rem">
+            <Pane alignItems="center" display="flex" flexDirection="column" gap=".5rem">
+              <span>{snippet.votes}</span>
+              <Pill
+                width="30px"
+                color={upvoted ? "blue" : "red"}
+                fontSize="1.5rem"
+                height="1.3rem"
+              >
                 {upvoted ? "+" : "-"}
               </Pill>
-              <span>{snippet.votes}</span>
             </Pane>
           )}
           {!upvoted && !downvoted && snippet.votes}

@@ -1,8 +1,8 @@
 import { supabase } from "lib/supabaseClient";
 import MetaTags from "../../components/MetaTags";
-import { User, Snippet, Activity } from "lib/types";
+import { User } from "lib/types";
 import { tags } from "components/langs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Avatar,
   EmptyState,
@@ -14,9 +14,9 @@ import {
 } from "evergreen-ui";
 import { useTheme } from "next-themes";
 import DisplaySnippet from "components/displaySnippet";
+import { downloadImage } from "lib/downloadImage";
 
 export default function UserPage({ user }: { user: User }) {
-  const [loading, setLoading] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { theme } = useTheme();
 
@@ -38,7 +38,7 @@ export default function UserPage({ user }: { user: User }) {
           flexDirection="column"
           gap="0.5rem"
         >
-          <Avatar src={user.avatar} name={user.username} size={200} />
+          <Avatar src={downloadImage(user.id)} name={user.username} size={200} />
           <h1 className="user-name">{user.username}</h1>
           <i>
             Joined{" "}
@@ -46,7 +46,7 @@ export default function UserPage({ user }: { user: User }) {
               {new Date(user.created_at).toLocaleDateString()}
             </time>
           </i>
-          <Pane width="50%" display="flex" flexDirection="column" gap="0.5rem">
+          <Pane display="flex" flexDirection="column" gap="0.5rem">
             <div>
               <h3>Bio</h3>
               <p>{user.bio || "Nothing to see here ^-^"}</p>
@@ -103,7 +103,7 @@ export default function UserPage({ user }: { user: User }) {
               <Tab
                 key="snippets"
                 id="snippets"
-                onClick={() => setSelectedIndex(0)}
+                onSelect={() => setSelectedIndex(0)}
                 isSelected={selectedIndex === 0}
                 aria-controls="panel-0"
               >
@@ -112,7 +112,7 @@ export default function UserPage({ user }: { user: User }) {
               <Tab
                 key="activity"
                 id="activity"
-                onClick={() => setSelectedIndex(1)}
+                onSelect={() => setSelectedIndex(1)}
                 isSelected={selectedIndex === 1}
                 aria-controls="panel-1"
               >
@@ -120,7 +120,12 @@ export default function UserPage({ user }: { user: User }) {
               </Tab>
             </Tablist>
           </Pane>
-          <Pane flex="1" marginTop={20} paddingRight="8px" className="snippet-display">
+          <Pane
+            flex="1"
+            marginTop={20}
+            paddingRight="8px"
+            className="snippet-display"
+          >
             <Pane
               key={0}
               id="panel-0"
@@ -153,7 +158,14 @@ export default function UserPage({ user }: { user: User }) {
             >
               {user.activity.length > 0 ? (
                 user.activity.map((activity) => {
-                  return <DisplaySnippet key={activity.snippet.id} snippet={activity.snippet} upvoted={activity.upvoted} downvoted = {activity.downvoted} />;
+                  return (
+                    <DisplaySnippet
+                      key={activity.snippet.id}
+                      snippet={activity.snippet}
+                      upvoted={activity.upvoted}
+                      downvoted={activity.downvoted}
+                    />
+                  );
                 })
               ) : (
                 <EmptyState

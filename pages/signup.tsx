@@ -1,11 +1,12 @@
 import { supabase } from "../lib/supabaseClient";
-import { Pane, Button, TextInputField, toaster } from "evergreen-ui";
+import { Pane, Button, TextInputField, toaster, Spinner } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { User } from "lib/types";
+import { useLoggedIn } from "lib/useLoggedIn";
 
 export default function SignIn() {
-  const [loggedIn, setLoggedIn] = useState(supabase.auth.user());
+  const loggedIn = useLoggedIn();
   const [logInLoading, setLogInLoading] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -15,10 +16,10 @@ export default function SignIn() {
   const router = useRouter();
 
   useEffect(() => {
-    if (supabase.auth.user()) {
+    if (loggedIn) {
       router.push("/");
     }
-  });
+  }, [loggedIn, router]);
 
   const handleLogin = async (email) => {
     setLogInLoading(true);
@@ -71,13 +72,13 @@ export default function SignIn() {
               toaster.danger(profileErr.message);
               return;
             }
+            else {
+              toaster.notify(
+                "Success! Please check your email for a verification link."
+              );
+            }
           }
         });
-
-        setLoggedIn(user);
-        toaster.notify(
-          "Success! Please check your email for a verification link."
-        );
         setLogInLoading(false);
       });
   };

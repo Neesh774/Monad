@@ -17,21 +17,33 @@ import MetaTags from "components/MetaTags";
 import { useRouter } from "next/router";
 import { tags } from "components/langs";
 import { useTheme } from "next-themes";
+import Filter from "bad-words";
 
 const maxOptions = 10;
 function findDuplicates(arr: string[]) {
   return new Set(arr).size !== arr.length;
 }
+const filter = new Filter();
 
 export default function UserSettings() {
   const loggedIn = useLoggedIn();
-  const [updated, setUpdated] = useState(false);
+  const [updatedAvatar, setUpdatedAvatar] = useState(false);
+  const [updatedUsername, setUpdatedUsername] = useState(false);
+  const [updatedBio, setUpdatedBio] = useState(false);
+  const [updatedTags, setUpdatedTags] = useState(false);
+
+  const updated = updatedAvatar || updatedUsername || updatedBio || updatedTags;
+
   const router = useRouter();
   const { theme } = useTheme();
   const [selectedTags, setSelectedTags] = useState([]);
-  const [username, setUsername] = useState("");
-  const [bio, setBio] = useState("");
-  const [avatar, setAvatar] = useState<File>();
+  const [username, setUsername] = useState<string>();
+  const [bio, setBio] = useState<string>();
+  const [avatarURL, setAvatarURL] = useState<string>();
+  const [avatarData, setAvatarData] = useState<File>();
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [usernameInvalid, setUsernameInvalid] = useState(false);
+  const [bioInvalid, setBioInvalid] = useState(false);
 
   useEffect(() => {
     if (!supabase.auth.user()) {
@@ -39,18 +51,87 @@ export default function UserSettings() {
     }
     if (loggedIn) {
       setSelectedTags(loggedIn.tags);
+      setAvatarURL(loggedIn.avatar);
+      setUsername(loggedIn.username);
+      setBio(loggedIn.bio);
     }
   }, [router, loggedIn]);
 
-  const changeAvatar = (file: File) => {
-    if(file) {
+  const changeAvatar = async (file: File) => {
+    if (file) {
       if (file.size > 256000) {
         toaster.danger("File must be under 256kb!");
         return;
       }
-      setAvatar(file);
-      setUpdated(true);
+      setUpdatedAvatar(true);
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        const loadedImage = reader.result;
+        setAvatarURL(loadedImage as string);
+      })
+      setAvatarData(file);
+      reader.readAsDataURL(file);
+
     }
+  };
+
+  const updateUser = async () => {
+    setSubmitLoading(true);
+    if (!updatedAvatar && !updatedBio && !updatedUsername && !updatedTags) {
+      return;
+    }
+    if (!username || username.length < 3 || username.length > 20) {
+      setUsernameInvalid(true);
+      setSubmitLoading(false);
+      return;
+    } else {
+      setUsernameInvalid(false);
+    }
+    if (!bio || bio.length < 10 || bio.length > 200) {
+      setBioInvalid(true);
+      setSubmitLoading(false);
+      return;
+    } else {
+      setBioInvalid(false);
+    }
+    if (filter.isProfane(bio) || filter.isProfane(username)) {
+      toaster.danger("Profanity detected in username or bio!");
+      setSubmitLoading(false);
+      return;
+    }
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          username,
+          bio,
+          tags: selectedTags,
+        })
+        .eq("id", supabase.auth.user().id);
+      if (error) {
+        throw error;
+      }
+
+      if (updatedAvatar) {
+        const { error: updateAvatarErr } = await supabase.storage.from("avatars").update(`${supabase.auth.user().id}/avatar.png`, avatarData);
+        if(updateAvatarErr) {
+          const { error: uploadAvatarErr } = await supabase.storage.from("avatars").upload(`${supabase.auth.user().id}/avatar.png`, avatarData);
+          if(uploadAvatarErr) {
+            throw uploadAvatarErr;
+          }
+        }
+      }
+      toaster.success("Updated successfully! It may take some time to update.");
+      setSubmitLoading(false);
+    } catch (error) {
+      toaster.danger(error.message);
+      setSubmitLoading(false);
+    }
+    setUpdatedAvatar(false);
+    setUpdatedBio(false);
+    setUpdatedUsername(false);
+    setUpdatedTags(false);
   };
 
   return (
@@ -67,10 +148,12 @@ export default function UserSettings() {
             {loggedIn ? (
               <>
                 <Pane display="flex" gap="1rem" alignItems="center">
-                  <Avatar
-                    size={60}
-                    src={loggedIn.avatar}
-                    name={loggedIn.username}
+                  <img
+                  className="settings-avatar"
+                    alt={loggedIn.username}
+                    src={avatarURL}
+                    width={60}
+                    height={60}
                   />
                   <FilePicker
                     accept={["image/png", "image/jpg", "image/jpeg"]}
@@ -84,9 +167,16 @@ export default function UserSettings() {
                   <TextInputField
                     defaultValue={loggedIn.username}
                     label="Username"
-                    width="40%"
+                    className="username-change-input"
+                    isInvalid={usernameInvalid}
+                    validationMessage={
+                      usernameInvalid
+                        ? "Username must be between 3 and 20 characters"
+                        : null
+                    }
+                    description="Select a username between 3 and 20 characters."
                     onChange={(e) => {
-                      setUpdated(true);
+                      setUpdatedUsername(true);
                       setUsername(e.target.value);
                     }}
                   />
@@ -95,13 +185,23 @@ export default function UserSettings() {
                     label="Bio"
                     width="90%"
                     resize="none"
+                    isInvalid={bioInvalid}
+                    validationMessage={
+                      bioInvalid
+                        ? "Bio must be between 10 and 200 characters"
+                        : null
+                    }
+                    description="Express yourself in under 200 characters!"
                     maxLength={100}
                     onChange={(e) => {
-                      setUpdated(true);
+                      setUpdatedBio(true);
                       setBio(e.target.value);
                     }}
                   />
-                  <FormField label="Tags">
+                  <FormField
+                    label="Tags"
+                    description="We'll use these selections to recommend snippets"
+                  >
                     <TagInput
                       inputProps={{
                         placeholder: "Set tags",
@@ -128,7 +228,7 @@ export default function UserSettings() {
                       }}
                       backgroundColor="var(--input)"
                       className="tag-input"
-                      onChange={(values : string[]) => {
+                      onChange={(values: string[]) => {
                         if (values.length > maxOptions) {
                           toaster.warning(
                             `You can only select up to ${maxOptions} tags!`,
@@ -152,8 +252,13 @@ export default function UserSettings() {
                             id: "tag-error",
                           });
                           return;
+                        } else if (values.some((x) => filter.isProfane(x))) {
+                          toaster.warning("Detected profanity in your tag!", {
+                            id: "tag-error",
+                          });
+                          return;
                         }
-                        setUpdated(true);                        
+                        setUpdatedTags(true);
                         setSelectedTags(values);
                       }}
                       width="90%"
@@ -174,6 +279,8 @@ export default function UserSettings() {
               border="none"
               disabled={!updated}
               cursor={updated ? "pointer" : "not-allowed"}
+              onClick={updateUser}
+              isLoading={submitLoading}
             >
               Save
             </Button>

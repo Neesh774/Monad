@@ -1,4 +1,4 @@
-import { LinkIcon } from '@heroicons/react/outline';
+import { LinkIcon } from 'evergreen-ui';
 import Link from 'next/link';
 export default function TOS() {
    return (

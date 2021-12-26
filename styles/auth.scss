@@ -1,54 +1,91 @@
 .sign-in-parent {
-    background-color: var(--foreground);
-    height: 93vh;
+  background-color: var(--foreground);
+  display: flex;
+  flex: 1 0 auto;
 
-    .header {
-        margin-bottom: 2rem;
-    }
+  .header {
+    margin-bottom: 2rem;
+  }
 
-    .sign-in-footer {
-        justify-content: right;
-    }
+  .sign-in-footer {
+    justify-content: right;
+  }
 }
 .sign-in-island {
-    margin: auto;
-    background-color: var(--background);
-    width: 40%;
-    padding: 2rem;
-    border-radius: 10px;
-    transform: translate(-50%, -50%);
-    position: absolute;
-    top: 50%;
-    left: 50%;
+  margin: auto;
+  background-color: var(--background);
+  width: 40%;
+  padding: 2rem;
+  border-radius: 10px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 
 .sign-in-button {
-    transition: 0.3s ease-in-out !important;
+  transition: 0.3s ease-in-out !important;
 }
-.sign-in-button:hover, .sign-in-button:focus {
-    background-color: var(--green);
+.sign-in-button:hover,
+.sign-in-button:focus {
+  background-color: var(--green);
 }
 .sign-in-button:disabled {
-    background-color: var(--disabled) !important;
+  background-color: var(--disabled) !important;
 }
 
 @media screen and (max-width: 768px) {
-    .sign-in-parent {
-        background-color: var(--background);
+  .sign-in-parent {
+    background-color: var(--background);
 
-        .header {
-            margin-top: 2rem;
-        }
+    .header {
+      margin-top: 2rem;
     }
-    .sign-in-island {
-        width: 100%;
-        background-color: initial;
-        margin: 0;
-        position: initial;
-        top: 0;
-        left: 0;
-        padding: 0.5rem;
-        border-radius: initial;
-        transform: initial;
-    }
+  }
+  .sign-in-island {
+    width: 100%;
+    background-color: initial;
+    margin: 0;
+    position: initial;
+    top: 0;
+    left: 0;
+    padding: 0.5rem;
+    border-radius: initial;
+    transform: initial;
+  }
+}
+
+.avatar-scale-slider {
+    appearance: none;
+  width: 60%;
+  height: 5px;
+  background: var(--hover);
+  border-radius: 3px;
+  border: none;
+
+  &:hover {
+      background: var(--scroll);
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--blue);
+    cursor: pointer;
+  }
+  &::-moz-range-thumb {
+    background: var(--blue);
+    border-radius: 3px;
+  }
+}
+
+.username-change-input {
+  width: 40% !important;
+}
+
+.settings-avatar {
+  border-radius: 50%;
 }

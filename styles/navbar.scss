@@ -155,10 +155,10 @@
 }
 
 .nav-account-menu {
-  span {
+  span:not(.nav-log-out span) {
     color: var(--text-primary) !important;
   }
-  svg {
+  svg:not(.log-out) {
     fill: var(--text-primary) !important;
   }
 }

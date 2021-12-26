@@ -70,7 +70,7 @@ export default function SearchDialog({ snippets }: { snippets: Snippet[] }) {
                 </Pane>
                 {fuzzyFilter(search).length > 0
                   ? fuzzyFilter(search).map((snippet, index) => {
-                      return <DisplaySnippet snippet={snippet} key={index} />;
+                      return <DisplaySnippet snippet={snippet} key={index} /> ?? <Spinner />;
                     })
                   : "No results"}
               </Pane>
