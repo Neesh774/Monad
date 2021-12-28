@@ -3,28 +3,36 @@
     line-height: 1.5;
     margin: 1rem 9rem 5rem;
     a {
-        text-decoration: underline;
+        display: flex;
         align-items: center;
     }
     .header {
         display: flex;
-        margin: 2rem auto;
+        &:not(.title) {
+            margin: 2rem auto;
+        }
+        &.title {
+            margin: auto;
+            margin-bottom: 2rem;
+        }
         vertical-align: baseline;
-        max-width: fit-content
+        max-width: fit-content;
+        align-items: center;
     }
     .section-header {
         display: flex;
         margin: 2rem 0;
         vertical-align: baseline;
-        max-width: fit-content
+        max-width: fit-content;
+        align-items: center;
+        flex-direction: row;
     }
     h1 {
         font-size: 2rem;
         font-weight: 100;
-        svg {
-            margin-left: 0.3rem;
-            vertical-align: baseline;
-        }
+    }
+    svg {
+        margin-left: 0.3rem;
     }
     .copyright {
         margin-top: 2rem;

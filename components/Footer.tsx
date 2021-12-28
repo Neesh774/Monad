@@ -17,7 +17,7 @@ export default function Footer() {
           <div><a href="mailto:Kanishq0106@gmail.com">Email</a></div>
         </div>
       </footer>
-      <div className="copyright">Made by Ilios Labs with &#9829; © 2021 </div>
+      <div className="copyright">Ilios Labs © 2021 </div>
     </div>
   );
 }

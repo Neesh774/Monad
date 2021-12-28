@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabaseClient";
-import { Pane, Button, TextInputField, toaster } from "evergreen-ui";
+import { Pane, Button, TextInputField, toaster, Heading } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ResetPassword from "components/resetPassword";
@@ -38,7 +38,7 @@ export default function SignIn() {
     <>
       <Pane className="sign-in-parent">
         <Pane className="sign-in-island">
-          <h4 className="header">Sign In to Monad</h4>
+          <Heading className="header" size={600}>Sign In to Monad</Heading>
           <TextInputField
             placeholder="MonadUser@gmail.com"
             label="Email"

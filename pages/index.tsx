@@ -20,6 +20,7 @@ import {
   LockIcon,
   UnlockIcon,
   IconButton,
+  Heading
 } from "evergreen-ui";
 import { useLoggedIn } from "lib/useLoggedIn";
 

@@ -1,4 +1,12 @@
-import { Pane, Badge, Avatar, Tooltip, Pill } from "evergreen-ui";
+import {
+  Pane,
+  Badge,
+  Avatar,
+  Tooltip,
+  Pill,
+  Heading,
+  Text,
+} from "evergreen-ui";
 import { langs, tags } from "./langs";
 import { useTheme } from "next-themes";
 import { Snippet } from "lib/types";
@@ -62,7 +70,7 @@ export default function DisplaySnippet({
       >
         <Pane display="flex" flexDirection="column" gap={4}>
           <Pane display="flex" alignItems="center" gap={6}>
-            <h3>{snippet.title}</h3>
+            <Heading size={700}>{snippet.title}</Heading>
             {langObj.image ? (
               <Tooltip content={langObj.name}>
                 <img
@@ -85,17 +93,21 @@ export default function DisplaySnippet({
             >
               <Avatar name={creatorName} src={creatorAvatar} size={24} />
 
-              {!snippet.anonymous ? creatorName : "Anonymous"}
+              <Text size={500}>
+                {!snippet.anonymous ? creatorName : "Anonymous"}
+              </Text>
             </Pane>
             &bull;{" "}
-            <i className="display-date">
-              <ReactTimeAgo
-                date={new Date(snippet.created_at)}
-                locale="en-US"
-              />
-            </i>
+            <Text size={500}>
+              <i className="display-date">
+                <ReactTimeAgo
+                  date={new Date(snippet.created_at)}
+                  locale="en-US"
+                />
+              </i>
+            </Text>
           </Pane>
-          <Pane marginTop="0.5rem">
+          <Pane marginTop="0.5rem" display="flex" flexDirection="row">
             {snippet.tags.map((tag) => {
               const tagObj = tags.find((t) => {
                 if (typeof t.name === "string") {
@@ -111,9 +123,11 @@ export default function DisplaySnippet({
                   marginRight="5px"
                   textTransform="lowercase"
                   fontSize="1rem"
-                  height="1.5rem"
-                  paddingY="0.2rem"
+                  height="1.3rem"
+                  paddingY="0.3rem"
                   marginY="3px"
+                  display="flex"
+                  alignItems="center"
                   color={
                     (tagObj
                       ? `hsl(${tagObj.color}, 100%, 81%)`
@@ -123,7 +137,7 @@ export default function DisplaySnippet({
                   }
                   fontWeight="normal"
                 >
-                  <span>{tag}</span>
+                  <Text>{tag}</Text>
                 </Badge>
               );
             })}
@@ -137,7 +151,12 @@ export default function DisplaySnippet({
           marginX="1.5rem"
         >
           {(upvoted || downvoted) && (
-            <Pane alignItems="center" display="flex" flexDirection="column" gap=".5rem">
+            <Pane
+              alignItems="center"
+              display="flex"
+              flexDirection="column"
+              gap=".5rem"
+            >
               <span>{snippet.votes}</span>
               <Pill
                 width="30px"

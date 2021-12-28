@@ -12,12 +12,14 @@ import {
   TagInput,
   toaster,
   FormField,
+  Heading
 } from "evergreen-ui";
 import MetaTags from "components/MetaTags";
 import { useRouter } from "next/router";
 import { tags } from "components/langs";
 import { useTheme } from "next-themes";
 import Filter from "bad-words";
+import { getAnonymous } from "lib/getAnonymousAvatar";
 
 const maxOptions = 10;
 function findDuplicates(arr: string[]) {
@@ -44,6 +46,7 @@ export default function UserSettings() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [usernameInvalid, setUsernameInvalid] = useState(false);
   const [bioInvalid, setBioInvalid] = useState(false);
+  const [fallbackAvatar, setFallbackAvatar] = useState(false);
 
   useEffect(() => {
     if (!supabase.auth.user()) {
@@ -69,10 +72,10 @@ export default function UserSettings() {
       reader.addEventListener("load", () => {
         const loadedImage = reader.result;
         setAvatarURL(loadedImage as string);
-      })
+      });
       setAvatarData(file);
       reader.readAsDataURL(file);
-
+      setFallbackAvatar(false);
     }
   };
 
@@ -114,10 +117,14 @@ export default function UserSettings() {
       }
 
       if (updatedAvatar) {
-        const { error: updateAvatarErr } = await supabase.storage.from("avatars").update(`${supabase.auth.user().id}/avatar.png`, avatarData);
-        if(updateAvatarErr) {
-          const { error: uploadAvatarErr } = await supabase.storage.from("avatars").upload(`${supabase.auth.user().id}/avatar.png`, avatarData);
-          if(uploadAvatarErr) {
+        const { error: updateAvatarErr } = await supabase.storage
+          .from("avatars")
+          .update(`${supabase.auth.user().id}/avatar.png`, avatarData);
+        if (updateAvatarErr) {
+          const { error: uploadAvatarErr } = await supabase.storage
+            .from("avatars")
+            .upload(`${supabase.auth.user().id}/avatar.png`, avatarData);
+          if (uploadAvatarErr) {
             throw uploadAvatarErr;
           }
         }
@@ -142,19 +149,24 @@ export default function UserSettings() {
       />
       <Pane className="sign-in-parent">
         <Pane className="sign-in-island">
-          <h4 className="header">Update your settings</h4>
+          <Heading className="header" size={600}>Update your settings</Heading>
 
           <Pane display="flex" flexDirection="column" gap="1rem" marginY="1rem">
             {loggedIn ? (
               <>
                 <Pane display="flex" gap="1rem" alignItems="center">
-                  <img
-                  className="settings-avatar"
-                    alt={loggedIn.username}
-                    src={avatarURL}
-                    width={60}
-                    height={60}
-                  />
+                  {fallbackAvatar ? (
+                    <Avatar size={60} src={avatarURL} name={loggedIn.username} />
+                  ) : (
+                    <img
+                      className="settings-avatar"
+                      alt={loggedIn.username}
+                      src={avatarURL}
+                      width={60}
+                      height={60}
+                      onError={() => setFallbackAvatar(true)}
+                    />
+                  )}
                   <FilePicker
                     accept={["image/png", "image/jpg", "image/jpeg"]}
                     multiple={false}

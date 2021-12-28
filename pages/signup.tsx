@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabaseClient";
-import { Pane, Button, TextInputField, toaster, Spinner } from "evergreen-ui";
+import { Pane, Button, TextInputField, toaster, Heading } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { User } from "lib/types";
@@ -74,11 +74,14 @@ export default function SignIn() {
             }
             else {
               toaster.notify(
-                "Success! Please check your email for a verification link."
+                "Logged in!"
               );
             }
           }
         });
+        toaster.notify(
+          "Success! Please check your email for a verification link."
+        );
         setLogInLoading(false);
       });
   };
@@ -86,7 +89,7 @@ export default function SignIn() {
   return (
     <Pane className="sign-in-parent">
       <Pane className="sign-in-island">
-        <h4 className="header">Sign Up for Monad</h4>
+        <Heading size={600} className="header">Sign Up for Monad</Heading>
         <TextInputField
           placeholder="MonadUser@gmail.com"
           label="Email"

@@ -9,6 +9,10 @@ export function useLoggedIn() {
     async function fetchData() {
       if(supabase.auth.user()) {
         const { data: userObj }= await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id).single();
+        if(userObj == null) {
+          await supabase.auth.signOut();
+          return;
+        }
         const avatar = downloadImage(supabase.auth.user().id);
         userObj.avatar = avatar;
         console.log(avatar);
