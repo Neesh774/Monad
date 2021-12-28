@@ -21,6 +21,8 @@ import {
   UnlockIcon,
   Icon,
   Text,
+  Spinner,
+  Heading,
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
@@ -30,8 +32,8 @@ import { useLoggedIn } from "lib/useLoggedIn";
 import { downloadImage } from "lib/downloadImage";
 import { getAnonymous } from "lib/getAnonymousAvatar";
 
-export default function SnippetPage(props : any) {
-  const snippetProp : Snippet = props.snippet;
+export default function SnippetPage(props: any) {
+  const snippetProp: Snippet = props.snippet;
   const {
     code,
     created_at: created,
@@ -41,7 +43,7 @@ export default function SnippetPage(props : any) {
     title,
     anonymous,
     listed,
-    creator_id
+    creator_id,
   } = snippetProp;
   const { theme } = useTheme();
   const [copy, setCopy] = useState("Copy");
@@ -57,11 +59,13 @@ export default function SnippetPage(props : any) {
   const snippet = useRef<Snippet>(snippetProp);
 
   useEffect(() => {
-    if(loggedIn) {
+    if (loggedIn) {
       userId.current = loggedIn.id;
       userActivity.current = loggedIn.activity;
-      const activity = loggedIn.activity.find((activity) => activity.snippet.id === snippetProp.id);
-      if(activity) {
+      const activity = loggedIn.activity.find(
+        (activity) => activity.snippet.id === snippetProp.id
+      );
+      if (activity) {
         setUpvoted(activity.upvoted);
         setDownvoted(activity.downvoted);
       }
@@ -85,15 +89,22 @@ export default function SnippetPage(props : any) {
         setCreatorName("Anonymous");
         const anonymousAvatar = getAnonymous();
         setCreatorAvatar(anonymousAvatar);
+        console.log(creatorAvatar);
       }
       setLoading(false);
     }
     getUser();
-  }, [loggedIn, snippetProp])
+  }, [loggedIn, snippetProp, creator_id, creatorAvatar]);
 
   useEffect(() => {
-    if(userActivity.current) {
-      updateVotes(upvoted, downvoted, snippet.current.valueOf() as Snippet, userId.current.valueOf(), userActivity.current.valueOf() as Activity[]);
+    if (userActivity.current) {
+      updateVotes(
+        upvoted,
+        downvoted,
+        snippet.current.valueOf() as Snippet,
+        userId.current.valueOf(),
+        userActivity.current.valueOf() as Activity[]
+      );
     }
   }, [upvoted, downvoted]);
 
@@ -193,137 +204,144 @@ export default function SnippetPage(props : any) {
         description={`${title} on Monad | ${lang} | ${votes} votes`}
       />
       <div className="snippet-page">
-        <Pane className="header" display="flex" flexDirection="column">
-          <h1>{title}</h1>
-          <span>
-            <i>
-              Created <ReactTimeAgo date={date} locale="en-US" />
-            </i>
-          </span>
-          <Pane
-            display="flex"
-            alignItems="center"
-            alignContent="center"
-            gap="0.4rem"
-            marginTop="0.4rem"
-          >
-            {!anonymous ? (
-              <Avatar name={creatorName} src={creatorAvatar} size={32} />
-            ) : (
-              <Avatar src="/Nomad.svg" name="Anonymous" size={32} />
-            )}
-            <Text size={500}>{creatorName}</Text>
-          </Pane>
-        </Pane>
-        <div className="content">
-          <Pane
-            borderWidth="2px"
-            backgroundColor={theme === "dark" ? "var(--foreground)" : "#fafafa"}
-            paddingX="2rem"
-            paddingY="1rem"
-            borderRadius="10px"
-          >
-            <Pane
-              marginBottom="0.5rem"
-              justifyContent="space-between"
-              width="100%"
-              display="flex"
-            >
-              <Pane height="2rem">
-                {snippetTags.map((tag) => {
-                  const tagObj = tags.find((t) => {
-                    if (typeof t.name === "string") {
-                      return t.name.toLowerCase() === tag.toLowerCase();
-                    }
-                    return t.name.find((n) => {
-                      return n.toLowerCase() === tag.toLowerCase();
-                    });
-                  });
-                  return (
-                    <Badge
-                      key={tag}
-                      marginRight="5px"
-                      textTransform="lowercase"
-                      fontSize="1rem"
-                      height="1.5rem"
-                      paddingY="0.2rem"
-                      color={
-                        (tagObj
-                          ? `hsl(${tagObj.color}, 100%, 81%)`
-                          : theme === "dark"
-                          ? "#3b3b3b"
-                          : "neutral") as any
-                      }
-                      fontWeight="normal"
-                    >
-                      <span>{tag}</span>
-                    </Badge>
-                  );
-                })}
+        {!loading ? (
+          <>
+            {" "}
+            <Pane className="header" display="flex" flexDirection="column">
+              <Heading size={900}>{title}</Heading>
+              <Text size={500}>
+                <i>
+                  Created <ReactTimeAgo date={date} locale="en-US" />
+                </i>
+              </Text>
+              <Pane
+                display="flex"
+                alignItems="center"
+                alignContent="center"
+                gap="0.4rem"
+                marginTop="0.4rem"
+              >
+                <Avatar name={creatorName} src={creatorAvatar} size={32} />
+                <Text size={500}>{creatorName}</Text>
               </Pane>
-              <Pane display="flex" gap="1rem" alignContent="center">
-                <Pane display="flex" alignItems="center" gap="1rem">
-                  <Tooltip content={!listed ? "Unlisted" : "Listed"}>
-                    <Icon icon={!listed ? LockIcon : UnlockIcon} />
-                  </Tooltip>
-                  {langObj.name}
-                </Pane>
-                <Button
-                  onClick={copyCode}
-                  iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
-                  backgroundColor="var(--input)"
-                  color="var(--text-primary)"
-                  className="copy-button"
+            </Pane>
+            <div className="content">
+              <Pane
+                borderWidth="2px"
+                backgroundColor={
+                  theme === "dark" ? "var(--foreground)" : "#fafafa"
+                }
+                paddingX="2rem"
+                paddingY="1rem"
+                borderRadius="10px"
+              >
+                <Pane
+                  marginBottom="0.5rem"
+                  justifyContent="space-between"
+                  width="100%"
+                  display="flex"
                 >
-                  {copy}
-                </Button>
+                  <Pane height="2rem">
+                    {snippetTags.map((tag) => {
+                      const tagObj = tags.find((t) => {
+                        if (typeof t.name === "string") {
+                          return t.name.toLowerCase() === tag.toLowerCase();
+                        }
+                        return t.name.find((n) => {
+                          return n.toLowerCase() === tag.toLowerCase();
+                        });
+                      });
+                      return (
+                        <Badge
+                          key={tag}
+                          marginRight="5px"
+                          textTransform="lowercase"
+                          fontSize="1rem"
+                          height="1.5rem"
+                          paddingY="0.2rem"
+                          color={
+                            (tagObj
+                              ? `hsl(${tagObj.color}, 100%, 81%)`
+                              : theme === "dark"
+                              ? "#3b3b3b"
+                              : "neutral") as any
+                          }
+                          fontWeight="normal"
+                        >
+                          <Text>{tag}</Text>
+                        </Badge>
+                      );
+                    })}
+                  </Pane>
+                  <Pane display="flex" gap="1rem" alignContent="center">
+                    <Pane display="flex" alignItems="center" gap="1rem">
+                      <Tooltip content={!listed ? "Unlisted" : "Listed"}>
+                        <Icon icon={!listed ? LockIcon : UnlockIcon} />
+                      </Tooltip>
+                      <Text size={500}>{langObj.name}</Text>
+                    </Pane>
+                    <Button
+                      onClick={copyCode}
+                      iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
+                      backgroundColor="var(--input)"
+                      color="var(--text-primary)"
+                      className="copy-button"
+                    >
+                      {copy}
+                    </Button>
+                  </Pane>
+                </Pane>
+                <CodeMirror
+                  value={code}
+                  extensions={[langExtension]}
+                  editable={false}
+                  theme={theme === "light" ? "light" : "dark"}
+                  color="blue"
+                  maxHeight="23rem"
+                />
               </Pane>
-            </Pane>
-            <CodeMirror
-              value={code}
-              extensions={[langExtension]}
-              editable={false}
-              theme={theme === "light" ? "light" : "dark"}
-              color="blue"
-              maxHeight="23rem"
-            />
+              <Pane className="actions" gap="0.4rem">
+                <Pane
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  gap="0.4rem"
+                >
+                  <Tooltip content="Downvote">
+                    <IconButton
+                      icon={ArrowDownIcon}
+                      appearance="minimal"
+                      onClick={downvote}
+                      className={`${downvoted ? "downvoted" : ""} downvote`}
+                    />
+                  </Tooltip>
+                  {votes}
+                  <Tooltip content="Upvote">
+                    <IconButton
+                      icon={ArrowUpIcon}
+                      appearance="minimal"
+                      onClick={upvote}
+                      className={`${upvoted ? "upvoted" : ""} upvote`}
+                    />
+                  </Tooltip>
+                </Pane>
+                <Tooltip content="Share Snippet">
+                  <IconButton
+                    icon={ShareIcon}
+                    onClick={() => share()}
+                    appearance="minimal"
+                    width={40}
+                    height={40}
+                  />
+                </Tooltip>
+              </Pane>
+            </div>
+          </>
+        ) : (
+          <Pane display="flex" alignItems="center" flex="1 0 auto">
+            <Spinner marginX="auto" />
           </Pane>
-          <Pane className="actions" gap="0.4rem">
-            <Pane
-              display="flex"
-              flexDirection="row"
-              alignItems="center"
-              gap="0.4rem"
-            >
-              <Tooltip content="Downvote">
-                <IconButton
-                  icon={ArrowDownIcon}
-                  appearance="minimal"
-                  onClick={downvote}
-                  className={`${downvoted ? "downvoted" : ""} downvote`}
-                />
-              </Tooltip>
-              {votes}
-              <Tooltip content="Upvote">
-                <IconButton
-                  icon={ArrowUpIcon}
-                  appearance="minimal"
-                  onClick={upvote}
-                  className={`${upvoted ? "upvoted" : ""} upvote`}
-                />
-              </Tooltip>
-            </Pane>
-            <Tooltip content="Share Snippet">
-              <IconButton
-                icon={ShareIcon}
-                onClick={() => share()}
-                appearance="minimal"
-                width={40}
-                height={40}
-              />
-            </Tooltip>
-          </Pane>
-        </div>
+        )}
       </div>
       <Footer />
     </>
@@ -339,8 +357,11 @@ export async function getStaticProps(context) {
     .limit(1);
 
   let loggedIn;
-  if(supabase.auth.user()) {
-    let { data: loggedIn } = await supabase.from("profiles").select("*").eq("id", supabase.auth.user().id);
+  if (supabase.auth.user()) {
+    let { data: loggedIn } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", supabase.auth.user().id);
   }
 
   const snippet: Snippet = data[0];
@@ -367,17 +388,26 @@ export async function getStaticPaths() {
   };
 }
 
-async function updateVotes(upvote: boolean, downvote: boolean, snippet: Snippet, userId: string, activity: Activity[]) {
+async function updateVotes(
+  upvote: boolean,
+  downvote: boolean,
+  snippet: Snippet,
+  userId: string,
+  activity: Activity[]
+) {
   const vote: Activity = {
     snippet: snippet,
     upvoted: upvote,
-    downvoted: downvote
+    downvoted: downvote,
   };
   const newVotes = activity.filter((a) => a.snippet.id !== snippet.id);
-  if(downvote || upvote) {
+  if (downvote || upvote) {
     newVotes.push(vote);
   }
-  const { error } = await supabase.from("profiles").update({ activity: newVotes }).eq("id", userId);
+  const { error } = await supabase
+    .from("profiles")
+    .update({ activity: newVotes })
+    .eq("id", userId);
   if (error) {
     toaster.danger("Something went wrong!");
     return;

@@ -145,7 +145,7 @@ export default function UserSettings() {
     <>
       <MetaTags
         title="Settings"
-        description="Edit your user settings on Monad"
+        description=""
       />
       <Pane className="sign-in-parent">
         <Pane className="sign-in-island">

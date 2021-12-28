@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { User } from "lib/types";
 import { useLoggedIn } from "lib/useLoggedIn";
+import MetaTags from "components/MetaTags";
 
 export default function SignIn() {
   const loggedIn = useLoggedIn();
@@ -71,11 +72,8 @@ export default function SignIn() {
             if (profileErr) {
               toaster.danger(profileErr.message);
               return;
-            }
-            else {
-              toaster.notify(
-                "Logged in!"
-              );
+            } else {
+              toaster.notify("Logged in!");
             }
           }
         });
@@ -83,60 +81,65 @@ export default function SignIn() {
           "Success! Please check your email for a verification link."
         );
         setLogInLoading(false);
-      });
+      });2
   };
 
   return (
-    <Pane className="sign-in-parent">
-      <Pane className="sign-in-island">
-        <Heading size={600} className="header">Sign Up for Monad</Heading>
-        <TextInputField
-          placeholder="MonadUser@gmail.com"
-          label="Email"
-          className="email"
-          onChange={(e) => setEmail(e.target.value)}
-          description="We'll send you a verification link to verify your email."
-        />
-        <TextInputField
-          placeholder="MonadUser123"
-          label="Username"
-          className="username"
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <TextInputField
-          placeholder="Password..."
-          type={`password`}
-          label="Password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          description="Use a strong password with capital and lowercase letters, numbers, and symbols."
-        />
-        <Button
-          appearance="minimal"
-          paddingX="0.4rem"
-          color="var(--blue)"
-          onClick={() => {
-            router.push("/login");
-          }}
-        >
-          Already have an account?
-        </Button>
-        <Pane display="flex" gap="1rem" className="sign-in-footer">
-          <Button
-            className="sign-in-button"
-            appearance="primary"
-            onClick={() => {
-              handleLogin(email);
+    <>
+      <MetaTags title="Sign up for Monad" />
+      <Pane className="sign-in-parent">
+        <Pane className="sign-in-island">
+          <Heading size={600} className="header">
+            Sign Up for Monad
+          </Heading>
+          <TextInputField
+            placeholder="MonadUser@gmail.com"
+            label="Email"
+            className="email"
+            onChange={(e) => setEmail(e.target.value)}
+            description="We'll send you a verification link to verify your email."
+          />
+          <TextInputField
+            placeholder="MonadUser123"
+            label="Username"
+            className="username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <TextInputField
+            placeholder="Password..."
+            type={`password`}
+            label="Password"
+            onChange={(e) => {
+              setPassword(e.target.value);
             }}
-            backgroundColor="var(--green)"
-            border="none"
-            isLoading={logInLoading}
+            description="Use a strong password with capital and lowercase letters, numbers, and symbols."
+          />
+          <Button
+            appearance="minimal"
+            paddingX="0.4rem"
+            color="var(--blue)"
+            onClick={() => {
+              router.push("/login");
+            }}
           >
-            Sign In
+            Already have an account?
           </Button>
+          <Pane display="flex" gap="1rem" className="sign-in-footer">
+            <Button
+              className="sign-in-button"
+              appearance="primary"
+              onClick={() => {
+                handleLogin(email);
+              }}
+              backgroundColor="var(--green)"
+              border="none"
+              isLoading={logInLoading}
+            >
+              Sign In
+            </Button>
+          </Pane>
         </Pane>
       </Pane>
-    </Pane>
+    </>
   );
 }

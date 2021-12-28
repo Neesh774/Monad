@@ -105,7 +105,7 @@ export default function Home() {
       votes: 0,
       lang: mode,
       slug,
-      creator_id: loggedIn ? loggedIn.id : '',
+      creator_id: loggedIn ? loggedIn.id : null,
       anonymous: loggedIn ? false : true,
       listed: listed,
     };

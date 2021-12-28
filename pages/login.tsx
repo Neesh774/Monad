@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ResetPassword from "components/resetPassword";
 import { useLoggedIn } from "lib/useLoggedIn";
+import MetaTags from "../components/MetaTags"
 
 export default function SignIn() {
   const loggedIn = useLoggedIn();
@@ -36,6 +37,7 @@ export default function SignIn() {
 
   return (
     <>
+      <MetaTags title="Log in to Monad" description=""/>
       <Pane className="sign-in-parent">
         <Pane className="sign-in-island">
           <Heading className="header" size={600}>Sign In to Monad</Heading>
