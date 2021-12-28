@@ -1,10 +1,12 @@
 import { LinkIcon, Heading, Paragraph } from "evergreen-ui";
 import Link from "next/link";
 import Footer from "components/Footer";
+import MetaTags from "components/MetaTags";
 
 export default function TOS() {
   return (
     <>
+      <MetaTags title="Monad Terms and Conditions" description=""/>
       <div className="legal">
         <div className="header">
           <img

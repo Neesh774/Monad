@@ -20,12 +20,15 @@ import {
   LockIcon,
   UnlockIcon,
   Icon,
+  Text,
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
 import { Snippet, Activity, User } from "lib/types";
 import MetaTags from "components/MetaTags";
 import { useLoggedIn } from "lib/useLoggedIn";
+import { downloadImage } from "lib/downloadImage";
+import { getAnonymous } from "lib/getAnonymousAvatar";
 
 export default function SnippetPage(props : any) {
   const snippetProp : Snippet = props.snippet;
@@ -36,16 +39,18 @@ export default function SnippetPage(props : any) {
     votes: snippetVotes,
     tags: snippetTags,
     title,
-    creator_avatar: userAvatar,
-    creator_name: userName,
     anonymous,
     listed,
+    creator_id
   } = snippetProp;
   const { theme } = useTheme();
   const [copy, setCopy] = useState("Copy");
   const [votes, setVotes] = useState(snippetVotes);
   const [upvoted, setUpvoted] = useState(false);
   const [downvoted, setDownvoted] = useState(false);
+  const [creatorAvatar, setCreatorAvatar] = useState<string>();
+  const [creatorName, setCreatorName] = useState<string>();
+  const [loading, setLoading] = useState(true);
   const loggedIn = useLoggedIn();
   const userId = useRef<String>();
   const userActivity = useRef<Activity[]>();
@@ -61,6 +66,29 @@ export default function SnippetPage(props : any) {
         setDownvoted(activity.downvoted);
       }
     }
+    async function getUser() {
+      if (creator_id) {
+        const avatar = downloadImage(creator_id);
+        setCreatorAvatar(avatar);
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", creator_id)
+          .single();
+        if (error) {
+          setCreatorName("Anonymous");
+        } else {
+          setCreatorName(data.username);
+        }
+      } else {
+        setCreatorName("Anonymous");
+        const anonymousAvatar = getAnonymous();
+        setCreatorAvatar(anonymousAvatar);
+      }
+      setLoading(false);
+    }
+    getUser();
   }, [loggedIn, snippetProp])
 
   useEffect(() => {
@@ -180,11 +208,11 @@ export default function SnippetPage(props : any) {
             marginTop="0.4rem"
           >
             {!anonymous ? (
-              <Avatar name={userName} src={userAvatar} size={32} />
+              <Avatar name={creatorName} src={creatorAvatar} size={32} />
             ) : (
               <Avatar src="/Nomad.svg" name="Anonymous" size={32} />
             )}
-            {!anonymous ? userName : "Anonymous"}
+            <Text size={500}>{creatorName}</Text>
           </Pane>
         </Pane>
         <div className="content">
@@ -340,7 +368,6 @@ export async function getStaticPaths() {
 }
 
 async function updateVotes(upvote: boolean, downvote: boolean, snippet: Snippet, userId: string, activity: Activity[]) {
-  console.log(upvote, downvote);
   const vote: Activity = {
     snippet: snippet,
     upvoted: upvote,

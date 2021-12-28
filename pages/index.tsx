@@ -56,7 +56,7 @@ export default function Home() {
 
   useEffect(() => {
     setExtensions(langs.find((l) => l.name === "Javascript").extension());
-    setMode("javascript");
+    setMode("Javascript");
   }, []);
 
   const submitSnippet = async () => {
@@ -106,8 +106,6 @@ export default function Home() {
       lang: mode,
       slug,
       creator_id: loggedIn ? loggedIn.id : '',
-      creator_avatar: loggedIn ? loggedIn.avatar : null,
-      creator_name: loggedIn ? loggedIn.username : 'Anonymous',
       anonymous: loggedIn ? false : true,
       listed: listed,
     };
@@ -116,6 +114,7 @@ export default function Home() {
       .insert(newSnippet).single();
     if (error) {
       toaster.danger("Something went wrong! Please try again later.");
+      console.log(error);
       setSubmitLoading(false);
       return;
     } else {
@@ -146,6 +145,7 @@ export default function Home() {
           .eq("id", supabase.auth.user().id);
         if (error) {
           toaster.danger("Something went wrong! Please try again later.");
+          console.log(error);
           setSubmitLoading(false);
           return;
         }

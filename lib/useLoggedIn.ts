@@ -15,7 +15,6 @@ export function useLoggedIn() {
         }
         const avatar = downloadImage(supabase.auth.user().id);
         userObj.avatar = avatar;
-        console.log(avatar);
         setLoggedIn(userObj);
       }
     }

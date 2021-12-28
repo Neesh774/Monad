@@ -8,8 +8,6 @@ export type Snippet = {
   lang: string;
   slug: string;
   creator_id: string;
-  creator_avatar: string;
-  creator_name: string;
   anonymous: boolean;
   listed: boolean;
 }

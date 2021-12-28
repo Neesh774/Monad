@@ -1,7 +1,7 @@
 .snippet-page {
     display: flex;
     flex-direction: column;
-    min-height: 70vh;
+    flex: 1 0 auto;
 
     .header {
         display: flex;

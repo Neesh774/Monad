@@ -1,9 +1,11 @@
 import { LinkIcon, Heading, Paragraph } from "evergreen-ui";
 import Footer from "components/Footer";
 import Link from "next/link";
+import MetaTags from "../components/MetaTags";
 export default function TOS() {
   return (
     <>
+      <MetaTags title="Monad Privacy Policy" description="" />
       <div className="legal">
         <div className="header title">
           <img
