@@ -3,7 +3,6 @@ import { langs, tags } from "../../components/langs";
 import CodeMirror from "@uiw/react-codemirror";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/router";
 import {
   IconButton,
   ShareIcon,
@@ -201,7 +200,7 @@ export default function SnippetPage(props: any) {
     <>
       <MetaTags
         title={`${title} | Monad`}
-        description={`${title} on Monad | ${lang} | ${votes} votes`}
+        description={`${title} on Monad | Written in ${lang} | ${votes} votes`}
       />
       <div className="snippet-page">
         {!loading ? (

@@ -2,29 +2,30 @@ import { supabase } from "../lib/supabaseClient";
 import { Pane, Button, TextInputField, toaster, Heading } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useLoggedIn } from "lib/useLoggedIn";
 import MetaTags from "../components/MetaTags";
 
 export default function ResetPassword() {
-  const loggedIn = useLoggedIn();
   const [loading, setLoading] = useState(false);
   const [newPassword, setNewPassword] = useState<string>();
+  const [accessToken, setAccessToken] = useState<string>();
 
   const router = useRouter();
-  const access_token = router.query.access_token as string;
-  console.log(access_token);
+  setAccessToken(router.query.access_token as string);
 
-  if (!access_token) {
-    router.push("/");
-  }
+  useEffect(() => {
+    if(!accessToken) {
+      router.push("/");
+    }
+  })
 
   const updatePassword = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.api.updateUser(access_token, {
+    const { error } = await supabase.auth.api.updateUser(accessToken, {
       password: newPassword,
     });
     if(error) {
       toaster.danger(error.message);
+      return;
     }
     setLoading(false);
     toaster.success("Successfully updated your password!");
