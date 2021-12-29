@@ -111,6 +111,7 @@ export default function Navbar() {
                 className="searchbar"
                 placeholder="Search for a snippet..."
                 backgroundColor="var(--input)"
+                type="search"
               />
               <ul className="links">
                 {navigation.map(({ name, href }) => (

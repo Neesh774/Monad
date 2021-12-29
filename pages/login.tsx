@@ -2,7 +2,7 @@ import { supabase } from "../lib/supabaseClient";
 import { Pane, Button, TextInputField, toaster, Heading } from "evergreen-ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ResetPassword from "components/resetPassword";
+import ResetPassword from "components/resetPasswordEmail";
 import { useLoggedIn } from "lib/useLoggedIn";
 import MetaTags from "../components/MetaTags"
 

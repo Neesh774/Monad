@@ -1,10 +1,12 @@
 import { supabase } from "lib/supabaseClient";
 import { Dialog, TextInputField, toaster } from "evergreen-ui";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function ResetPassword({ shown, close }) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   return (
     <Dialog
@@ -17,7 +19,7 @@ export default function ResetPassword({ shown, close }) {
       isConfirmLoading={loading}
       onConfirm={async () => {
         setLoading(true);
-        const { data, error } =
+        const { error } =
           await supabase.auth.api.resetPasswordForEmail(email);
         if(error) {
             toaster.danger(error.message);

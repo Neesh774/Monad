@@ -20,9 +20,10 @@ import {
   LockIcon,
   UnlockIcon,
   IconButton,
-  Heading
+  Heading,
 } from "evergreen-ui";
 import { useLoggedIn } from "lib/useLoggedIn";
+import ResetPassword from "pages/password-reset";
 
 const maxOptions = 5;
 function findDuplicates(arr: string[]) {
@@ -33,14 +34,19 @@ export default function Home() {
   const { theme } = useTheme();
   const [mode, setMode] = useState<string>();
   const [selectedLang, setSelectedLang] = useState<Lang>();
-  const [code, setCode] = useState<string>('console.log("Welcome to Monad!");');
-  const [title, setTitle] = useState<string>("");
+  const [code, setCode] = useState('console.log("Welcome to Monad!");');
+  const [title, setTitle] = useState("");
   const [selectedOption, setSelectedOption] = useState<string[]>([]);
   const [extensions, setExtensions] = useState<Extension[]>();
-  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-  const [listed, setListed] = useState<boolean>(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [listed, setListed] = useState(true);
   const loggedIn = useLoggedIn();
   const router = useRouter();
+
+  if (router.asPath.includes("type=recover")) {
+    const access_token = router.asPath.split("&")[0].split("=")[1];
+    router.push({ pathname: "/password-reset", query: { access_token } });
+  }
 
   function handleLangChange(lang: string) {
     if (langs.find((l) => l.name === lang)) {
@@ -111,7 +117,8 @@ export default function Home() {
     };
     const { data: created, error } = await supabase
       .from("snippets")
-      .insert(newSnippet).single();
+      .insert(newSnippet)
+      .single();
     if (error) {
       toaster.danger("Something went wrong! Please try again later.");
       console.log(error);

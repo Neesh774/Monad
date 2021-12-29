@@ -81,7 +81,7 @@ export default function SignIn() {
           "Success! Please check your email for a verification link."
         );
         setLogInLoading(false);
-      });2
+      });
   };
 
   return (
