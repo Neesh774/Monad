@@ -11,11 +11,6 @@ export default function ResetPassword() {
 
   const router = useRouter();
   const access_token = router.query.access_token as string;
-  
-  if(!access_token) {
-    router.push("/");
-  }
-
 
   const updatePassword = async () => {
     setLoading(true);
