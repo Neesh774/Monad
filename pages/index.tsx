@@ -43,10 +43,12 @@ export default function Home() {
   const loggedIn = useLoggedIn();
   const router = useRouter();
 
-  if (router.asPath.includes("type=recover")) {
-    const access_token = router.asPath.split("&")[0].split("=")[1];
-    router.push({ pathname: "/password-reset", query: { access_token } });
-  }
+  useEffect(() => {
+    if (router.asPath.includes("type=recover")) {
+      const access_token = router.asPath.split("&")[0].split("=")[1];
+      router.push({ pathname: "/password-reset", query: { access_token } });
+    }
+  }, [router])
 
   function handleLangChange(lang: string) {
     if (langs.find((l) => l.name === lang)) {

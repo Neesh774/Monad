@@ -10,22 +10,20 @@ export default function ResetPassword() {
   const [accessToken, setAccessToken] = useState<string>();
 
   const router = useRouter();
-  setAccessToken(router.query.access_token as string);
+  const access_token = router.query.access_token as string;
+  
+  if(!access_token) {
+    router.push("/");
+  }
 
-  useEffect(() => {
-    if(!accessToken) {
-      router.push("/");
-    }
-  })
 
   const updatePassword = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.api.updateUser(accessToken, {
+    const { error } = await supabase.auth.api.updateUser(access_token, {
       password: newPassword,
     });
     if(error) {
       toaster.danger(error.message);
-      return;
     }
     setLoading(false);
     toaster.success("Successfully updated your password!");
