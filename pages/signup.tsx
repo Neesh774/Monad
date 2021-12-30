@@ -41,6 +41,10 @@ export default function SignIn() {
           toaster.danger("Username must be less than 20 characters");
           setLogInLoading(false);
           return;
+        } else if (!(/^[0-9a-zA-Z_.-]+$/.test(username))) {
+          toaster.danger("Usernames may only contain alphanumeric characters, dashes, underscores, and periods.");
+          setLogInLoading(false);
+          return;
         }
         const { user, error } = await supabase.auth.signUp({
           email,

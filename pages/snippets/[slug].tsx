@@ -207,7 +207,7 @@ export default function SnippetPage(props: any) {
           <>
             {" "}
             <Pane className="header" display="flex" flexDirection="column">
-              <Heading size={900}>{title}</Heading>
+              <Heading size={900}><title>{title}</title></Heading>
               <Text size={500}>
                 <i>
                   Created <ReactTimeAgo date={date} locale="en-US" />
