@@ -15,8 +15,8 @@ export default async function SiteMap(req, res) {
     snippets.forEach(snippet => {
       smStream.write({
         url: `/snippets/${snippet.slug}`,
-        changefreq: 'daily',
-        priority: 0.9
+        changefreq: 'hourly',
+        priority: 0.7
       });
     });
 
@@ -28,7 +28,7 @@ export default async function SiteMap(req, res) {
       smStream.write({
         url: `/user/${user.username}`,
         changefreq: 'daily',
-        priority: 0.9
+        priority: 0.4
       })
     })
 

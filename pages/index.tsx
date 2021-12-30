@@ -2,7 +2,7 @@ import { supabase } from "../lib/supabaseClient";
 import CodeMirror from "@uiw/react-codemirror";
 import slugify from "slugify";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/dist/client/router";
+import { useRouter } from "next/router";
 import { langs, tags } from "../components/langs";
 import React, { useState, useEffect } from "react";
 import { Extension } from "@codemirror/state";

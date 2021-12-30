@@ -30,6 +30,7 @@ import MetaTags from "components/MetaTags";
 import { useLoggedIn } from "lib/useLoggedIn";
 import { downloadImage } from "lib/downloadImage";
 import { getAnonymous } from "lib/getAnonymousAvatar";
+import { useRouter } from "next/router";
 
 export default function SnippetPage(props: any) {
   const snippetProp: Snippet = props.snippet;
@@ -56,6 +57,7 @@ export default function SnippetPage(props: any) {
   const userId = useRef<String>();
   const userActivity = useRef<Activity[]>();
   const snippet = useRef<Snippet>(snippetProp);
+  const router = useRouter();
 
   useEffect(() => {
     if (loggedIn) {
@@ -207,21 +209,36 @@ export default function SnippetPage(props: any) {
           <>
             {" "}
             <Pane className="header" display="flex" flexDirection="column">
-              <Heading size={900}><title>{title}</title></Heading>
+              <title>
+                {title}
+              </title>
+              <Heading size={900}>{title}</Heading>
               <Text size={500}>
                 <i>
                   Created <ReactTimeAgo date={date} locale="en-US" />
                 </i>
               </Text>
-              <Pane
-                display="flex"
-                alignItems="center"
-                alignContent="center"
-                gap="0.4rem"
-                marginTop="0.4rem"
-              >
-                <Avatar name={creatorName} src={creatorAvatar} size={32} />
-                <Text size={500}>{creatorName}</Text>
+              <Pane display="flex">
+                <Button
+                  display="flex"
+                  alignItems="center"
+                  alignContent="center"
+                  gap="0.4rem"
+                  marginTop="0.4rem"
+                  appearance="minimal"
+                  paddingY="1.3rem"
+                  paddingX="0.5rem"
+                  onClick={() => {
+                    if (creatorName != "Anonymous") {
+                      router.push(`/user/${creatorName}`);
+                    } else {
+                      toaster.warning("Sorry, that user doesn't exist.");
+                    }
+                  }}
+                >
+                  <Avatar name={creatorName} src={creatorAvatar} size={32} />
+                  <Text size={500}>{creatorName}</Text>
+                </Button>
               </Pane>
             </Pane>
             <div className="content">
