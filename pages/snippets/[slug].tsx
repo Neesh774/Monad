@@ -1,7 +1,6 @@
 import { supabase } from "../../lib/supabaseClient";
 import { langs, tags } from "../../components/langs";
 import CodeMirror from "@uiw/react-codemirror";
-import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
 import {
   IconButton,
@@ -44,7 +43,6 @@ export default function SnippetPage(props: any) {
     listed,
     creator_id,
   } = snippetProp;
-  const { theme } = useTheme();
   const [copy, setCopy] = useState("Copy");
   const [votes, setVotes] = useState(snippetVotes);
   const [upvoted, setUpvoted] = useState(false);
@@ -227,9 +225,7 @@ export default function SnippetPage(props: any) {
             <div className="content">
               <Pane
                 borderWidth="2px"
-                backgroundColor={
-                  theme === "dark" ? "var(--foreground)" : "#fafafa"
-                }
+                backgroundColor="#fafafa"
                 paddingX="2rem"
                 paddingY="1rem"
                 borderRadius="10px"
@@ -261,8 +257,6 @@ export default function SnippetPage(props: any) {
                           color={
                             (tagObj
                               ? `hsl(${tagObj.color}, 100%, 81%)`
-                              : theme === "dark"
-                              ? "#3b3b3b"
                               : "neutral") as any
                           }
                           fontWeight="normal"
@@ -294,7 +288,7 @@ export default function SnippetPage(props: any) {
                   value={code}
                   extensions={[langExtension]}
                   editable={false}
-                  theme={theme === "light" ? "light" : "dark"}
+                  theme="light"
                   color="blue"
                   maxHeight="23rem"
                 />

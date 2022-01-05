@@ -1,7 +1,6 @@
 import { supabase } from "../lib/supabaseClient";
 import CodeMirror from "@uiw/react-codemirror";
 import slugify from "slugify";
-import { useTheme } from "next-themes";
 import { useRouter } from "next/dist/client/router";
 import { langs, tags } from "../components/langs";
 import React, { useState, useEffect } from "react";
@@ -31,7 +30,6 @@ function findDuplicates(arr: string[]) {
 }
 
 export default function Home() {
-  const { theme } = useTheme();
   const [mode, setMode] = useState<string>();
   const [selectedLang, setSelectedLang] = useState<Lang>();
   const [code, setCode] = useState('console.log("Welcome to Monad!");');
@@ -48,7 +46,7 @@ export default function Home() {
       const access_token = router.asPath.split("&")[0].split("=")[1];
       router.push({ pathname: "/password-reset", query: { access_token } });
     }
-  }, [router])
+  }, [router]);
 
   function handleLangChange(lang: string) {
     if (langs.find((l) => l.name === lang)) {
@@ -218,7 +216,7 @@ export default function Home() {
               height="200px"
               className="snippet-code"
               extensions={extensions}
-              theme={theme === "light" ? "light" : "dark"}
+              theme="light"
               onChange={(value, viewUpdate) => {
                 // if the input is over 1000 characters, revert the changes without modifying the content
                 if (viewUpdate.state.doc.length > 1000) {
@@ -252,8 +250,6 @@ export default function Home() {
                     return {
                       color: tagObj
                         ? `hsl(${tagObj.color}, 100%, 81%)`
-                        : theme === "dark"
-                        ? "#5b5b5b"
                         : "neutral",
                     };
                   }}

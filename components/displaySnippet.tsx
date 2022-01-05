@@ -8,7 +8,6 @@ import {
   Text,
 } from "evergreen-ui";
 import { langs, tags } from "./langs";
-import { useTheme } from "next-themes";
 import { Snippet } from "lib/types";
 import { supabase } from "lib/supabaseClient";
 import { downloadImage } from "lib/downloadImage";
@@ -25,7 +24,6 @@ export default function DisplaySnippet({
   upvoted?: boolean;
   downvoted?: boolean;
 }) {
-  const { theme } = useTheme();
   const [creatorAvatar, setCreatorAvatar] = useState<string>();
   const [creatorName, setCreatorName] = useState<string>();
   const [loading, setLoading] = useState(true);
@@ -63,7 +61,7 @@ export default function DisplaySnippet({
         flexDirection="row"
         marginBottom="0.4rem"
         borderRadius={10}
-        className={`display-snippet${theme === "dark" ? "-dark" : ""}`}
+        className={`display-snippet`}
         alignItems="center"
         justifyContent="space-between"
         padding="16px"
@@ -131,8 +129,6 @@ export default function DisplaySnippet({
                   color={
                     (tagObj
                       ? `hsl(${tagObj.color}, 100%, 81%)`
-                      : theme === "dark"
-                      ? "#3b3b3b"
                       : "neutral") as any
                   }
                   fontWeight="normal"

@@ -1,4 +1,3 @@
-import { ThemeProvider } from "next-themes";
 import NavBar from "components/NavBar";
 import "styles/global.scss";
 import "styles/footer.scss";
@@ -21,11 +20,11 @@ export default function App({ Component, pageProps }: AppProps) {
   TimeAgo.addDefaultLocale(en);
   TimeAgo.addLocale(es);
   return (
-    <ThemeProvider attribute="class">
+    <>
       <NavBar />
       <Pane className="main">
 	  	<Component {...pageProps} />
       </Pane>
-    </ThemeProvider>
+    </>
   );
 }

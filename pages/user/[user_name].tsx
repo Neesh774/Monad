@@ -12,13 +12,11 @@ import {
   Tab,
   SatelliteIcon,
 } from "evergreen-ui";
-import { useTheme } from "next-themes";
 import DisplaySnippet from "components/displaySnippet";
 import { downloadImage } from "lib/downloadImage";
 
 export default function UserPage({ user }: { user: User }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { theme } = useTheme();
 
   return (
     <>
@@ -38,7 +36,11 @@ export default function UserPage({ user }: { user: User }) {
           flexDirection="column"
           gap="0.5rem"
         >
-          <Avatar src={downloadImage(user.id)} name={user.username} size={200} />
+          <Avatar
+            src={downloadImage(user.id)}
+            name={user.username}
+            size={200}
+          />
           <h1 className="user-name">{user.username}</h1>
           <i>
             Joined{" "}
@@ -77,8 +79,6 @@ export default function UserPage({ user }: { user: User }) {
                           color={
                             (tagObj
                               ? `hsl(${tagObj.color}, 100%, 81%)`
-                              : theme === "dark"
-                              ? "#3b3b3b"
                               : "neutral") as any
                           }
                           fontWeight="normal"
@@ -140,7 +140,7 @@ export default function UserPage({ user }: { user: User }) {
                 })
               ) : (
                 <EmptyState
-                  background={theme === "light" ? "light" : "dark"}
+                  background="light"
                   title="This user has no snippets"
                   orientation="vertical"
                   icon={<SatelliteIcon color="#ff6682" />}
@@ -169,7 +169,7 @@ export default function UserPage({ user }: { user: User }) {
                 })
               ) : (
                 <EmptyState
-                  background={theme === "light" ? "light" : "dark"}
+                  background="light"
                   title="This user has no activity"
                   orientation="vertical"
                   icon={<SatelliteIcon color="#ff6682" />}

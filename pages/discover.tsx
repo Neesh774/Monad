@@ -4,7 +4,6 @@ import { Snippet, User } from "../lib/types";
 import DisplaySnippet from "components/displaySnippet";
 import { useEffect, useState } from "react";
 import Footer from "components/Footer";
-import { useTheme } from "next-themes";
 import MetaTags from "components/MetaTags";
 import { useLoggedIn } from "lib/useLoggedIn";
 
@@ -16,10 +15,8 @@ export default function Discover() {
   const [order, setOrder] = useState<string>("false");
   const [pageNum, setPageNum] = useState<number>(1);
   const [page, setPage] = useState<number>(0);
-  const { theme } = useTheme();
 
   useEffect(() => {
-
     async function getSnippets() {
       const { data: snippets } = await supabase
         .from("snippets")
@@ -75,84 +72,86 @@ export default function Discover() {
         paddingTop="2rem"
         className="discover-page"
         marginBottom="2rem"
-        backgroundColor={
-          theme === "dark" ? "var(--foreground)" : "var(--background)"
-        }
+        backgroundColor="var(--background)"
       >
-        <Heading size={900}>Discover</Heading>
-        <Pane
-          display="flex"
-          flexDirection="row"
-          marginTop="1rem"
-          justifyContent="space-between"
-        >
-          <Pane className="discover" width="60%">
-            <Pane className="filters" display="flex" width="250px" gap="1rem">
-              <Select
-                onChange={(event) => {
-                  changeOrder(event.target.value);
-                }}
-                defaultValue="false"
-              >
-                <option value="false">Descending</option>
-                <option value="true">Ascending</option>
-              </Select>
-              <Select
-                onChange={(event) => {
-                  changeFilter(event.target.value);
-                }}
-                defaultValue="popular"
-              >
-                <option value="popular">Most Popular</option>
-                <option value="latest">Latest</option>
-              </Select>
-            </Pane>
-            <Pane marginTop="1rem" display="flex" flexDirection="column">
-              <Pane
-                className="filtered-snippets"
-                width="100%"
-                display="flex"
-                flexDirection="column"
-                gap="1rem"
-              >
-                {filtered.slice(page, page + 5).map((snippet, index) => {
-                  return <DisplaySnippet key={snippet.id} snippet={snippet} />;
-                })}
+        <div>
+          <Heading size={900}>Discover</Heading>
+          <Pane
+            display="flex"
+            flexDirection="row"
+            marginTop="1rem"
+            justifyContent="space-between"
+          >
+            <Pane className="discover" width="60%">
+              <Pane className="filters" display="flex" width="250px" gap="1rem">
+                <Select
+                  onChange={(event) => {
+                    changeOrder(event.target.value);
+                  }}
+                  defaultValue="false"
+                >
+                  <option value="false">Descending</option>
+                  <option value="true">Ascending</option>
+                </Select>
+                <Select
+                  onChange={(event) => {
+                    changeFilter(event.target.value);
+                  }}
+                  defaultValue="popular"
+                >
+                  <option value="popular">Most Popular</option>
+                  <option value="latest">Latest</option>
+                </Select>
               </Pane>
-              <Pagination
-                marginTop="0.5rem"
-                page={pageNum}
-                totalPages={Math.ceil(snippets.length / 5)}
-                onNextPage={() => generatePage(pageNum + 1)}
-                onPreviousPage={() => generatePage(pageNum - 1)}
-                onPageChange={(pageNum) => generatePage(pageNum)}
-              />
-            </Pane>
-          </Pane>
-          {!recommended == null ? (
-            <Pane className="recommended">
-              <Pane
-                backgroundColor="var(--foreground)"
-                borderRadius="10px"
-                paddingY="1rem"
-                paddingX="1.5rem"
-              >
-                <h2>Recommended</h2>
-                <Pane className="recommended-snippets" marginTop="1rem">
-                  {recommended.length > 0 ? (
-                    recommended.map((snippet) => (
+              <Pane marginTop="1rem" display="flex" flexDirection="column">
+                <Pane
+                  className="filtered-snippets"
+                  width="100%"
+                  display="flex"
+                  flexDirection="column"
+                  gap="1rem"
+                >
+                  {filtered.slice(page, page + 5).map((snippet, index) => {
+                    return (
                       <DisplaySnippet key={snippet.id} snippet={snippet} />
-                    ))
-                  ) : (
-                    <Spinner marginX="auto" />
-                  )}
+                    );
+                  })}
+                </Pane>
+                <Pagination
+                  marginTop="0.5rem"
+                  page={pageNum}
+                  totalPages={Math.ceil(snippets.length / 5)}
+                  onNextPage={() => generatePage(pageNum + 1)}
+                  onPreviousPage={() => generatePage(pageNum - 1)}
+                  onPageChange={(pageNum) => generatePage(pageNum)}
+                />
+              </Pane>
+            </Pane>
+            {!recommended == null ? (
+              <Pane className="recommended">
+                <Pane
+                  backgroundColor="var(--foreground)"
+                  borderRadius="10px"
+                  paddingY="1rem"
+                  paddingX="1.5rem"
+                >
+                  <h2>Recommended</h2>
+                  <Pane className="recommended-snippets" marginTop="1rem">
+                    {recommended.length > 0 ? (
+                      recommended.map((snippet) => (
+                        <DisplaySnippet key={snippet.id} snippet={snippet} />
+                      ))
+                    ) : (
+                      <Spinner marginX="auto" />
+                    )}
+                  </Pane>
                 </Pane>
               </Pane>
-            </Pane>
-          ) : (
-            ""
-          )}
-        </Pane>
+            ) : (
+              ""
+            )}
+          </Pane>
+        </div>
       </Pane>
       <Footer />
     </>

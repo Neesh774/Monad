@@ -1,12 +1,9 @@
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import {
   SideSheet,
   Pane,
   IconButton,
   SearchInput,
-  MoonIcon,
-  FlashIcon,
   MenuIcon,
   Position,
   Button,
@@ -31,7 +28,6 @@ const navigation = [
 ];
 
 export default function Navbar() {
-  const { theme, setTheme } = useTheme();
   const loggedIn = useLoggedIn();
   const [menuOpen, setMenuOpen] = useState(false);
   const [snippets, setSnippets] = useState([]);
@@ -45,10 +41,6 @@ export default function Navbar() {
     fetchData();
   }, []);
 
-  const switchTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
   const logOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -59,12 +51,7 @@ export default function Navbar() {
   };
 
   return (
-    <Pane
-      className="nav-header"
-      backgroundColor={
-        theme === "dark" ? "var(--foreground)" : "var(--background)"
-      }
-    >
+    <Pane className="nav-header" backgroundColor="var(--background)">
       <nav>
         <Link href="/" passHref>
           <a className={classes("logo", "link")}>
@@ -83,12 +70,6 @@ export default function Navbar() {
           <Search snippets={snippets} />
         </ul>
         <Pane className="buttons">
-          <IconButton
-            className="button"
-            onClick={switchTheme}
-            appearance="minimal"
-            icon={theme === "light" ? FlashIcon : MoonIcon}
-          />
           <SideSheet
             isShown={menuOpen}
             onCloseComplete={() => setMenuOpen(false)}
@@ -102,9 +83,7 @@ export default function Navbar() {
               alignItems="center"
               justifyContent="center"
               flexDirection="column"
-              backgroundColor={
-                theme === "light" ? "var(--hover)" : "var(--background)"
-              }
+              backgroundColor="var(--background)"
               className="nav-menu"
             >
               <SearchInput
@@ -162,14 +141,19 @@ export default function Navbar() {
                       >
                         Account
                       </Menu.Item>
-                      <Menu.Item icon={CogIcon} onClick={() => {
-                          router.push('/user/settings');
-                        }}>Settings</Menu.Item>
+                      <Menu.Item
+                        icon={CogIcon}
+                        onClick={() => {
+                          router.push("/user/settings");
+                        }}
+                      >
+                        Settings
+                      </Menu.Item>
                     </Menu.Group>
                     <hr />
                     <Menu.Item
                       onClick={logOut}
-                      icon={<LogOutIcon color="danger" className="log-out"/>}
+                      icon={<LogOutIcon color="danger" className="log-out" />}
                       intent="danger"
                       color="#d14343"
                       className="nav-log-out"

@@ -1,0 +1,6 @@
+Sitemap: https://beta.monad.ilioslabs.dev/api/snippets-sitemap
+
+User-agent: googlebot
+Disallow: /user/settings
+Disallow: /login
+Disallow: /signup

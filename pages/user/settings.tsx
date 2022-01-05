@@ -12,12 +12,11 @@ import {
   TagInput,
   toaster,
   FormField,
-  Heading
+  Heading,
 } from "evergreen-ui";
 import MetaTags from "components/MetaTags";
 import { useRouter } from "next/router";
 import { tags } from "components/langs";
-import { useTheme } from "next-themes";
 import Filter from "bad-words";
 import { getAnonymous } from "lib/getAnonymousAvatar";
 
@@ -37,7 +36,6 @@ export default function UserSettings() {
   const updated = updatedAvatar || updatedUsername || updatedBio || updatedTags;
 
   const router = useRouter();
-  const { theme } = useTheme();
   const [selectedTags, setSelectedTags] = useState([]);
   const [username, setUsername] = useState<string>();
   const [bio, setBio] = useState<string>();
@@ -143,20 +141,23 @@ export default function UserSettings() {
 
   return (
     <>
-      <MetaTags
-        title="Settings"
-        description=""
-      />
+      <MetaTags title="Settings" description="" />
       <Pane className="sign-in-parent">
         <Pane className="sign-in-island">
-          <Heading className="header" size={600}>Update your settings</Heading>
+          <Heading className="header" size={600}>
+            Update your settings
+          </Heading>
 
           <Pane display="flex" flexDirection="column" gap="1rem" marginY="1rem">
             {loggedIn ? (
               <>
                 <Pane display="flex" gap="1rem" alignItems="center">
                   {fallbackAvatar ? (
-                    <Avatar size={60} src={avatarURL} name={loggedIn.username} />
+                    <Avatar
+                      size={60}
+                      src={avatarURL}
+                      name={loggedIn.username}
+                    />
                   ) : (
                     <img
                       className="settings-avatar"
@@ -233,8 +234,6 @@ export default function UserSettings() {
                         return {
                           color: tagObj
                             ? `hsl(${tagObj.color}, 100%, 81%)`
-                            : theme === "dark"
-                            ? "#5b5b5b"
                             : "neutral",
                         };
                       }}
