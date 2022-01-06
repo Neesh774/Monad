@@ -24,7 +24,7 @@ import {
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
-import { Snippet, Activity, User } from "lib/types";
+import { Snippet, Activity } from "lib/types";
 import MetaTags from "components/MetaTags";
 import { useLoggedIn } from "lib/useLoggedIn";
 import { downloadImage } from "lib/downloadImage";

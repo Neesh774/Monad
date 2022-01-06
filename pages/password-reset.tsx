@@ -1,6 +1,6 @@
 import { supabase } from "../lib/supabaseClient";
 import { Pane, Button, TextInputField, toaster, Heading } from "evergreen-ui";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import MetaTags from "../components/MetaTags";
 

@@ -2,7 +2,7 @@ import { supabase } from "lib/supabaseClient";
 import MetaTags from "../../components/MetaTags";
 import { User } from "lib/types";
 import { tags } from "components/langs";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Avatar,
   EmptyState,
