@@ -225,10 +225,10 @@ export default function UserSettings() {
                       tagProps={(value) => {
                         const tagObj = tags.find((t) => {
                           if (typeof t.name === "string") {
-                            return t.name.toLowerCase() === value.toLowerCase();
+                            return value.toLowerCase().includes(t.name.toLowerCase());
                           }
                           return t.name.find((n) => {
-                            return n.toLowerCase() === value.toLowerCase();
+                            return value.toLowerCase().includes(n.toLowerCase());
                           });
                         });
                         return {

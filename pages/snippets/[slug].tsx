@@ -240,10 +240,10 @@ export default function SnippetPage(props: any) {
                     {snippetTags.map((tag) => {
                       const tagObj = tags.find((t) => {
                         if (typeof t.name === "string") {
-                          return t.name.toLowerCase() === tag.toLowerCase();
+                          return tag.toLowerCase().includes(t.name.toLowerCase());
                         }
                         return t.name.find((n) => {
-                          return n.toLowerCase() === tag.toLowerCase();
+                          return tag.toLowerCase().includes(n.toLowerCase());
                         });
                       });
                       return (

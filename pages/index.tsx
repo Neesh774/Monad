@@ -239,12 +239,12 @@ export default function Home() {
                     color: "var(--text-primary)",
                   }}
                   tagProps={(value) => {
-                    const tagObj = tags.find((t) => {
-                      if (typeof t.name === "string") {
-                        return t.name.toLowerCase() === value.toLowerCase();
+                    const tagObj = tags.find((tag) => {
+                      if (typeof tag.name === "string") {
+                        return value.toLowerCase().includes(tag.name.toLowerCase());
                       }
-                      return t.name.find((n) => {
-                        return n.toLowerCase() === value.toLowerCase();
+                      return tag.name.find((n) => {
+                        return value.toLowerCase().includes(n.toLowerCase());
                       });
                     });
                     return {
