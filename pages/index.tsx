@@ -22,12 +22,13 @@ import {
   Heading,
 } from "evergreen-ui";
 import { useLoggedIn } from "lib/useLoggedIn";
-import ResetPassword from "pages/password-reset";
+import Filter from "bad-words";
 
 const maxOptions = 5;
 function findDuplicates(arr: string[]) {
   return new Set(arr).size !== arr.length;
 }
+const filter = new Filter();
 
 export default function Home() {
   const [mode, setMode] = useState<string>();
@@ -90,6 +91,10 @@ export default function Home() {
       return;
     } else if (!selectedLang) {
       toaster.danger("Please select a language!");
+      setSubmitLoading(false);
+      return;
+    } else if (filter.isProfane(title) || filter.isProfane(code) || filter.isProfane(selectedOption.join(" "))) {
+      toaster.danger("Profanity detected in snippet.");
       setSubmitLoading(false);
       return;
     }

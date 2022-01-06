@@ -18,7 +18,6 @@ import MetaTags from "components/MetaTags";
 import { useRouter } from "next/router";
 import { tags } from "components/langs";
 import Filter from "bad-words";
-import { getAnonymous } from "lib/getAnonymousAvatar";
 
 const maxOptions = 10;
 function findDuplicates(arr: string[]) {
