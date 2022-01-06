@@ -18,7 +18,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if(loggedIn) {
-      router.push('/');
+      router.push('/', undefined, { shallow: true });
     }
   }, [loggedIn, router]);
 
@@ -73,7 +73,7 @@ export default function SignIn() {
             appearance="minimal"
             paddingX="0.4rem"
             color="var(--blue)"
-            onClick={() => router.push("/signup")}
+            onClick={() => router.push("/signup", undefined, { shallow: true })}
           >
             Don&apos;t have an account?
           </Button>

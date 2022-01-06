@@ -47,7 +47,7 @@ export default function UserSettings() {
 
   useEffect(() => {
     if (!supabase.auth.user()) {
-      router.push("/");
+      router.push("/", undefined, { shallow: true });
     }
     if (loggedIn) {
       setSelectedTags(loggedIn.tags);

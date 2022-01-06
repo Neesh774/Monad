@@ -22,7 +22,7 @@ export default function ResetPassword() {
     }
     setLoading(false);
     toaster.success("Successfully updated your password!");
-    router.push("/login");
+    router.push("/login", undefined, { shallow: true });
   };
 
   return (

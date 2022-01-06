@@ -18,7 +18,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (loggedIn) {
-      router.push("/");
+      router.push("/", undefined, { shallow: true });
     }
   }, [loggedIn, router]);
 
@@ -123,7 +123,7 @@ export default function SignIn() {
             paddingX="0.4rem"
             color="var(--blue)"
             onClick={() => {
-              router.push("/login");
+              router.push("/login", undefined, { shallow: true });
             }}
           >
             Already have an account?

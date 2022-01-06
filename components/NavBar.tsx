@@ -47,7 +47,7 @@ export default function Navbar() {
       toaster.danger("There was an error signing out. Please try again later.");
       return;
     }
-    router.push(router.asPath);
+    router.push(router.asPath, undefined, { shallow: true });
   };
 
   return (
@@ -86,12 +86,7 @@ export default function Navbar() {
               backgroundColor="var(--background)"
               className="nav-menu"
             >
-              <SearchInput
-                className="searchbar"
-                placeholder="Search for a snippet..."
-                backgroundColor="var(--input)"
-                type="search"
-              />
+              <Search snippets={snippets} />
               <ul className="links">
                 {navigation.map(({ name, href }) => (
                   <li key={name}>
@@ -118,7 +113,7 @@ export default function Navbar() {
               color="white"
               border="none"
               onClick={() => {
-                router.push("/login");
+                router.push("/login", undefined, { shallow: true });
               }}
             >
               Sign In
@@ -136,7 +131,7 @@ export default function Navbar() {
                       <Menu.Item
                         icon={UserIcon}
                         onClick={() => {
-                          router.push(`/user/${loggedIn.username}`);
+                          router.push(`/user/${loggedIn.username}`, undefined, { shallow: true });
                         }}
                       >
                         Account
@@ -144,7 +139,7 @@ export default function Navbar() {
                       <Menu.Item
                         icon={CogIcon}
                         onClick={() => {
-                          router.push("/user/settings");
+                          router.push("/user/settings", undefined, { shallow: true });
                         }}
                       >
                         Settings

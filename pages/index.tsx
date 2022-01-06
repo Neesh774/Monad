@@ -45,7 +45,7 @@ export default function Home() {
   useEffect(() => {
     if (router.asPath.includes("type=recover")) {
       const access_token = router.asPath.split("&")[0].split("=")[1];
-      router.push({ pathname: "/password-reset", query: { access_token } });
+      router.push({ pathname: "/password-reset", query: { access_token } }, undefined, { shallow: true });
     }
   }, [router]);
 
@@ -164,7 +164,7 @@ export default function Home() {
       }
     }
     setSubmitLoading(false);
-    router.push(`/snippets/${slug}`);
+    router.push(`/snippets/${slug}`, undefined, { shallow: true });
     if (!listed) {
       toaster.success(
         "Your private snippet was submitted! You can now share the link and it won't show up on our discover page."
