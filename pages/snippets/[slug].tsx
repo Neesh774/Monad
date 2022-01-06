@@ -29,6 +29,7 @@ import MetaTags from "components/MetaTags";
 import { useLoggedIn } from "lib/useLoggedIn";
 import { downloadImage } from "lib/downloadImage";
 import { getAnonymous } from "lib/getAnonymousAvatar";
+import { GetServerSideProps } from "next";
 
 export default function SnippetPage(props: any) {
   const snippetProp: Snippet = props.snippet;
@@ -86,7 +87,6 @@ export default function SnippetPage(props: any) {
         setCreatorName("Anonymous");
         const anonymousAvatar = getAnonymous();
         setCreatorAvatar(anonymousAvatar);
-        console.log(creatorAvatar);
       }
       setLoading(false);
     }
@@ -341,46 +341,6 @@ export default function SnippetPage(props: any) {
   );
 }
 
-export async function getStaticProps(context) {
-  const slug = context.params.slug;
-  const { data } = await supabase
-    .from("snippets")
-    .select("*")
-    .eq("slug", slug)
-    .limit(1);
-
-  let loggedIn;
-  if (supabase.auth.user()) {
-    let { data: loggedIn } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", supabase.auth.user().id);
-  }
-
-  const snippet: Snippet = data[0];
-  return {
-    props: {
-      snippet,
-      user: loggedIn ? loggedIn[0] : null,
-    },
-  };
-}
-
-export async function getStaticPaths() {
-  const { data } = await supabase.from("snippets").select("slug");
-  const paths = data.map((item) => {
-    return {
-      params: {
-        slug: item.slug,
-      },
-    };
-  });
-  return {
-    paths: paths,
-    fallback: false,
-  };
-}
-
 async function updateVotes(
   upvote: boolean,
   downvote: boolean,
@@ -406,3 +366,28 @@ async function updateVotes(
     return;
   }
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const slug = context.params.slug;
+  const { data } = await supabase
+    .from("snippets")
+    .select("*")
+    .eq("slug", slug)
+    .limit(1);
+
+  let loggedIn;
+  if (supabase.auth.user()) {
+    let { data: loggedIn } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", supabase.auth.user().id);
+  }
+
+  const snippet: Snippet = data[0];
+  return {
+    props: {
+      snippet,
+      user: loggedIn ? loggedIn[0] : null,
+    },
+  };
+};
