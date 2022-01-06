@@ -30,6 +30,7 @@ export default function SignIn() {
     });
     if (error) {
       toaster.danger(error.message);
+      setLogInLoading(false);
       return;
     }
     setLogInLoading(false);
