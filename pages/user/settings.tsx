@@ -18,6 +18,7 @@ import MetaTags from "components/MetaTags";
 import { useRouter } from "next/router";
 import { tags } from "components/langs";
 import Filter from "bad-words";
+import TagSelector from "components/TagSelector";
 
 const maxOptions = 10;
 function findDuplicates(arr: string[]) {
@@ -214,65 +215,7 @@ export default function UserSettings() {
                     label="Tags"
                     description="We'll use these selections to recommend snippets"
                   >
-                    <TagInput
-                      inputProps={{
-                        placeholder: "Set tags",
-                        color: "var(--text-primary)",
-                      }}
-                      paddingY="0.4rem"
-                      values={selectedTags}
-                      tagProps={(value) => {
-                        const tagObj = tags.find((t) => {
-                          if (typeof t.name === "string") {
-                            return value.toLowerCase().includes(t.name.toLowerCase());
-                          }
-                          return t.name.find((n) => {
-                            return value.toLowerCase().includes(n.toLowerCase());
-                          });
-                        });
-                        return {
-                          color: tagObj
-                            ? `hsl(${tagObj.color}, 100%, 81%)`
-                            : "neutral",
-                        };
-                      }}
-                      backgroundColor="var(--input)"
-                      className="tag-input"
-                      onChange={(values: string[]) => {
-                        if (values.length > maxOptions) {
-                          toaster.warning(
-                            `You can only select up to ${maxOptions} tags!`,
-                            {
-                              id: "tag-error",
-                            }
-                          );
-                          return;
-                        } else if (values.some((x) => x.length > 20)) {
-                          toaster.warning("Tags must be under 20 characters!", {
-                            id: "tag-error",
-                          });
-                          return;
-                        } else if (values.some((x) => x.length < 2)) {
-                          toaster.warning("Tags must be over 1 character!", {
-                            id: "tag-error",
-                          });
-                          return;
-                        } else if (findDuplicates(values)) {
-                          toaster.warning("Tags must be unique!", {
-                            id: "tag-error",
-                          });
-                          return;
-                        } else if (values.some((x) => filter.isProfane(x))) {
-                          toaster.warning("Detected profanity in your tag!", {
-                            id: "tag-error",
-                          });
-                          return;
-                        }
-                        setUpdatedTags(true);
-                        setSelectedTags(values);
-                      }}
-                      width="90%"
-                    />
+                    <TagSelector selectedTags={selectedTags} setSelectedTags={setSelectedTags} maxOptions={8} />
                   </FormField>
                 </Pane>
               </>

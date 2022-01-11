@@ -11,23 +11,17 @@ import {
   toaster,
   Button,
   TextInput,
-  TagInput,
-  SelectMenu,
-  CodeIcon,
   Tooltip,
   Pane,
   LockIcon,
   UnlockIcon,
   IconButton,
-  Heading,
 } from "evergreen-ui";
 import { useLoggedIn } from "lib/useLoggedIn";
 import Filter from "bad-words";
+import TagSelector from "components/TagSelector";
+import LanguageSelector from "components/LanguageSelector";
 
-const maxOptions = 5;
-function findDuplicates(arr: string[]) {
-  return new Set(arr).size !== arr.length;
-}
 const filter = new Filter();
 
 export default function Home() {
@@ -49,16 +43,16 @@ export default function Home() {
     }
   }, [router]);
 
-  function handleLangChange(lang: string) {
-    if (langs.find((l) => l.name === lang)) {
+  function handleLangChange(lang: Lang) {
+    if (langs.find((l) => l.name === lang.name)) {
       setExtensions([
-        typeof langs.find((l) => l.name === lang).extension === "function"
-          ? langs.find((l) => l.name === lang).extension()
-          : langs.find((l) => l.name === lang).extension,
+        typeof langs.find((l) => l.name === lang.name).extension === "function"
+          ? lang.extension()
+          : lang.extension,
       ]);
     }
-    setMode(lang);
-    setSelectedLang(langs.find((l) => l.name === lang));
+    setMode(lang.name);
+    setSelectedLang(lang);
   }
 
   useEffect(() => {
@@ -139,7 +133,7 @@ export default function Home() {
         const existing = existingArr[0];
         const { error: tagError } = await supabase.from("tags").upsert({
           tag_name: tag,
-          snippets: existing ? existing.snippets.concat(created) : created,
+          snippets: existing && existing.snippets ? existing.snippets.concat(created) : created,
           num_used: existing ? existing.num_used + 1 : 1,
         });
       });
@@ -204,7 +198,7 @@ export default function Home() {
                   setTitle(v.target.value);
                 }}
               />
-              <Tooltip content={`${listed ? "Listed" : "Unlisted"}`}>
+              <Tooltip content={`${listed ? "Snippet will be visible in Search and Discover" : "Snippet can only be viewed by link"}`}>
                 <IconButton
                   height={40}
                   type="button"
@@ -238,84 +232,8 @@ export default function Home() {
             />
             <div className="third">
               <div className="selects">
-                <TagInput
-                  inputProps={{
-                    placeholder: "Add tags",
-                    color: "var(--text-primary)",
-                  }}
-                  tagProps={(value) => {
-                    const tagObj = tags.find((tag) => {
-                      if (typeof tag.name === "string") {
-                        return value.toLowerCase().includes(tag.name.toLowerCase());
-                      }
-                      return tag.name.find((n) => {
-                        return value.toLowerCase().includes(n.toLowerCase());
-                      });
-                    });
-                    return {
-                      color: tagObj
-                        ? `hsl(${tagObj.color}, 100%, 81%)`
-                        : "neutral",
-                    };
-                  }}
-                  values={selectedOption}
-                  backgroundColor="var(--input)"
-                  className="tag-input"
-                  onChange={(values) => {
-                    if (values.length > maxOptions) {
-                      toaster.warning("You can only select up to 5 tags!", {
-                        id: "tag-error",
-                      });
-                      return;
-                    } else if (values.some((x) => x.length > 20)) {
-                      toaster.warning("Tags must be under 20 characters!", {
-                        id: "tag-error",
-                      });
-                      return;
-                    } else if (values.some((x) => x.length < 2)) {
-                      toaster.warning("Tags must be over 1 character!", {
-                        id: "tag-error",
-                      });
-                      return;
-                    } else if (findDuplicates(values)) {
-                      toaster.warning("Tags must be unique!", {
-                        id: "tag-error",
-                      });
-                      return;
-                    }
-                    setSelectedOption(values);
-                  }}
-                  width="100%"
-                />
-                <SelectMenu
-                  options={langs.map((l) => {
-                    return {
-                      label: l.name,
-                      value: l.name,
-                    };
-                  })}
-                  closeOnSelect={true}
-                  selected={selectedLang ? selectedLang.name : ""}
-                  onSelect={(option) => {
-                    handleLangChange(option.label);
-                  }}
-                  hasTitle={false}
-                  filterPlaceholder="Search..."
-                >
-                  <Button
-                    type="button"
-                    className="lang-select"
-                    width={220}
-                    iconBefore={CodeIcon}
-                    resize="none"
-                    backgroundColor="var(--input)"
-                    color="var(--text-primary)"
-                  >
-                    {selectedLang
-                      ? `${selectedLang.name}(.${selectedLang.file})`
-                      : "Select Language"}
-                  </Button>
-                </SelectMenu>
+                <TagSelector selectedTags={selectedOption} setSelectedTags={setSelectedOption} />
+                <LanguageSelector selectedLang={selectedLang} onChange={handleLangChange} />
               </div>
               <Button
                 className="submit-snippet"

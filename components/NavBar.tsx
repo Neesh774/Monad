@@ -34,7 +34,7 @@ export default function Navbar() {
 
   useEffect(() => {
     async function fetchData() {
-      const { data } = await supabase.from("snippets").select("*");
+      const { data } = await supabase.from("snippets").select("*").eq("listed", true);
       setSnippets(data);
     }
 

@@ -18,11 +18,7 @@
     }
     .content {
         margin: 1.5rem 5rem;
-        
-        .copy-button:hover {
-            background-color: var(--hover);
-            color: var(--text-primary);
-        }
+
         .actions {
             margin-top: 1rem;
             display: flex;
@@ -35,9 +31,7 @@
                 background-color: none; 
                 transition: ease-in-out 0.2s;
             }
-            button:hover {
-                background-color: var(--hover);
-            }
+
             .downvote svg, .upvote svg {
                 width: 1.5rem;
                 height: 1.5rem;
@@ -49,5 +43,15 @@
                 fill: var(--green);
             }
         }
+    }
+
+    .snippet-user div {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .snippet-user div:hover {
+        text-decoration: underline;
     }
 }

@@ -21,15 +21,26 @@ import {
   Text,
   Spinner,
   Heading,
+  EditIcon,
+  TrashIcon,
+  FloppyDiskIcon,
+  Dialog,
+  TextInput
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
-import { Snippet, Activity } from "lib/types";
+import { Snippet, Activity, Lang } from "lib/types";
 import MetaTags from "components/MetaTags";
 import { useLoggedIn } from "lib/useLoggedIn";
 import { downloadImage } from "lib/downloadImage";
 import { getAnonymous } from "lib/getAnonymousAvatar";
 import { GetServerSideProps } from "next";
+import TagSelector from "components/TagSelector";
+import LanguageSelector from "components/LanguageSelector";
+import Filter from "bad-words";
+import { useRouter } from "next/router";
+
+const filter = new Filter();
 
 export default function SnippetPage(props: any) {
   const snippetProp: Snippet = props.snippet;
@@ -43,7 +54,9 @@ export default function SnippetPage(props: any) {
     anonymous,
     listed,
     creator_id,
+    id,
   } = snippetProp;
+  // base states
   const [copy, setCopy] = useState("Copy");
   const [votes, setVotes] = useState(snippetVotes);
   const [upvoted, setUpvoted] = useState(false);
@@ -51,15 +64,28 @@ export default function SnippetPage(props: any) {
   const [creatorAvatar, setCreatorAvatar] = useState<string>();
   const [creatorName, setCreatorName] = useState<string>();
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
   const loggedIn = useLoggedIn();
   const userId = useRef<String>();
   const userActivity = useRef<Activity[]>();
   const snippet = useRef<Snippet>(snippetProp);
+  const router = useRouter();
+
+  //editor states
+  const [loggedInCreator, setLoggedInCreator] = useState(false);
+  const [newTags, setNewTags] = useState<string[]>();
+  const [newCode, setNewCode] = useState<string>();
+  const [newTitle, setNewTitle] = useState<string>();
+  const [newLang, setNewLang] = useState<Lang>();
+  const [newListed, setNewListed] = useState<boolean>();
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (loggedIn) {
       userId.current = loggedIn.id;
       userActivity.current = loggedIn.activity;
+      setLoggedInCreator(creator_id === loggedIn.id);
       const activity = loggedIn.activity.find(
         (activity) => activity.snippet.id === snippetProp.id
       );
@@ -194,6 +220,59 @@ export default function SnippetPage(props: any) {
     }
   };
 
+  const save = async () => {
+    setSaving(true);
+    // make sure all fields are filled and valid
+    if (newTitle) {
+      if (newTitle.length === 0) toaster.danger("Please enter a title!");
+      else if (filter.isProfane(newTitle))
+        toaster.danger("Please enter a valid title!");
+      setSaving(false);
+      return;
+    }
+    if (newCode) {
+      if (newCode.length === 0) toaster.danger("Please enter some code!");
+      else if (filter.isProfane(newCode))
+        toaster.danger("Please enter valid code!");
+      setSaving(false);
+      return;
+    }
+    if (newTags) {
+      if (newTags.length === 0) toaster.danger("Please enter some tags!");
+      else if (filter.isProfane(newTags))
+        toaster.danger("Please enter valid tags!");
+      setSaving(false);
+      return;
+    }
+    // update snippet
+    const update: {
+      title?: string;
+      code?: string;
+      tags?: string[];
+      lang?: string;
+      listed?: boolean;
+    } = {};
+    if (newTitle) update.title = newTitle;
+    if (newCode) update.code = newCode;
+    if (newTags) update.tags = newTags;
+    if (newLang) update.lang = newLang.name;
+    if (newListed) update.listed = newListed;
+    if (Object.keys(update).length === 0) {
+      const { error } = await supabase.from("snippets").update(update);
+      if (error) {
+        toaster.danger(
+          "Something went wrong with that! Please try again later."
+        );
+        setSaving(false);
+        return;
+      }
+      toaster.success("Snippet updated!");
+    } else {
+      toaster.warning("Please change something!");
+    }
+    setSaving(false);
+  };
+
   return (
     <>
       <MetaTags
@@ -205,22 +284,39 @@ export default function SnippetPage(props: any) {
           <>
             {" "}
             <Pane className="header" display="flex" flexDirection="column">
-              <Heading size={900}>{title}</Heading>
+              {editing ? <div>
+                <TextInput
+                  defaultValue={newTitle ?? title}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="Title"
+                  marginBottom={16}
+                  size='large'
+                  fontSize={20}
+                />
+              </div> : <Heading size={900}>{title}</Heading>}
               <Text size={500}>
                 <i>
                   Created <ReactTimeAgo date={date} locale="en-US" />
                 </i>
               </Text>
-              <Pane
-                display="flex"
-                alignItems="center"
-                alignContent="center"
-                gap="0.4rem"
-                marginTop="0.4rem"
+              <a
+                href={
+                  creatorName != "Anonymous" ? `/user/${creatorName}` : null
+                }
               >
-                <Avatar name={creatorName} src={creatorAvatar} size={32} />
-                <Text size={500}>{creatorName}</Text>
-              </Pane>
+                <Pane
+                  display="flex"
+                  alignItems="center"
+                  gap="0.4rem"
+                  marginTop="0.4rem"
+                  className="snippet-user"
+                >
+                  <div>
+                    <Avatar name={creatorName} src={creatorAvatar} size={32} />
+                    <Text size={500}>{creatorName}</Text>
+                  </div>
+                </Pane>
+              </a>
             </Pane>
             <div className="content">
               <Pane
@@ -237,57 +333,121 @@ export default function SnippetPage(props: any) {
                   display="flex"
                 >
                   <Pane height="2rem">
-                    {snippetTags.map((tag) => {
-                      const tagObj = tags.find((t) => {
-                        if (typeof t.name === "string") {
-                          return tag.toLowerCase().includes(t.name.toLowerCase());
-                        }
-                        return t.name.find((n) => {
-                          return tag.toLowerCase().includes(n.toLowerCase());
-                        });
-                      });
-                      return (
-                        <Badge
-                          key={tag}
-                          marginRight="5px"
-                          textTransform="lowercase"
-                          fontSize="1rem"
-                          height="1.5rem"
-                          paddingY="0.2rem"
-                          color={
-                            (tagObj
-                              ? `hsl(${tagObj.color}, 100%, 81%)`
-                              : "neutral") as any
+                    {!editing ? (
+                      snippetTags.map((tag) => {
+                        const tagObj = tags.find((t) => {
+                          if (typeof t.name === "string") {
+                            return tag
+                              .toLowerCase()
+                              .includes(t.name.toLowerCase());
                           }
-                          fontWeight="normal"
-                        >
-                          <Text>{tag}</Text>
-                        </Badge>
-                      );
-                    })}
+                          return t.name.find((n) => {
+                            return tag.toLowerCase().includes(n.toLowerCase());
+                          });
+                        });
+                        return (
+                          <Badge
+                            key={tag}
+                            marginRight="5px"
+                            textTransform="lowercase"
+                            fontSize="1rem"
+                            height="1.5rem"
+                            paddingY="0.2rem"
+                            color={
+                              (tagObj
+                                ? `hsl(${tagObj.color}, 100%, 81%)`
+                                : "neutral") as any
+                            }
+                            fontWeight="normal"
+                          >
+                            <Text>{tag}</Text>
+                          </Badge>
+                        );
+                      })
+                    ) : (
+                      <TagSelector
+                        maxOptions={5}
+                        selectedTags={newTags ?? snippetTags}
+                        setSelectedTags={setNewTags}
+                      />
+                    )}
                   </Pane>
-                  <Pane display="flex" gap="1rem" alignContent="center">
+                  <Pane display="flex" gap="1rem" alignItems="center">
                     <Pane display="flex" alignItems="center" gap="1rem">
-                      <Tooltip content={!listed ? "Unlisted" : "Listed"}>
-                        <Icon icon={!listed ? LockIcon : UnlockIcon} />
+                      {loggedInCreator && (
+                        <Pane display="flex" gap="0.2rem">
+                          <Tooltip content="Edit Snippet">
+                            <IconButton
+                              appearance="minimal"
+                              isLoading={saving}
+                              icon={editing ? FloppyDiskIcon : EditIcon}
+                              onClick={async () => {
+                                if (editing) await save();
+                                setEditing(!editing);
+                              }}
+                            />
+                          </Tooltip>
+                          <Tooltip content="Delete Snippet">
+                            <IconButton
+                              appearance="minimal"
+                              intent="danger"
+                              icon={TrashIcon}
+                              onClick={() => setDeleting(true)}
+                            />
+                          </Tooltip>
+                        </Pane>
+                      )}
+                      <Tooltip
+                        content={!newListed ?? !listed ? "Unlisted" : "Listed"}
+                      >
+                        {!editing ? (
+                          <Icon icon={!listed ? LockIcon : UnlockIcon} />
+                        ) : (
+                          <IconButton
+                            height={40}
+                            type="button"
+                            appearance="minimal"
+                            icon={newListed ? UnlockIcon : LockIcon}
+                            onClick={() => {
+                              setNewListed(!newListed);
+                            }}
+                          />
+                        )}
                       </Tooltip>
-                      <Text size={500}>{langObj.name}</Text>
+                      {!editing ? (
+                        <Text size={500}>{langObj.name}</Text>
+                      ) : (
+                        <LanguageSelector
+                          selectedLang={newLang ?? langObj}
+                          onChange={setNewLang}
+                        />
+                      )}
                     </Pane>
-                    <Button
-                      onClick={copyCode}
-                      iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
-                      backgroundColor="var(--input)"
-                      color="var(--text-primary)"
-                      className="copy-button"
-                    >
-                      {copy}
-                    </Button>
+                    {!editing && (
+                      <Button
+                        onClick={copyCode}
+                        iconBefore={copy === "Copy" ? DuplicateIcon : TickIcon}
+                        backgroundColor="var(--input)"
+                        color="var(--text-primary)"
+                        className="copy-button"
+                      >
+                        {copy}
+                      </Button>
+                    )}
                   </Pane>
                 </Pane>
                 <CodeMirror
                   value={code}
-                  extensions={[langExtension]}
-                  editable={false}
+                  extensions={
+                    !newLang
+                      ? [langExtension]
+                      : [
+                          typeof newLang.extension === "function"
+                            ? newLang.extension()
+                            : newLang.extension,
+                        ]
+                  }
+                  editable={editing}
                   theme="light"
                   color="blue"
                   maxHeight="23rem"
@@ -337,6 +497,27 @@ export default function SnippetPage(props: any) {
         )}
       </div>
       <Footer />
+      <Dialog
+        isShown={deleting}
+        title="Delete Snippet"
+        intent="danger"
+        onCloseComplete={() => setDeleting(false)}
+        onConfirm={async () => {
+          const { error } = await supabase
+            .from("snippets")
+            .delete()
+            .eq("id", id);
+          if (error) {
+            toaster.danger(error.message);
+          } else {
+            toaster.success("Snippet deleted");
+            router.push("/");
+          }
+        }}
+        confirmLabel="Delete"
+      >
+        <Text>Are you sure you want to delete this snippet?</Text>
+      </Dialog>
     </>
   );
 }
