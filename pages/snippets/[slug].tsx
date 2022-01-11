@@ -117,7 +117,10 @@ export default function SnippetPage(props: any) {
       setLoading(false);
     }
     getUser();
-  }, [loggedIn, snippetProp, creator_id, creatorAvatar]);
+    if(snippetProp === undefined) {
+      router.push("/404");
+    }
+  }, [loggedIn, snippetProp, creator_id, creatorAvatar, router]);
 
   useEffect(() => {
     if (userActivity.current) {
@@ -565,6 +568,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const snippet: Snippet = data[0];
+
+  if(!snippet) return { notFound: true };
   return {
     props: {
       snippet,

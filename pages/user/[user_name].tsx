@@ -2,7 +2,7 @@ import { supabase } from "lib/supabaseClient";
 import MetaTags from "../../components/MetaTags";
 import { User } from "lib/types";
 import { tags } from "components/langs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Avatar,
   EmptyState,
@@ -14,6 +14,7 @@ import {
 } from "evergreen-ui";
 import DisplaySnippet from "components/displaySnippet";
 import { downloadImage } from "lib/downloadImage";
+import { GetServerSideProps } from "next";
 
 export default function UserPage({ user }: { user: User }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -184,31 +185,21 @@ export default function UserPage({ user }: { user: User }) {
   );
 }
 
-export async function getStaticProps(context) {
+export const getServerSideProps : GetServerSideProps = async (context) => {
   const slug = context.params.user_name;
   const { data: user } = await supabase
     .from("profiles")
     .select(`*`)
     .eq("username", slug);
+  if(!user[0]) {
+    return {
+      notFound: true
+    }
+  }
   return {
     props: {
-      user: user[0],
+      user: user[0] ?? null,
     },
   };
 }
 
-export async function getStaticPaths() {
-  const { data } = await supabase.from("profiles").select("username");
-  if (!data) return { paths: [], fallback: true };
-  const paths = data.map((item) => {
-    return {
-      params: {
-        user_name: item.username,
-      },
-    };
-  });
-  return {
-    paths: paths,
-    fallback: false,
-  };
-}
