@@ -117,7 +117,7 @@ export default function Home() {
     const { data: created, error } = await supabase
       .from("snippets")
       .insert(newSnippet)
-      .single();
+      .limit(1) as { data: Snippet[], error: any };
     if (error) {
       toaster.danger("Something went wrong! Please try again later.");
       console.log(error);
@@ -133,7 +133,7 @@ export default function Home() {
         const existing = existingArr[0];
         const { error: tagError } = await supabase.from("tags").upsert({
           tag_name: tag,
-          snippets: existing && existing.snippets ? existing.snippets.concat(created) : created,
+          snippets: existing && existing.snippets && Array.isArray(existing.snippets) ? existing.snippets.concat(created) : created,
           num_used: existing ? existing.num_used + 1 : 1,
         });
       });
@@ -144,7 +144,7 @@ export default function Home() {
           .select("*")
           .eq("id", supabase.auth.user().id)
           .single();
-        const newSnippets = data.snippets.concat([created]);
+        const newSnippets = data.snippets.concat(created);
         const { error } = await supabase
           .from("profiles")
           .update({ snippets: newSnippets })
