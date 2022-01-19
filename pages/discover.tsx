@@ -1,5 +1,13 @@
 import { supabase } from "lib/supabaseClient";
-import { Pane, Select, Pagination, Spinner, Heading } from "evergreen-ui";
+import {
+  Pane,
+  Select,
+  Pagination,
+  Spinner,
+  Heading,
+  EmptyState,
+  PathSearchIcon,
+} from "evergreen-ui";
 import { Snippet, User } from "../lib/types";
 import DisplaySnippet from "components/displaySnippet";
 import { useEffect, useState } from "react";
@@ -81,52 +89,68 @@ export default function Discover() {
             flexDirection="row"
             marginTop="1rem"
             justifyContent="space-between"
+            className="discover-parent"
           >
-            <Pane className="discover" width="60%">
-              <Pane className="filters" display="flex" width="250px" gap="1rem">
-                <Select
-                  onChange={(event) => {
-                    changeOrder(event.target.value);
-                  }}
-                  defaultValue="false"
-                >
-                  <option value="false">Descending</option>
-                  <option value="true">Ascending</option>
-                </Select>
-                <Select
-                  onChange={(event) => {
-                    changeFilter(event.target.value);
-                  }}
-                  defaultValue="popular"
-                >
-                  <option value="popular">Most Popular</option>
-                  <option value="latest">Latest</option>
-                </Select>
-              </Pane>
-              <Pane marginTop="1rem" display="flex" flexDirection="column">
-                <Pane
-                  className="filtered-snippets"
-                  width="100%"
-                  display="flex"
-                  flexDirection="column"
-                  gap="1rem"
-                >
-                  {filtered.slice(page, page + 5).map((snippet, index) => {
-                    return (
-                      <DisplaySnippet key={snippet.id} snippet={snippet} />
-                    );
-                  })}
-                </Pane>
-                <Pagination
-                  marginTop="0.5rem"
-                  page={pageNum}
-                  totalPages={Math.ceil(snippets.length / 5)}
-                  onNextPage={() => generatePage(pageNum + 1)}
-                  onPreviousPage={() => generatePage(pageNum - 1)}
-                  onPageChange={(pageNum) => generatePage(pageNum)}
+              {filtered.length == 0 && snippets.length == 0 ? (
+                <EmptyState
+                  background="light"
+                  title="No snippets found"
+                  orientation="vertical"
+                  icon={<PathSearchIcon color="#ff6682" />}
+                  iconBgColor="#ffc4cf"
                 />
-              </Pane>
-            </Pane>
+              ) : (
+                <Pane className="discover" width="60%">
+                  <Pane
+                    className="filters"
+                    display="flex"
+                    width="250px"
+                    gap="1rem"
+                  >
+                    <Select
+                      onChange={(event) => {
+                        changeOrder(event.target.value);
+                      }}
+                      defaultValue="false"
+                    >
+                      <option value="false">Descending</option>
+                      <option value="true">Ascending</option>
+                    </Select>
+                    <Select
+                      onChange={(event) => {
+                        changeFilter(event.target.value);
+                      }}
+                      defaultValue="popular"
+                    >
+                      <option value="popular">Most Popular</option>
+                      <option value="latest">Latest</option>
+                    </Select>
+                  </Pane>
+                  <Pane marginTop="1rem" display="flex" flexDirection="column">
+                    <Pane
+                      className="filtered-snippets"
+                      width="100%"
+                      display="flex"
+                      flexDirection="column"
+                      gap="1rem"
+                    >
+                      {filtered.slice(page, page + 5).map((snippet, index) => {
+                        return (
+                          <DisplaySnippet key={snippet.id} snippet={snippet} />
+                        );
+                      })}
+                    </Pane>
+                    <Pagination
+                      marginTop="0.5rem"
+                      page={pageNum}
+                      totalPages={Math.ceil(snippets.length / 5)}
+                      onNextPage={() => generatePage(pageNum + 1)}
+                      onPreviousPage={() => generatePage(pageNum - 1)}
+                      onPageChange={(pageNum) => generatePage(pageNum)}
+                    />
+                  </Pane>
+                </Pane>
+              )}
             {!recommended == null ? (
               <Pane className="recommended">
                 <Pane
