@@ -25,7 +25,7 @@ import {
   TrashIcon,
   FloppyDiskIcon,
   Dialog,
-  TextInput
+  TextInput,
 } from "evergreen-ui";
 import ReactTimeAgo from "react-time-ago";
 import Footer from "../../components/Footer";
@@ -117,7 +117,7 @@ export default function SnippetPage(props: any) {
       setLoading(false);
     }
     getUser();
-    if(snippetProp === undefined) {
+    if (snippetProp === undefined) {
       router.push("/404");
     }
   }, [loggedIn, snippetProp, creator_id, creatorAvatar, router]);
@@ -226,24 +226,36 @@ export default function SnippetPage(props: any) {
   const save = async () => {
     setSaving(true);
     // make sure all fields are filled and valid
+    let invalid = false;
     if (newTitle) {
-      if (newTitle.length === 0) toaster.danger("Please enter a title!");
-      else if (filter.isProfane(newTitle))
+      if (newTitle.length === 0) {
+        toaster.danger("Please enter a title!");
+        invalid = true;
+      } else if (filter.isProfane(newTitle)) {
         toaster.danger("Please enter a valid title!");
-      setSaving(false);
-      return;
+        invalid = true;
+      }
     }
     if (newCode) {
-      if (newCode.length === 0) toaster.danger("Please enter some code!");
-      else if (filter.isProfane(newCode))
+      if (newCode.length === 0) {
+        toaster.danger("Please enter some code!");
+        invalid = true;
+      } else if (filter.isProfane(newCode)) {
         toaster.danger("Please enter valid code!");
-      setSaving(false);
-      return;
+        invalid = true;
+      }
     }
     if (newTags) {
-      if (newTags.length === 0) toaster.danger("Please enter some tags!");
-      else if (filter.isProfane(newTags))
+      if (newTags.length === 0) {
+        toaster.danger("Please enter some tags!");
+        invalid = true;
+      } else if (filter.isProfane(newTags)) {
         toaster.danger("Please enter valid tags!");
+        invalid = true;
+      }
+    }
+
+    if(invalid) {
       setSaving(false);
       return;
     }
@@ -260,7 +272,7 @@ export default function SnippetPage(props: any) {
     if (newTags) update.tags = newTags;
     if (newLang) update.lang = newLang.name;
     if (newListed) update.listed = newListed;
-    if (Object.keys(update).length === 0) {
+    if (Object.keys(update).length > 0) {
       const { error } = await supabase.from("snippets").update(update);
       if (error) {
         toaster.danger(
@@ -287,16 +299,22 @@ export default function SnippetPage(props: any) {
           <>
             {" "}
             <Pane className="header" display="flex" flexDirection="column">
-              {editing ? <div>
-                <TextInput
-                  defaultValue={newTitle ?? title}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="Title"
-                  marginBottom={16}
-                  size='large'
-                  fontSize={20}
-                />
-              </div> : <Heading size={900}>{title}</Heading>}
+              {editing ? (
+                <div>
+                  <TextInput
+                    defaultValue={newTitle ?? title}
+                    onChange={(e) => {
+                      setNewTitle(e.target.value);
+                    }}
+                    placeholder="Title"
+                    marginBottom={16}
+                    size="large"
+                    fontSize={20}
+                  />
+                </div>
+              ) : (
+                <Heading size={900}>{newTitle ?? title}</Heading>
+              )}
               <Text size={500}>
                 <i>
                   Created <ReactTimeAgo date={date} locale="en-US" />
@@ -337,7 +355,7 @@ export default function SnippetPage(props: any) {
                 >
                   <Pane height="2rem">
                     {!editing ? (
-                      snippetTags.map((tag) => {
+                      (newTags ?? snippetTags).map((tag) => {
                         const tagObj = tags.find((t) => {
                           if (typeof t.name === "string") {
                             return tag
@@ -440,7 +458,7 @@ export default function SnippetPage(props: any) {
                   </Pane>
                 </Pane>
                 <CodeMirror
-                  value={code}
+                  value={newCode ?? code}
                   extensions={
                     !newLang
                       ? [langExtension]
@@ -454,6 +472,19 @@ export default function SnippetPage(props: any) {
                   theme="light"
                   color="blue"
                   maxHeight="23rem"
+                  onChange={(value, viewUpdate) => {
+                    // if the input is over 1000 characters, revert the changes without modifying the content
+                    if (viewUpdate.state.doc.length > 1000) {
+                      const changes = viewUpdate.changes;
+                      const antichanges = changes.invert(viewUpdate.state.doc);
+                      const transaction = viewUpdate.state.update({
+                        changes: antichanges,
+                      });
+                      viewUpdate.view.dispatch(transaction);
+                    } else {
+                      setNewCode(value);
+                    }
+                  }}
                 />
               </Pane>
               <Pane className="actions" gap="0.4rem">
@@ -569,7 +600,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const snippet: Snippet = data[0];
 
-  if(!snippet) return { notFound: true };
+  if (!snippet) return { notFound: true };
   return {
     props: {
       snippet,
