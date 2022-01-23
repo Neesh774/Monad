@@ -82,7 +82,7 @@ export default function SignIn() {
           }
         });
         toaster.notify(
-          "Success! Please check your email for a verification link."
+          "Success! Please check your email for a verification link and don't close this tab."
         );
         setLogInLoading(false);
       });
