@@ -53,7 +53,7 @@ export default function Navbar() {
   return (
     <Pane className="nav-header" backgroundColor="var(--background)">
       <nav>
-        <Link href="/" passHref>
+        <Link href="/prelaunch" passHref>
           <a className={classes("logo", "link")}>
             <span>Monad</span>
             <img src="/monad.svg" alt="Monad Logo" />

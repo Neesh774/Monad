@@ -10,6 +10,7 @@ import "styles/snippet.scss";
 import "styles/discover.scss";
 import "styles/auth.scss";
 import "styles/user.scss";
+import "styles/prelaunch.scss";
 import type { AppProps } from "next/app";
 import { Pane } from "evergreen-ui";
 import TimeAgo from 'javascript-time-ago'
