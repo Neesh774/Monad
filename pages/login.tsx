@@ -88,6 +88,7 @@ export default function SignIn() {
               backgroundColor="var(--green)"
               border="none"
               isLoading={logInLoading}
+              data-splitbee-event="Sign In"
             >
               Sign In
             </Button>

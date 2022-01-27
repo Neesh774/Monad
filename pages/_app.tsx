@@ -16,10 +16,16 @@ import { Pane } from "evergreen-ui";
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
 import es from "javascript-time-ago/locale/es.json";
+import splitbee from '@splitbee/web';
 
 export default function App({ Component, pageProps }: AppProps) {
   TimeAgo.addDefaultLocale(en);
   TimeAgo.addLocale(es);
+  splitbee.init();
+  splitbee.track("Sign Up");
+  splitbee.track("Sign In");
+  splitbee.track("Create Snippet");
+  splitbee.track("Vote");
   return (
     <>
       <NavBar />

@@ -243,6 +243,7 @@ export default function Home() {
                 fontSize={15}
                 type="button"
                 intent="success"
+                data-splitbee-event="Create Snippet"
               >
                 {submitLoading ? "Posting..." : "Post"}
               </Button>

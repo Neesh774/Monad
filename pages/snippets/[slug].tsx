@@ -500,6 +500,7 @@ export default function SnippetPage(props: any) {
                       appearance="minimal"
                       onClick={downvote}
                       className={`${downvoted ? "downvoted" : ""} downvote`}
+                      data-splitbee-event="Vote"
                     />
                   </Tooltip>
                   {votes}
@@ -509,6 +510,7 @@ export default function SnippetPage(props: any) {
                       appearance="minimal"
                       onClick={upvote}
                       className={`${upvoted ? "upvoted" : ""} upvote`}
+                      data-splitbee-event="Vote"
                     />
                   </Tooltip>
                 </Pane>
