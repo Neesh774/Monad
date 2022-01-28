@@ -1,6 +1,7 @@
 import Link from "next/link";
 import MetaTags from "components/MetaTags";
 import Code from "components/Code";
+import Footer from "components/Footer";
 
 const snippetCode = `
 export default function App(props) {
@@ -94,23 +95,7 @@ export default function Home() {
           </span>
         </section>
       </div>
-      <div className="footer">
-        <footer className="grid md:grid-cols-2 gap-5 top-0">
-          <div>
-            <h3>Monad</h3>
-            <Link href="/terms">Terms and Conditions</Link>
-            <Link href="/privacy">Privacy Policy</Link>
-            <span className="cursor-not-allowed text-gray-500">Beta</span>
-          </div>
-          <div>
-            <h3>Contact Us</h3>
-            <a href="https://discord.gg/b8ugMm7nvc">Discord</a>
-            <a href="https://twitter.com/IliosLabs">Twitter</a>
-            <a href="mailto:Kanishq0106@gmail.com">Email</a>
-          </div>
-        </footer>
-        <div className="copyright">Made by Ilios Labs © 2021 </div>
-      </div>
+      <Footer />
     </div>
   );
 }
