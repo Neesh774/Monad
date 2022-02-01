@@ -32,13 +32,12 @@ export default function Discover() {
         .eq("listed", true)
         .order("votes", { ascending: false });
       setSnippets(snippets);
-      setFiltered(snippets);
     }
 
-    getSnippets();
+    if(filtered.length < 1 && snippets.length < 1) getSnippets();
 
     setRecommended(user ? getRecommended(snippets, user) : null);
-  }, [order, snippets, user]);
+  }, [order, snippets, user, filtered]);
 
   const changeOrder = async (order: string) => {
     setOrder(order);
@@ -134,7 +133,7 @@ export default function Discover() {
                       flexDirection="column"
                       gap="1rem"
                     >
-                      {filtered.slice(page, page + 5).map((snippet, index) => {
+                      {(filtered.length > 0 ? filtered : snippets).slice(page, page + 5).map((snippet, index) => {
                         return (
                           <DisplaySnippet key={snippet.id} snippet={snippet} />
                         );
